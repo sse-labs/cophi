@@ -1,8 +1,6 @@
 FROM ubuntu:noble
 LABEL name="DelphiCpp"
 
-ARG LLVM_INSTALL_DIR="/usr/local/llvm-14"
-
 RUN apt -y update && \
     apt -y install \
               bash \
@@ -104,9 +102,20 @@ ENV LLVM_LINK_NAME llvm-link-14
 # Installing gllvm #
 ####################
 
-RUN echo hello
 RUN go install github.com/SRI-CSL/gllvm/cmd/...@latest
 
 # adding to PATH
 ENV PATH "$PATH:/root/go/bin"
 
+####################
+# Installing Conan #
+####################
+
+RUN pipx ensurepath
+RUN pipx install conan
+ENV PATH "$PATH:/root/.local/bin/"
+# removing remote conancenter and cloning it locally
+RUN conan remote remove conancenter
+WORKDIR /
+RUN git clone https://github.com/conan-io/conan-center-index
+RUN conan remote add conan-index /conan-center-index
