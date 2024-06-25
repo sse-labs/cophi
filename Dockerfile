@@ -107,15 +107,20 @@ RUN go install github.com/SRI-CSL/gllvm/cmd/...@latest
 # adding to PATH
 ENV PATH "$PATH:/root/go/bin"
 
+# necessary for get-bc
+RUN apt-get -y install file
+
 ####################
 # Installing Conan #
 ####################
 
 RUN pipx ensurepath
 RUN pipx install conan
+# putting conan in PATH
 ENV PATH "$PATH:/root/.local/bin/"
 # removing remote conancenter and cloning it locally
 RUN conan remote remove conancenter
 WORKDIR /
 RUN git clone https://github.com/conan-io/conan-center-index
 RUN conan remote add conan-index /conan-center-index
+RUN conan profile detect
