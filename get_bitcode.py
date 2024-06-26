@@ -22,11 +22,14 @@ class BitcodeExtractor:
   and extracts the LLVM bitcode from their binaries, as well as their .h files
 
   TODO:
-    * make it so that dependencies get their bitcode extracted as well
+    * add option dependencies get their bitcode extracted as well
     * extract more metadata (like what though?)
     * keep the connection to the database open the whole time?
       - it doesn't exist at first though, and it's updated with each new package
     * make good comments on the methods and stuff
+    * add more robust error checking
+    * see if you can change flags on conan install to not install binaries if already there
+      - might be slightly tricky with dependency stuff
   """
 
   # a record we pass into a `conan install` flag so it compiles using gllvm
@@ -57,6 +60,8 @@ class BitcodeExtractor:
   def __version_exists(conf_path, version):
     conf_file = open(conf_path, 'r')
     conf_parsed = yaml.safe_load(conf_file)
+    conf_file.close()
+
     versions = conf_parsed['versions'].keys()
     return version in versions
 
