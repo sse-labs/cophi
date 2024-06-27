@@ -1,20 +1,20 @@
-import argparse, sqlite3, subprocess, os, yaml
+import argparse, shutil, sqlite3, subprocess, os, yaml
 
-parser = argparse.ArgumentParser(prog='get_bitcode.py',
-                                 description='Extract LLVM bitcode from a Conan recipe.')
+# parser = argparse.ArgumentParser(prog='get_bitcode.py',
+#                                  description='Extract LLVM bitcode from a Conan recipe.')
 
-# Command Line Args
-parser.add_argument('--conan-index', '-ci', default='/conan-center-index/', dest='index',
-                    help='path to local conan center index')
+# # Command Line Args
+# parser.add_argument('--conan-index', '-ci', default='/conan-center-index/', dest='index',
+#                     help='path to local conan center index')
 
-parser.add_argument('--output', '-o', required=True, dest='output',
-                    help='which directory to output the metadata/bitcode to')
+# parser.add_argument('--output', '-o', required=True, dest='output',
+#                     help='which directory to output the metadata/bitcode to')
 
-parser.add_argument('--recipe', '-r', required=True, dest='recipe',
-                    help='the recipe in the conan-center-index to build')
+# parser.add_argument('--recipe', '-r', required=True, dest='recipe',
+#                     help='the recipe in the conan-center-index to build')
 
-parser.add_argument('--version', '-v', required=True, dest='version',
-                    help='the specific version of the recipe')
+# parser.add_argument('--version', '-v', required=True, dest='version',
+#                     help='the specific version of the recipe')
 
 class BitcodeExtractor:
   """
@@ -22,6 +22,7 @@ class BitcodeExtractor:
   and extracts the LLVM bitcode from their binaries, as well as their .h files
 
   TODO:
+    * first priority: test on a bunch of recipes
     * add option dependencies get their bitcode extracted as well
     * extract more metadata (like what though?)
     * keep the connection to the database open the whole time?
@@ -38,22 +39,24 @@ class BitcodeExtractor:
             "cpp": "gclang++",
         }
 
-  def __init__(self, conan_index, output_folder):
+  def __init__(self, conan_index, output_folder, logger):
     self.__index_dir = conan_index
     self.__out_dir = output_folder
+    self.__logger = logger
     self.__cache = BitcodeExtractor.__get_cache_path()
   
-  def extract_bitcode(self, recipe, version, cascade=True):
+  def extract_bitcode(self, recipe, version, cascade=True, check_version=True):
     conf_path = self.__get_conf_file_path(recipe)
-    if not BitcodeExtractor.__version_exists(conf_path, version):
+    if check_version and not BitcodeExtractor.__version_exists(conf_path, version):
+      self.__logger.debug(f'could not find version {version} for {recipe}')
       raise IOError(f'version {version} does not exist for recipe {recipe}')
-    if self.__run_install(recipe, version) != 0:
-      raise RuntimeError(f'failed to install {recipe}/{version}')
-    self.__write_bitcode(recipe, version)
+    self.__run_install(recipe, version)
+    return self.__write_bitcode(recipe, version)
   
   def __get_conf_file_path(self, recipe):
     conf_path = os.path.join(self.__index_dir, 'recipes', recipe, 'config.yml')
     if not os.path.isfile(conf_path):
+      self.__logger.debug(f'conf file for package not found: {conf_path}')
       raise IOError(f'recipe {recipe} does not exist in conan-center-index')
     return conf_path
   
@@ -68,42 +71,37 @@ class BitcodeExtractor:
   def __run_install(self, recipe, version):
     run_info = subprocess.run(['conan', 'install',
                               f'--requires={recipe}/{version}',
-                              '--build=*',
+                              '--build=missing',
                               '--settings:all=build_type=Debug',
+                              '--settings:all=compiler.cppstd=gnu17',
                               f'--conf:all=tools.build:compiler_executables={self.__compiler_executables}',
                               '--remote=conan-index',
-                              f'--output-folder={os.path.join(self.__index_dir, recipe, 'all/build/')}'])
-    return run_info.returncode
+                              f'--output-folder={os.path.join(self.__index_dir, recipe, 'all/build/')}'],
+                              capture_output=True, text=True) # capture output
+    if run_info.returncode != 0:
+      self.__logger.debug('conan install output: \n\t' + run_info.stdout.replace('\n', '\n\t'))
+      raise RuntimeError('conan install failed')
   
   # TODO: some recipes may have stuff in their metadata folder, check for that
   # to get it: `conan cache path --folder=metadata <recipe>/<version>`
   def __write_bitcode(self, recipe, version):
     package_folder = self.__get_package_dir(recipe, version)
+    out_folder = self.__gen_out_dir(recipe, version)
 
-    for outtype in ['bin', 'lib', 'include']:
-      curr_folder = os.path.join(package_folder, outtype)
-      if not os.path.isdir(curr_folder):
-        continue
+    num_written = 0
 
-      suboutdir = os.path.join(self.__out_dir, recipe, version, outtype)
-      subprocess.run(['mkdir', '-p', suboutdir])
-
-      match outtype:
-        case 'bin':
-          for executable in os.listdir(curr_folder):
-            binfile = os.path.join(curr_folder, executable)
-            outfile = os.path.join(suboutdir, executable + '.bc')
-            subprocess.run(['get-bc', '-S', '-o', outfile, binfile])
-        case 'lib':
-          for library in os.listdir(curr_folder):
-            libfile = os.path.join(curr_folder, library)
-            outfile = os.path.join(suboutdir, library + '.bc')
-            subprocess.run(['get-bc', '-S', '-b', '-o', outfile, libfile])
-        case 'include':
-          subprocess.run(['cp', '-r', curr_folder, os.path.join(self.__out_dir, f'{recipe}_{version}')])
+    for root, _, files in os.walk(package_folder):
+      for file in files:
+        file = os.path.join(root, file)
+        out_file = os.path.join(out_folder, file + '.bc')
+        if self.__invoke_get_bc(file, out_file):
+          num_written += 1
+    
+    return num_written
   
   def __get_package_dir(self, recipe, version):
     if not os.path.isfile(self.__cache):
+      self.__logger.error(f'`cache.sqlite3` not found at: {self.__cache}')
       raise IOError('cannot find `cache.sqlite3` in local conan cache')
     
     con = sqlite3.connect(self.__cache)
@@ -116,21 +114,34 @@ class BitcodeExtractor:
     con.close()
 
     if res is None:
+      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t'))
       raise RuntimeError(f'cannot find `{recipe_ref}` in local conan cache database')
     (rel_path,) = res
     return os.path.join(os.path.split(self.__cache)[0], rel_path, 'p')
+  
+  def __gen_out_dir(self, recipe, version):
+    path = os.path.join(self.__out_dir, recipe, version)
+    if 0 != subprocess.run(['mkdir', '-p', path]).returncode:
+      raise RuntimeError(f'failed to generate output directory: {path}')
+    return path
+
+  def __invoke_get_bc(self, file, dest):
+    run = subprocess.run(['get-bc', '-S', '-b', '-o', dest, file], capture_output=True, text=True)
+    if run.returncode != 0:
+      self.__logger.log(2, f'get-bc failed on file `{file}`')
+    return run.returncode == 0
   
   def __get_cache_path():
     runinfo = subprocess.run(['conan', 'config', 'home'], capture_output=True, text=True)
     return os.path.join(runinfo.stdout.strip(), 'p', 'cache.sqlite3')
 
 
-def main():
-  try:
-    args = parser.parse_args()
-    be = BitcodeExtractor(args.index, args.output)
-    be.extract_bitcode(args.recipe, args.version)
-  except Exception as exp:
-    print(f'ERROR: {exp}')
+# def main():
+#   try:
+#     args = parser.parse_args()
+#     be = BitcodeExtractor(args.index, args.output)
+#     be.extract_bitcode(args.recipe, args.version)
+#   except Exception as exp:
+#     print(f'ERROR: {exp}')
 
-main()
+# main()
