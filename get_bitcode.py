@@ -79,7 +79,7 @@ class BitcodeExtractor:
                               f'--output-folder={os.path.join(self.__index_dir, recipe, 'all/build/')}'],
                               capture_output=True, text=True) # capture output
     if run_info.returncode != 0:
-      self.__logger.debug('conan install output: \n\t' + run_info.stdout.replace('\n', '\n\t'))
+      self.__logger.debug('conan install output: \n\t\t' + run_info.stderr.replace('\n', '\n\t\t'))
       raise RuntimeError('conan install failed')
   
   # TODO: some recipes may have stuff in their metadata folder, check for that
@@ -113,8 +113,9 @@ class BitcodeExtractor:
                             ORDER BY timestamp DESC""", (recipe_ref,)).fetchone()
     con.close()
 
+    self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t\t'))
     if res is None:
-      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t'))
+      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t\t'))
       raise RuntimeError(f'cannot find `{recipe_ref}` in local conan cache database')
     (rel_path,) = res
     return os.path.join(os.path.split(self.__cache)[0], rel_path, 'p')
