@@ -106,9 +106,9 @@ class BitcodeExtractor:
 
     for root, _, files in os.walk(package_folder):
       for file in files:
-        file = os.path.join(root, file)
+        potential_bin = os.path.join(root, file)
         out_file = os.path.join(out_folder, file + '.bc')
-        if self.__invoke_get_bc(file, out_file):
+        if self.__invoke_get_bc(potential_bin, out_file):
           num_written += 1
     
     return num_written
