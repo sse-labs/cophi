@@ -7,6 +7,7 @@ class BitcodeExtractor:
 
   TODO:
     * add option dependencies get their bitcode extracted as well
+    * make it so extracted packages with 0 binaries get their directories deleted
     * add methods for clearing the local cache and pulling from the repo
     * extract more metadata (like what though?)
   """
