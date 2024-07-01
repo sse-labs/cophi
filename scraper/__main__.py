@@ -1,5 +1,5 @@
 import argparse, logging, os, yaml
-from get_bitcode import BitcodeExtractor
+from scraper.bitcode_extractor import BitcodeExtractor
 
 ##############################
 # Setting Command Line Flags #
@@ -7,16 +7,20 @@ from get_bitcode import BitcodeExtractor
 parser = argparse.ArgumentParser(prog='test_extract.py',
                                  description='test get_bitcode.py')
 
-parser.add_argument('--conan-index', '-ci', default='/conan-center-index/', dest='index',
+parser.add_argument('--conan-index', '-i', default='/conan-center-index/', dest='index',
                     help='path to local conan center index')
 
-parser.add_argument('--output', '-o', required=True, dest='output',
+# TODO: change default to docker volume
+parser.add_argument('--output', '-o', default='./bitcode/', dest='output',
                     help='which directory to output the metadata/bitcode to')
+
+parser.add_argument('--num-packages', '-n', required=True, dest='total',
+                    help='how many packages to install (with no errors and >0 bitcode files)')
 
 #####################
 # Setting Up Logger #
 ##################### TODO: you can just put all this in a config file, do that
-logger = logging.getLogger('bc_extractor')
+logger = logging.getLogger('bitcode_scraper')
 logger.setLevel(logging.DEBUG)
 
 # configure handler for console output
@@ -26,7 +30,7 @@ ch.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(ch)
 
 # configure handler for file output
-fh = logging.FileHandler('./bc_extractor.log', 'w', 'utf-8')
+fh = logging.FileHandler('./scraper/logs/scraper.log', 'w', 'utf-8')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(fh)
@@ -68,4 +72,5 @@ def main():
     if num_tried == num_to_try:
       break
 
-main()
+if __name__ == '__main__':
+  main()

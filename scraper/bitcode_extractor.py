@@ -6,10 +6,9 @@ class BitcodeExtractor:
   and extracts the LLVM bitcode from their binaries.
 
   TODO:
-    * first priority: test on a bunch of recipes
     * add option dependencies get their bitcode extracted as well
+    * add methods for clearing the local cache and pulling from the repo
     * extract more metadata (like what though?)
-    * make good comments on the methods and stuff
   """
 
   # a record we pass into `conan install` so it compiles packages using gllvm
@@ -34,17 +33,17 @@ class BitcodeExtractor:
     self.__cache = BitcodeExtractor.__get_cache_path()
   
   def extract_bitcode(self, recipe: str, version: str, cascade: bool = True, check_version: bool = True) -> int:
-    """Attempt to install a a given package/version, and returns how many bitcode files we got. 
-    Raises exeptions on failure.
+    """Attempts to install a a given package/version, and returns how many 
+    packages were scraped for >0 bitcode files. Raises exeptions on failure.
     
     Args:
       recipe: The recipe to try and install.
       version: The specific version of the recipe.
-      cascade: whether to try and get bitcode from installed dependencies of the package.
+      cascade: whether to try and get bitcode from any installed dependencies.
       check_version: whether to check if the version exists before trying to install.
     
     Returns:
-      The number of bitcode files successfully extracted.
+      The number of packages successfully scraped for >0 bitcode files.
 
     Raises:
       IOError: If a necessary file wasn't found, or failure to make a file.
