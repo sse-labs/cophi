@@ -45,8 +45,10 @@ def main():
   args = parser.parse_args()
   recipes = os.path.join(args.index, 'recipes')
 
+  num_to_try = 100
   num_tried = 0
   num_errored = 0
+  num_more_zero = 0
 
   be = BitcodeExtractor(args.index, args.output, logger)
   for recipe in os.listdir(recipes):
@@ -54,14 +56,16 @@ def main():
     try:
       version = get_first_version(os.path.join(recipes, recipe, 'config.yml'))
       num_bins = be.extract_bitcode(recipe, version, check_version=False)
+      if num_bins > 0:
+        num_more_zero += 1
       logger.info(f'{recipe}/{version} installed successfully with {num_bins} binaries extracted')
     except Exception as exp:
       logger.warning(f'failure to extract bitcode from `{recipe}/{version}`: {exp}')
       num_errored += 1
 
-    logger.info(f'{num_tried} packages attempted, {num_errored} errored')
+    logger.info(f'{num_tried}/{num_to_try} packages attempted, {num_errored} errored, {num_more_zero} successful with >0 binaries')
     
-    if num_tried == 100:
+    if num_tried == num_to_try:
       break
 
 main()

@@ -69,18 +69,32 @@ class BitcodeExtractor:
     return version in versions
 
   def __run_install(self, recipe, version):
+    self.__logger.info(f'started conan install for {recipe}/{version}')
     run_info = subprocess.run(['conan', 'install',
+                               # specify which package/version to install (we use this instead of the path to conanfile.py because that doesn't always work)
                               f'--requires={recipe}/{version}',
+                              # if prebuilt binaries are not available, build from scratch
                               '--build=missing',
+                              # build in Debug mode (needed for PhASAR)
                               '--settings:all=build_type=Debug',
-                              '--settings:all=compiler.cppstd=gnu17',
+                              # set the cpp standard at 20 to build as many packages as possible
+                              '--settings:all=compiler.cppstd=gnu20',
+                              # specify the gllvm binaries so clang saves the llvm bitcode
                               f'--conf:all=tools.build:compiler_executables={self.__compiler_executables}',
+                              # allow recipes to install needed packages so less package installations fail
+                              '--conf:all=tools.system.package_manager:mode=install',
+                              # install from our local copy of conan index
                               '--remote=conan-index',
+                              # conan install writes some output files that we don't seem to need,
+                              # just put them in the place they would go if we used the path to the conanfile.py
+                              # instead of --requires. TODO: look into this more?
                               f'--output-folder={os.path.join(self.__index_dir, recipe, 'all/build/')}'],
-                              capture_output=True, text=True) # capture output
+                              # capture output for debug info on install failure
+                              capture_output=True, text=True)
     if run_info.returncode != 0:
       self.__logger.debug('conan install output: \n\t\t' + run_info.stderr.replace('\n', '\n\t\t'))
       raise RuntimeError('conan install failed')
+    self.__logger.info('conan install successful')
   
   # TODO: some recipes may have stuff in their metadata folder, check for that
   # to get it: `conan cache path --folder=metadata <recipe>/<version>`
@@ -111,12 +125,12 @@ class BitcodeExtractor:
     res = cur.execute("""SELECT path FROM packages 
                             WHERE reference=?
                             ORDER BY timestamp DESC""", (recipe_ref,)).fetchone()
-    con.close()
-
-    self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t\t'))
+    
     if res is None:
-      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{cur.execute('SELECT * FROM packages')}'.replace('\n', '\n\t\t'))
+      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{'\n'.join(cur.execute('SELECT * FROM packages').fetchall())}'.replace('\n', '\n\t\t'))
+      con.close()
       raise RuntimeError(f'cannot find `{recipe_ref}` in local conan cache database')
+    con.close()
     (rel_path,) = res
     return os.path.join(os.path.split(self.__cache)[0], rel_path, 'p')
   
