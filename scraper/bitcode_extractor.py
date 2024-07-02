@@ -7,7 +7,6 @@ class BitcodeExtractor:
   and extracts the LLVM bitcode from their binaries.
 
   TODO:
-    * CHange cppstd to 17
     * add methods for clearing the local cache and pulling from the repo
     * extract more metadata (like what though?)
   """
@@ -119,8 +118,8 @@ class BitcodeExtractor:
                               '--build=missing',
                               # build in Debug mode (needed for PhASAR)
                               '--settings:all=build_type=Debug',
-                              # set the cpp standard at 20 to build as many packages as possible
-                              '--settings:all=compiler.cppstd=gnu20',
+                              # set the cpp standard at 17, as that's the highest standard llvm 14 fully supports
+                              '--settings:all=compiler.cppstd=gnu17',
                               # specify the gllvm binaries so clang saves the llvm bitcode
                               f'--conf:all=tools.build:compiler_executables={self.__compiler_executables}',
                               # allow recipes to install needed packages so less package installations fail
