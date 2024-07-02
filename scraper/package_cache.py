@@ -39,7 +39,6 @@ class ConanCache:
       return None
     
     reference = f'{recipe}/{version}*#{rrev}:{pkgid}'
-    print(reference)
     return (bin_dir, reference)
   
   def get_package_set(self) -> set[str] | None:
