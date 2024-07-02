@@ -187,8 +187,9 @@ class BitcodeExtractor:
   def __remove_out_dir(self, recipe: str, version: str):
     recipe_dir = os.path.join(self.__out_dir, recipe)
     version_dir = os.path.join(self.__out_dir, recipe, version)
-    if 0 != subprocess.run(['rmdir', version_dir, recipe_dir]).returncode:
-      self.__logger.warning(f'failed to delete empty directory: {version_dir}')
+    # it's fine to include `recipe_dir` in the command, as if there
+    # are any other subdirs, rmdir won't delete it
+    subprocess.run(['rmdir', version_dir, recipe_dir])
 
   def __invoke_get_bc(self, file: str, dest: str) -> bool:
     """Run get-bc on file and send it to dest. Return whether successful"""
