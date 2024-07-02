@@ -78,7 +78,7 @@ def main():
 
     logger.info(f'{num_scraped} packages successful, {num_errored} packages errored')
     
-    if num_scraped == args.total:
+    if num_scraped >= args.total:
       break
 
 if __name__ == '__main__':
