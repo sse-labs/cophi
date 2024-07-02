@@ -35,6 +35,9 @@ class BitcodeExtractor:
     # set of packages we've tried to install (strings should be `recipe/version`)
     self.__set_tried: set[str] = set()
   
+  def have_tried_extracting(self, recipe: str, version: str) -> bool:
+    return f'{recipe}/{version}' in self.__set_tried
+  
   def extract_bitcode(self, recipe: str, version: str, check_version: bool = True) -> bool:
     """Attempts to install a a given package/version, and returns how many 
     packages were scraped for >0 bitcode files. Raises exeptions on failure.

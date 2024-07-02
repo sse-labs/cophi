@@ -61,7 +61,7 @@ def main():
   for recipe in os.listdir(recipes):
     try:
       version = get_first_version(os.path.join(recipes, recipe, 'config.yml'))
-      if be.extract_bitcode(recipe, version, check_version=False):
+      if not be.have_tried_extracting(recipe, version) and be.extract_bitcode(recipe, version, check_version=False):
         num_scraped += 1
         logger.info(f'{recipe}/{version} installed successfully')
       else:
