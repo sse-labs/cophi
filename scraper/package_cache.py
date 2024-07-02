@@ -12,8 +12,8 @@ class ConanCache:
   def __del__(self):
     self.close_conn()
   
-  # TODO: replace with PackageVersion maybe
-  def get_package_dir(self, recipe: str, version: str) -> str | None:
+  # returns (bin_dir: str, conan_reference: str)
+  def get_package_info(self, recipe: str, version: str) -> tuple[str, str] | None:
     """Gets the directory where all of the binaries are stored."""
     if not self.__update_connection():
       return None
@@ -21,7 +21,7 @@ class ConanCache:
     cur = self.__connection.cursor()
 
     recipe_ref = f'{recipe}/{version}'
-    res = cur.execute("""SELECT path FROM packages 
+    res = cur.execute("""SELECT path, rrev, pkgid FROM packages 
                             WHERE reference=?
                             ORDER BY timestamp DESC""", (recipe_ref,)).fetchone()
     
@@ -31,14 +31,16 @@ class ConanCache:
       self.__logger.warning(f'ConanCache: cannot find `{recipe_ref}` in local conan cache database')
       return None
 
-    (rel_path,) = res
+    (rel_path, rrev, pkgid) = res
     bin_dir = os.path.join(os.path.split(self.__cache_path)[0], rel_path, 'p')
 
     if not os.path.isdir(bin_dir):
       self.__logger.warning(f'ConanCache: cannot find installation directory for {recipe_ref}: `{bin_dir}`')
       return None
     
-    return bin_dir
+    reference = f'{recipe}/{version}*#{rrev}:{pkgid}'
+    print(reference)
+    return (bin_dir, reference)
   
   def get_package_set(self) -> set[str] | None:
     if not self.__update_connection():

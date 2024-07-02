@@ -66,10 +66,7 @@ class BitcodeExtractor:
       return False
 
     # if run_install() didn't fail, we get the directory where the binaries were installed and write them out
-    package_folder = self.__cache.get_package_dir(recipe, version)
-    if package_folder is None:
-      raise RuntimeError(f'could not find {recipe}/{version} in database even after successful installation')
-    return self.__write_bitcode(package_folder, recipe, version)
+    return self.__write_bitcode(recipe, version)
   
   def extract_from_deps(self) -> int:
     all_packages = self.__cache.get_package_set()
@@ -83,8 +80,7 @@ class BitcodeExtractor:
     num_successful = 0
     for package in not_tried:
       (recipe, _, version) = package.partition('/')
-      package_folder = self.__cache.get_package_dir(recipe, version)
-      if self.__write_bitcode(package_folder, recipe, version):
+      if self.__write_bitcode(recipe, version):
         num_successful += 1
     
     return num_successful
@@ -142,7 +138,7 @@ class BitcodeExtractor:
     self.__logger.info('conan install successful')
     return True
   
-  def __write_bitcode(self, package_folder: str, recipe: str, version: str) -> bool:
+  def __write_bitcode(self, recipe: str, version: str) -> bool:
     """Given the build folder for a package, extract all possible bitcode files and 
     write them out to the output folder. Return how many bitcode files extracted.
 
@@ -158,10 +154,15 @@ class BitcodeExtractor:
       some recipes may have stuff in their metadata folder, check for that
       to get it: `conan cache path --folder=metadata <recipe>/<version>`
     """
+    package_folder, ref = self.__cache.get_package_info(recipe, version)
+    if package_folder is None:
+      self.__logger.warning(f'could not find {recipe}/{version} in database')
+      return False
+    
+    self.__set_tried.add(f'{recipe}/{version}')
+
     out_folder = self.__gen_out_dir(recipe, version)
     num_written = 0
-
-    self.__set_tried.add(f'{recipe}/{version}')
 
     # for all files in this directory (recursive)
     for root, _, files in os.walk(package_folder):
@@ -175,8 +176,13 @@ class BitcodeExtractor:
         if self.__invoke_get_bc(potential_bin, out_file):
           num_written += 1
     
-    if num_written == 0:
+    if num_written == 0: # remove dir if we didn't get any bitcode
       self.__remove_out_dir(recipe, version)
+    else: # we write out the metadata stuff now
+      metadata_path = os.path.join(out_folder, 'metadata.json')
+      metadata_file = open(metadata_path, 'w+')
+      subprocess.call(['conan', 'list', ref, '--format=json', '-vquiet'], stdout=metadata_file)
+      metadata_file.close()
     
     return num_written > 0
   

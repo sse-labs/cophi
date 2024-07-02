@@ -14,7 +14,7 @@ parser.add_argument('--conan-index', '-i', default='/conan-center-index/', dest=
 parser.add_argument('--output', '-o', default='./bitcode/', dest='output',
                     help='which directory to output the metadata/bitcode to')
 
-parser.add_argument('--num-packages', '-n', required=True, dest='total',
+parser.add_argument('--num-packages', '-n', required=True, dest='total', type=int,
                     help='how many packages to install (with no errors and >0 bitcode files)')
 
 #####################
