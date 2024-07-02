@@ -36,6 +36,9 @@ fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(fh)
 
 def get_first_version(conf):
+  """Given a `config.yml` file for a recipe, extract the first version listed in it.
+  Raise an error if it has no versions.
+  """
   conf_file = open(conf, 'r')
   conf_parsed = yaml.safe_load(conf_file)
   conf_file.close()
@@ -49,24 +52,33 @@ def main():
   args = parser.parse_args()
   recipes = os.path.join(args.index, 'recipes')
 
-  num_tried = 0
   num_errored = 0
-  num_more_zero = 0
+  num_scraped = 0
 
   be = BitcodeExtractor(args.index, args.output, logger)
+
+  # go through all the recipes
   for recipe in os.listdir(recipes):
-    num_tried += 1
     try:
       version = get_first_version(os.path.join(recipes, recipe, 'config.yml'))
-      num_more_zero += be.extract_bitcode(recipe, version, check_version=False)
-      logger.info(f'{recipe}/{version} installed successfully with {num_more_zero} packages extracted')
+      if be.extract_bitcode(recipe, version, check_version=False):
+        num_scraped += 1
+        logger.info(f'{recipe}/{version} installed successfully')
+      else:
+        logger.info(f'{recipe}/{version} failed to install')
+        num_errored += 1
     except Exception as exp:
-      logger.warning(f'failure to extract bitcode from `{recipe}`: {exp}')
+      logger.error(f'unexpected error trying to extract bitcode from `{recipe}/{version}`: {exp}')
       num_errored += 1
 
-    logger.info(f'{num_tried} packages attempted, {num_errored} errored, {num_more_zero}/{args.total} successful with >0 binaries')
+    logger.info('going though dependencies')
+    n = be.extract_from_deps()
+    logger.info(f'{n} packages gotten from deps')
+    num_scraped += n
+
+    logger.info(f'{num_scraped} packages successful, {num_errored} packages errored')
     
-    if num_more_zero == args.total:
+    if num_scraped == args.total:
       break
 
 if __name__ == '__main__':

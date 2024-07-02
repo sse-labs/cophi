@@ -1,13 +1,13 @@
-import os, sqlite3, subprocess, yaml
+import os, subprocess, yaml
 from logging import Logger
+from scraper.package_cache import ConanCache
 
 class BitcodeExtractor:
   """Builds desired conan2 packages from a local conan-center clone 
   and extracts the LLVM bitcode from their binaries.
 
   TODO:
-    * add option dependencies get their bitcode extracted as well
-    * make it so extracted packages with 0 binaries get their directories deleted
+    * CHange cppstd to 17
     * add methods for clearing the local cache and pulling from the repo
     * extract more metadata (like what though?)
   """
@@ -29,18 +29,20 @@ class BitcodeExtractor:
     self.__index_dir = conan_index
     self.__out_dir = output_folder
     self.__logger = logger
-    # path to the sqlite3 database which holds the locations 
-    # of all installed packages in the local cache
-    self.__cache = BitcodeExtractor.__get_cache_path()
+    db_path = BitcodeExtractor.__get_cache_path()
+    # wrapper around db in local conan cache
+    self.__cache: ConanCache = ConanCache(db_path, logger)
+
+    # set of packages we've tried to install (strings should be `recipe/version`)
+    self.__set_tried: set[str] = set()
   
-  def extract_bitcode(self, recipe: str, version: str, cascade: bool = True, check_version: bool = True) -> int:
+  def extract_bitcode(self, recipe: str, version: str, check_version: bool = True) -> bool:
     """Attempts to install a a given package/version, and returns how many 
     packages were scraped for >0 bitcode files. Raises exeptions on failure.
     
     Args:
       recipe: The recipe to try and install.
       version: The specific version of the recipe.
-      cascade: whether to try and get bitcode from any installed dependencies.
       check_version: whether to check if the version exists before trying to install.
     
     Returns:
@@ -48,7 +50,6 @@ class BitcodeExtractor:
 
     Raises:
       IOError: If a necessary file wasn't found, or failure to make a file.
-      RuntimeError: If a necessary command failed, or something unexpected happened.
     """
     if check_version:
       # get the config.yml path which contains all versions for a package
@@ -59,11 +60,33 @@ class BitcodeExtractor:
         raise IOError(f'version {version} does not exist for recipe {recipe}')
       
     # run 'conan install ...' on the package. This function takes the lion's share of the time
-    self.__run_install(recipe, version)
+    if not self.__run_install(recipe, version):
+      return False
 
-    # if run_install() didn't throw, we get the directory where the binaries were installed and write them out
-    package_folder = self.__get_package_dir(recipe, version)
+    # if run_install() didn't fail, we get the directory where the binaries were installed and write them out
+    package_folder = self.__cache.get_package_dir(recipe, version)
+    if package_folder is None:
+      raise RuntimeError(f'could not find {recipe}/{version} in database even after successful installation')
     return self.__write_bitcode(package_folder, recipe, version)
+  
+  def extract_from_deps(self) -> int:
+    all_packages = self.__cache.get_package_set()
+
+    if all_packages is None:
+      self.__logger.warning('failed to get set of packages from cache')
+      return 0
+    
+    not_tried = all_packages.difference(self.__set_tried)
+
+    num_successful = 0
+    for package in not_tried:
+      (recipe, _, version) = package.partition('/')
+      package_folder = self.__cache.get_package_dir(recipe, version)
+      if self.__write_bitcode(package_folder, recipe, version):
+        num_successful += 1
+    
+    return num_successful
+
   
   def __get_conf_file_path(self, recipe: str) -> str:
     """Given a recipe name, return the path to its `config.yml` file (contains all its versions)."""
@@ -81,8 +104,8 @@ class BitcodeExtractor:
 
     return version in conf_parsed['versions'].keys()
 
-  def __run_install(self, recipe: str, version: str):
-    """Attempt to install the given recipe/version.
+  def __run_install(self, recipe: str, version: str) -> bool:
+    """Attempt to install the given recipe/version. Return whether successful
 
     Note:
       This function takes the *most* amount of time compared to anything else in this class.
@@ -111,11 +134,13 @@ class BitcodeExtractor:
                               # capture output for debug info on install failure
                               capture_output=True, text=True)
     if run_info.returncode != 0:
+      self.__logger.warning(f'conan install failed for {recipe}/{version}')
       self.__logger.debug('conan install output: \n\t\t' + run_info.stderr.replace('\n', '\n\t\t'))
-      raise RuntimeError('conan install failed')
+      return False
     self.__logger.info('conan install successful')
+    return True
   
-  def __write_bitcode(self, package_folder: str, recipe: str, version: str) -> int:
+  def __write_bitcode(self, package_folder: str, recipe: str, version: str) -> bool:
     """Given the build folder for a package, extract all possible bitcode files and 
     write them out to the output folder. Return how many bitcode files extracted.
 
@@ -125,7 +150,7 @@ class BitcodeExtractor:
       version: the version of the package we installed.
     
     Returns:
-      The number of bitcode files successfully extracted.
+      Whether or not >0 bitcode files were written out.
 
     TODO:
       some recipes may have stuff in their metadata folder, check for that
@@ -133,6 +158,8 @@ class BitcodeExtractor:
     """
     out_folder = self.__gen_out_dir(recipe, version)
     num_written = 0
+
+    self.__set_tried.add(f'{recipe}/{version}')
 
     # for all files in this directory (recursive)
     for root, _, files in os.walk(package_folder):
@@ -146,35 +173,10 @@ class BitcodeExtractor:
         if self.__invoke_get_bc(potential_bin, out_file):
           num_written += 1
     
-    return num_written
-  
-  def __get_package_dir(self, recipe: str, version: str) -> str:
-    """Gets the directory where all of the binaries are stored."""
-    if not os.path.isfile(self.__cache):
-      self.__logger.error(f'`cache.sqlite3` not found at: {self.__cache}')
-      raise IOError('cannot find `cache.sqlite3` in local conan cache')
+    if num_written == 0:
+      self.__remove_out_dir(recipe, version)
     
-    con = sqlite3.connect(self.__cache)
-    cur = con.cursor()
-
-    recipe_ref = f'{recipe}/{version}'
-    res = cur.execute("""SELECT path FROM packages 
-                            WHERE reference=?
-                            ORDER BY timestamp DESC""", (recipe_ref,)).fetchone()
-    
-    if res is None:
-      # dump database if we can't find recipe_ref
-      self.__logger.debug(f'contents of table packages in `cache.sqlite3`: \n{'\n'.join(cur.execute('SELECT * FROM packages').fetchall())}'.replace('\n', '\n\t\t'))
-      con.close()
-      raise RuntimeError(f'cannot find `{recipe_ref}` in local conan cache database')
-    con.close()
-
-    (rel_path,) = res
-    bin_dir = os.path.join(os.path.split(self.__cache)[0], rel_path, 'p')
-
-    if not os.path.isdir(bin_dir):
-      raise IOError(f'cannot find installation directory for {recipe}/{version}: `{bin_dir}`')
-    return bin_dir
+    return num_written > 0
   
   def __gen_out_dir(self, recipe: str, version: str) -> str:
     """Make out output directory for this specific package/version and return the path to it."""
@@ -182,6 +184,12 @@ class BitcodeExtractor:
     if 0 != subprocess.run(['mkdir', '-p', path]).returncode:
       raise IOError(f'failed to generate output directory: {path}')
     return path
+  
+  def __remove_out_dir(self, recipe: str, version: str):
+    recipe_dir = os.path.join(self.__out_dir, recipe)
+    version_dir = os.path.join(self.__out_dir, recipe, version)
+    if 0 != subprocess.run(['rmdir', version_dir, recipe_dir]).returncode:
+      self.__logger.warning(f'failed to delete empty directory: {version_dir}')
 
   def __invoke_get_bc(self, file: str, dest: str) -> bool:
     """Run get-bc on file and send it to dest. Return whether successful"""
