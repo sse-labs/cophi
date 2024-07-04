@@ -15,6 +15,7 @@ namespace Core {
 
   class Query {
     public:
+      virtual ~Query() = default;
       virtual std::vector<std::string> &getTypes() const = 0;
 
       // append to end of queryresult
@@ -22,7 +23,6 @@ namespace Core {
 
     protected:
       Query() = default;
-      ~Query() = default;
   };
 
   class Feature {

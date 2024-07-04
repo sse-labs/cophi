@@ -6,17 +6,18 @@
 #include <cassert>
 #include <functional>
 #include <map>
-// #include <optional>
 
-// helper
-#define STRING(a) #a
-
-// macro to register classes which implement query
-// Q must be the name of the class which implements Query
+/**
+ * A macro to register at compile time in the static singleton instance of QueryRegistry
+ * the classes which implement the Query interface. The macro argument 'A' must be the 
+ * *exact* name of the class which implements Query.
+ */
 #define REGISTER_QUERY(A) \
 namespace { \
-  bool dummy = Core::QueryRegistry::instance().registerImpl(STRING(A), [](){ return new Core::Queries::A(); }); \
-} \
+  bool dummy = Core::QueryRegistry::singleton().registerImpl(#A, [](){ \
+    return new Core::Queries::A(); \
+  }); \
+}
 
 
 namespace Core {
@@ -24,7 +25,7 @@ class QueryRegistry {
   typedef std::function<Query *()> Producer;
 
   public:
-    static QueryRegistry &instance() {
+    static QueryRegistry &singleton() {
       static QueryRegistry qr;
       return qr;
     }
@@ -43,7 +44,7 @@ class QueryRegistry {
     //   else
     //     return std::nullopt;
     // }
-    Query *getInstance(const std::string &name) const {
+    Query *getInstanceOf(const std::string &name) const {
       const auto it = _registry.find(name);
 
       if (it != _registry.end() && it->second)
@@ -53,6 +54,8 @@ class QueryRegistry {
     }
 
   private:
+    QueryRegistry() = default;
+    ~QueryRegistry() = default;
     std::map<std::string, Producer> _registry;
 };
 }
