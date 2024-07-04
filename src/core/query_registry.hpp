@@ -8,8 +8,8 @@
 #include <map>
 
 /**
- * A macro to register at compile time in the static singleton instance of QueryRegistry
- * the classes which implement the Query interface. The macro argument 'A' must be the 
+ * A macro to register all of the classes which implement the Query interface into the static 
+ * singleton instance of QueryRegistry at compile time. The macro argument 'A' must be the 
  * *exact* name of the class which implements Query.
  */
 #define REGISTER_QUERY(A) \
