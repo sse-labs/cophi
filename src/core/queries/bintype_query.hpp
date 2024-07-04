@@ -7,8 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace Core {
-  namespace Queries {
+namespace Core::Queries {
     class BinTypeQuery : public Query {
       public:
         BinTypeQuery();
@@ -18,7 +17,6 @@ namespace Core {
         std::vector<std::string> &getTypes() const override { return types; }
         void runOn(const Package &pkg, QueryResult * const res) const override;
     };
-  }
 }
 
 #endif  // DELPHICPP_BINTYPEQUERY_HPP_
