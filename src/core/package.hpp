@@ -3,6 +3,7 @@
 
 #include "core/binary.hpp"
 
+#include <unordered_map>
 #include <string>
 #include <vector>
 

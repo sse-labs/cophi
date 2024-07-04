@@ -15,7 +15,7 @@
 // Q must be the name of the class which implements Query
 #define REGISTER_QUERY(A) \
 namespace { \
-  bool registerA = Core::QueryRegistry::instance().registerImpl(STRING(A), [](){ return new Core::Queries::A(); }); \
+  bool dummy = Core::QueryRegistry::instance().registerImpl(STRING(A), [](){ return new Core::Queries::A(); }); \
 } \
 
 
