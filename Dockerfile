@@ -51,8 +51,8 @@ RUN apt-get update && \
               libclang-common-14-dev \
               libclang-14-dev \
               libclang-cpp14-dev \
-              clang-tidy-14 \
-              libclang-rt-14-dev
+              clang-tidy-14
+              #libclang-rt-14-dev
 
 # python packages for PhASAR
 RUN sudo apt-get -y install \
