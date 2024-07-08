@@ -1,7 +1,6 @@
 #include "core/binary.hpp"
 #include "core/package.hpp"
 
-#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -11,6 +10,9 @@ Package::Package(const std::string name, const std::string version, std::vector<
   
   bins = std::vector<Binary>();
   bins.reserve(bin_paths.size());
-  for (auto &path : bin_paths) bins.emplace_back(path);
+
+  for (auto &path : bin_paths) {
+    bins.emplace_back(path);
+  }
 }
 }

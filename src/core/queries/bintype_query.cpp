@@ -9,10 +9,6 @@
 REGISTER_QUERY(BinTypeQuery)
 
 namespace Core::Queries {
-  BinTypeQuery::BinTypeQuery(std::string name) : Query(name) {
-    std::cout << "hello i am bin type query. nice to meet you." << std::endl;
-  }
-
   void BinTypeQuery::runOn(const Package &pkg, QueryResult * const res) const {
     size_t num_bin = 0;
     size_t num_lib = 0;

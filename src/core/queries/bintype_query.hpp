@@ -10,7 +10,7 @@
 namespace Core::Queries {
   class BinTypeQuery : public Query {
     public:
-      BinTypeQuery(std::string name);
+      BinTypeQuery(std::string name) : Query(name) {  }
       ~BinTypeQuery() = default;
 
       static inline std::vector<std::string> types{"exe", "lib"};

@@ -7,8 +7,8 @@
 #include <memory>
 
 int main(int argc, char* argv[]) {
-  std::cout << "DelphiCpp!" << std::endl;
-  Core::Query *bintype = Core::QueryRegistry::singleton().getInstanceOf("BinTypeQuery");
+  std::cout << "DelphiCpp!\n" << std::endl;
+  auto bintype = std::unique_ptr<Core::Query>(Core::QueryRegistry::singleton().getInstanceOf("BinTypeQuery"));
 
   std::string prefix("../bitcode/libiconv/1.17/");
   std::vector<std::string> bins {prefix + "iconv.bc", prefix + "libcharset.a.bc", prefix + "libiconv.a.bc"};
@@ -20,6 +20,5 @@ int main(int argc, char* argv[]) {
   for (auto &res : results)
     std::cout << res.getUniqueId() << ": " << res.count << std::endl;
 
-  delete bintype;
   return EXIT_SUCCESS;
 }

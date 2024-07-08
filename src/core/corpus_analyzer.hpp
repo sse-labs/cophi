@@ -5,9 +5,9 @@
 #include "core/feature_query.hpp"
 
 namespace Core {
-class PackageAnalyzer {
+class CorpusAnalyzer {
   public:
-    PackageAnalyzer(Package &pkg) : _pkg(pkg) { }
+    CorpusAnalyzer(Package &pkg) : _pkg(pkg) { }
     void evaluateOn(Query &qry) const; // add result
   private:
     Package &_pkg;
