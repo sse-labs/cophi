@@ -8,15 +8,16 @@
 #include <vector>
 
 namespace Core::Queries {
-    class BinTypeQuery : public Query {
-      public:
-        BinTypeQuery();
-        ~BinTypeQuery() = default;
+  class BinTypeQuery : public Query {
+    public:
+      BinTypeQuery(std::string name);
+      ~BinTypeQuery() = default;
 
-        static inline std::vector<std::string> types{"exe", "lib"};
-        std::vector<std::string> &getTypes() const override { return types; }
-        void runOn(const Package &pkg, QueryResult * const res) const override;
-    };
+      static inline std::vector<std::string> types{"exe", "lib"};
+
+      std::vector<std::string> &getTypes() const override { return types; }
+      void runOn(const Package &pkg, QueryResult * const res) const override;
+  };
 }
 
 #endif  // DELPHICPP_BINTYPEQUERY_HPP_

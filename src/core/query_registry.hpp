@@ -15,7 +15,7 @@
 #define REGISTER_QUERY(A) \
 namespace { \
   bool dummy = Core::QueryRegistry::singleton().registerImpl(#A, [](){ \
-    return new Core::Queries::A(); \
+    return new Core::Queries::A(#A); \
   }); \
 }
 
@@ -36,14 +36,7 @@ class QueryRegistry {
       return true; // dummy
     }
 
-    // std::optional<Query*> getInstance(const std::string &name) const {
-    //   const auto it = _registry.find(name);
-
-    //   if (it != _registry.end() && it->second)
-    //     return std::make_optional((it->second)());
-    //   else
-    //     return std::nullopt;
-    // }
+    // returns null if name not recognized
     Query *getInstanceOf(const std::string &name) const {
       const auto it = _registry.find(name);
 

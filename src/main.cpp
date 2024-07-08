@@ -8,10 +8,18 @@
 
 int main(int argc, char* argv[]) {
   std::cout << "DelphiCpp!" << std::endl;
-  Core::Query *throwaway = Core::QueryRegistry::singleton().getInstanceOf("BinTypeQuery");
+  Core::Query *bintype = Core::QueryRegistry::singleton().getInstanceOf("BinTypeQuery");
 
-  Core::Package pkg("wow", "version me");
+  std::string prefix("../bitcode/libiconv/1.17/");
+  std::vector<std::string> bins {prefix + "iconv.bc", prefix + "libcharset.a.bc", prefix + "libiconv.a.bc"};
+  Core::Package pkg("libiconv", "1.17", bins);
 
-  delete throwaway;
+  Core::QueryResult results;
+  bintype->runOn(pkg, &results);
+
+  for (auto &res : results)
+    std::cout << res.getUniqueId() << ": " << res.count << std::endl;
+
+  delete bintype;
   return EXIT_SUCCESS;
 }

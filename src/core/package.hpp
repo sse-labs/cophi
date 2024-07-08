@@ -10,17 +10,15 @@
 namespace Core {
 class Package {
   public:
-    Package(const std::string name, const std::string version) : 
-                        _name(name),         _version(version) {  }
+    Package(const std::string name, const std::string version, std::vector<std::string> bin_paths);
 
-  private:
-    const std::string _name,
-                      _version;
-    std::vector<Binary> _bins;
+    const std::string name,
+                      version;
+    std::vector<Binary> bins;
 
-    std::unordered_map<std::string, std::string> _settings,
-                                                 _options;
-    std::vector<std::string> _requires;
+    std::unordered_map<std::string, std::string> settings,
+                                                 options;
+    std::vector<std::string> requires;
 };
 }
 

@@ -2,7 +2,7 @@
 #define DELPHICPP_PACKAGEANALYZER_HPP_
 
 #include "core/package.hpp"
-#include "core/query.hpp"
+#include "core/feature_query.hpp"
 
 namespace Core {
 class PackageAnalyzer {
