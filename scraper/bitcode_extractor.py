@@ -1,6 +1,7 @@
-import os, subprocess, yaml
+import json, os, subprocess, yaml
 from logging import Logger
 from scraper.package_cache import ConanCache
+from scraper.output_json import OutputJSON, get_metadata
 
 class BitcodeExtractor:
   """Builds desired conan2 packages from a local conan-center clone 
@@ -31,6 +32,9 @@ class BitcodeExtractor:
     db_path = BitcodeExtractor.__get_cache_path()
     # wrapper around db in local conan cache
     self.__cache: ConanCache = ConanCache(db_path, logger)
+
+    # our output
+    self.__output = OutputJSON()
 
     # set of packages we've tried to install (strings should be `recipe/version`)
     self.__set_tried: set[str] = set()
@@ -178,13 +182,15 @@ class BitcodeExtractor:
     
     if num_written == 0: # remove dir if we didn't get any bitcode
       self.__remove_out_dir(recipe, version)
-    else: # we write out the metadata stuff now
-      metadata_path = os.path.join(out_folder, 'metadata.json')
-      metadata_file = open(metadata_path, 'w+')
-      subprocess.call(['conan', 'list', ref, '--format=json', '-vquiet'], stdout=metadata_file)
-      metadata_file.close()
+      return False
+    # we write out the metadata stuff now
+    metadata_path = os.path.join(out_folder, 'metadata.json')
+    metadata_file = open(metadata_path, 'w+')
+    subprocess.call(['conan', 'list', ref, '--format=json', '-vquiet'], stdout=metadata_file)
+    metadata_file.close()
+    self.__add_package_to_json_output(recipe, version, out_folder)
     
-    return num_written > 0
+    return True
   
   def __gen_out_dir(self, recipe: str, version: str) -> str:
     """Make out output directory for this specific package/version and return the path to it."""
@@ -212,3 +218,30 @@ class BitcodeExtractor:
     """Return where the sqlite3 cache should be."""
     runinfo = subprocess.run(['conan', 'config', 'home'], capture_output=True, text=True)
     return os.path.join(runinfo.stdout.strip(), 'p', 'cache.sqlite3')
+  
+  # assumes `bin_folder` contains all the binaries + `metadata.json`
+  def __add_package_to_json_output(self, recipe: str, version: str, bin_folder: str):
+    metadata = {}
+    bins = []
+
+    # for all files in this directory (recursive)
+    for root, _, files in os.walk(bin_folder):
+      for file in files:
+        # get absolute path to file
+        abs_path = os.path.abspath(os.path.join(root, file))
+
+        if file == 'metadata.json':
+          fs = open(abs_path)
+          metadata = get_metadata(fs.read())
+          fs.close()
+        else:
+          bins.append({"bin_name": file.removesuffix('.bc'), "bin_path": abs_path})
+    
+    self.__output.add_package(recipe, version, bins, metadata)
+  
+
+  def dump_output_json(self):
+    output_file_path = os.path.join(self.__out_dir, 'output.json')
+    output_file = open(output_file_path, mode='w+')
+
+    json.dump(self.__output.packages, output_file, separators=(',', ': '), indent='\t')

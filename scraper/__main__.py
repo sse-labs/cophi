@@ -70,6 +70,8 @@ def main():
     except Exception as exp:
       logger.error(f'unexpected error trying to extract bitcode from `{recipe}/{version}`: {exp}')
       num_errored += 1
+    except KeyboardInterrupt:
+      break
 
     logger.info('going though dependencies')
     n = be.extract_from_deps()
@@ -80,6 +82,8 @@ def main():
     
     if num_scraped >= args.total:
       break
+  
+  be.dump_output_json()
 
 if __name__ == '__main__':
   main()
