@@ -1,7 +1,7 @@
 #ifndef DELPHICPP_PACKAGE_HPP_
 #define DELPHICPP_PACKAGE_HPP_
 
-#include "core/binary.hpp"
+#include <core/binary.hpp>
 
 #include <unordered_map>
 #include <string>

@@ -1,8 +1,8 @@
-#include "core/feature_query.hpp"
-#include "core/queries/bintype_query.hpp"
-#include "core/query_registry.hpp"
+#include <core/feature_query.hpp>
+#include <core/queries/bintype_query.hpp>
+#include <core/query_registry.hpp>
 
-#include "phasar.h"
+#include <phasar.h>
 
 #include <iostream>
 

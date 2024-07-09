@@ -1,7 +1,7 @@
 #ifndef DELPHICPP_FEATUREQUERY_HPP_
 #define DELPHICPP_FEATUREQUERY_HPP_
 
-#include "core/package.hpp"
+#include <core/package.hpp>
 
 #include <cassert>
 #include <string>

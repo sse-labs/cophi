@@ -1,10 +1,11 @@
-#include "core/package.hpp"
-#include "core/query_registry.hpp"
-#include "core/feature_query.hpp"
+#include <core/package.hpp>
+#include <core/query_registry.hpp>
+#include <core/feature_query.hpp>
 
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 int main(int argc, char* argv[]) {
   std::cout << "DelphiCpp!\n" << std::endl;

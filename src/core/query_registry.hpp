@@ -1,7 +1,7 @@
 #ifndef DELPHICPP_QUERYREGISTRY_HPP_
 #define DELPHICPP_QUERYREGISTRY_HPP_
 
-#include "core/feature_query.hpp"
+#include <core/feature_query.hpp>
 
 #include <cassert>
 #include <functional>

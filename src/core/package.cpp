@@ -1,5 +1,5 @@
-#include "core/binary.hpp"
-#include "core/package.hpp"
+#include <core/binary.hpp>
+#include <core/package.hpp>
 
 #include <string>
 #include <vector>
@@ -12,7 +12,7 @@ Package::Package(const std::string name, const std::string version, std::vector<
   bins.reserve(bin_paths.size());
 
   for (auto &path : bin_paths) {
-    bins.emplace_back(path);
+    bins.emplace_back("hello", path);
   }
 }
 }

@@ -1,8 +1,8 @@
 #ifndef DELPHICPP_PACKAGEANALYZER_HPP_
 #define DELPHICPP_PACKAGEANALYZER_HPP_
 
-#include "core/package.hpp"
-#include "core/feature_query.hpp"
+#include <core/package.hpp>
+#include <core/feature_query.hpp>
 
 namespace Core {
 class CorpusAnalyzer {

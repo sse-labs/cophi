@@ -1,8 +1,8 @@
 #ifndef DELPHICPP_BINTYPEQUERY_HPP_
 #define DELPHICPP_BINTYPEQUERY_HPP_
 
-#include "core/package.hpp"
-#include "core/feature_query.hpp"
+#include <core/package.hpp>
+#include <core/feature_query.hpp>
 
 #include <string>
 #include <vector>
