@@ -241,7 +241,7 @@ class BitcodeExtractor:
   
 
   def dump_output_json(self):
-    output_file_path = os.path.join(self.__out_dir, 'output.json')
+    output_file_path = os.path.join(self.__out_dir, 'packages.json')
     output_file = open(output_file_path, mode='w+')
 
     json.dump(self.__output.packages, output_file, separators=(',', ': '), indent='\t')
