@@ -30,20 +30,18 @@ namespace Core {
       const std::string _name;
   };
 
-  class Feature {
-    public:
+  struct Feature {
       Feature(const Query &query, const size_t type, const size_t count) :
-                    _query(query),       _type(type),       count(count) {
+                     query(query),        type(type),       count(count) {
         // if this is false, then `type` is not referring to a valid feature of `query`
         assert(type < query.getTypes().size());
       }
 
-      std::string getUniqueId() const { return _query.getName() + "/" + _query.getTypes()[_type]; }
+      std::string getUniqueId() const { return query.getName() + "/" + query.getTypes()[type]; }
 
+      const Query &query;
+      const size_t type;
       const size_t count;
-    private:
-      const Query &_query;
-      const size_t _type;
     // TODO: add Locations
   };
 }
