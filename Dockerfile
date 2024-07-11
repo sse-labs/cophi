@@ -124,3 +124,6 @@ WORKDIR /
 RUN git clone https://github.com/conan-io/conan-center-index
 RUN conan remote add conan-index /conan-center-index
 RUN conan profile detect
+
+# logging library for c++
+RUN sudo apt install -y libspdlog-dev

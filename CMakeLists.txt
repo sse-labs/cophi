@@ -24,6 +24,9 @@ find_package(phasar COMPONENTS llvm_ifdside REQUIRED)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
+# spdlog
+find_package(spdlog REQUIRED)
+
 ##################
 # Add Executable #
 ##################
@@ -35,7 +38,9 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_link_libraries(${PROJECT_NAME} PRIVATE phasar::llvm_ifdside nlohmann_json::nlohmann_json)
+target_link_libraries(${PROJECT_NAME} PRIVATE phasar::llvm_ifdside 
+                                              nlohmann_json::nlohmann_json 
+                                              spdlog::spdlog)
 
 # TODO: figure out how this works
 # install(TARGETS ${PROJECT_NAME}
