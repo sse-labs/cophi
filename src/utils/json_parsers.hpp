@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -18,13 +19,14 @@ Core::Package parsePackage(json &jpkg) {
   const std::string name = jpkg["pkg_name"];
   const std::string version = jpkg["pkg_version"];
 
-  Core::Package pkg(new std::string(name), new std::string(version));
+  Core::Package pkg(std::make_shared<std::string>(name), 
+                    std::make_shared<std::string>(version));
 
   // getting the binaries
   for (const json &e : jpkg["bins"]) {
     const std::string bin_name = e["bin_name"];
     const std::string bin_path = e["bin_path"];
-    pkg.bins.emplace_back(new std::string(bin_name), std::move(bin_path));
+    pkg.bins.emplace_back(std::make_shared<std::string>(bin_name), std::make_shared<std::string>(bin_path));
   }
 
   // TODO: grab the settings and stuff (ok to fail here)

@@ -16,7 +16,7 @@ bool Binary::reifySelf() {
   llvm::LLVMContext context;
   llvm::SMDiagnostic err;
 
-  _module = llvm::parseIRFile(path, err, context);
+  _module = llvm::parseIRFile(*path, err, context);
 
   // log if failed
 

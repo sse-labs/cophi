@@ -18,7 +18,7 @@ struct CorpusAnalyzerConfig {
 class CorpusAnalyzer {
   public:
     CorpusAnalyzer(const CorpusAnalyzerConfig &conf);
-    std::unique_ptr<FeatureMap> evaluate(const std::vector<Package> &pkgs) const;
+    std::unique_ptr<FeatureMap> evaluate(std::vector<Package> &pkgs) const;
   private:
     const CorpusAnalyzerConfig &_conf;
     std::vector<std::unique_ptr<Query>> _queries;

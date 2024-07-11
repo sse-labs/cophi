@@ -11,14 +11,15 @@
 namespace Core {
 class Package {
   public:
-    Package(std::string * const _name, std::string * const _version) :
-                           name(_name),            version(_version) {  }
+    Package(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
+                                    name(_name),                     version(_version) {  }
 
     // attempt to reify this specific package, return whether successful
     bool reifySelf();
+    bool isReified() const { return _reified; }
 
-    const std::shared_ptr<std::string> name,
-                                       version;
+    std::shared_ptr<std::string> name,
+                                 version;
     std::vector<Binary> bins;
 
     std::unordered_map<std::string, std::string> settings,

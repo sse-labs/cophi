@@ -9,16 +9,16 @@
 namespace Core {
 class Binary {
   public:
-    Binary(std::string *name, std::string path) : 
-          name(std::shared_ptr<std::string>(name)),       path(path) {  }
+    Binary(std::shared_ptr<std::string> name, std::shared_ptr<std::string> path) : 
+                                   name(name),                        path(path) {  }
 
     // cache the internal llvm module, basically
     bool reifySelf();
     // hand out copy of the module
     std::unique_ptr<llvm::Module> getModuleCopy() const;
 
-    const std::shared_ptr<std::string> name;
-    const std::string path;
+    std::shared_ptr<std::string> name;
+    std::shared_ptr<std::string> path;
 
   private:
     std::unique_ptr<llvm::Module> _module = nullptr;
