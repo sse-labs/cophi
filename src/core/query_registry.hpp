@@ -37,11 +37,11 @@ class QueryRegistry {
     }
 
     // returns null if name not recognized
-    Query *getInstanceOf(const std::string &name) const {
+    std::unique_ptr<Query> getInstanceOf(const std::string &name) const {
       const auto it = _registry.find(name);
 
       if (it != _registry.end() && it->second)
-        return (it->second)();
+        return std::unique_ptr<Query>((it->second)());
       else
         return nullptr;
     }

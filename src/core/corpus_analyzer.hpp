@@ -2,15 +2,26 @@
 #define DELPHICPP_PACKAGEANALYZER_HPP_
 
 #include <core/package.hpp>
+#include <core/feature_map.hpp>
 #include <core/feature_query.hpp>
 
+#include <memory>
+#include <unordered_map>
+#include <vector>
+
 namespace Core {
+
+struct CorpusAnalyzerConfig {
+  std::vector<std::string> query_subset;
+};
+
 class CorpusAnalyzer {
   public:
-    CorpusAnalyzer(Package &pkg) : _pkg(pkg) { }
-    void evaluateOn(Query &qry) const; // add result
+    CorpusAnalyzer(const CorpusAnalyzerConfig &conf);
+    std::unique_ptr<FeatureMap> evaluate(const std::vector<Package> &pkgs) const;
   private:
-    Package &_pkg;
+    const CorpusAnalyzerConfig &_conf;
+    std::vector<std::unique_ptr<Query>> _queries;
 };
 }
 

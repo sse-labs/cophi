@@ -3,6 +3,7 @@
 
 #include <core/binary.hpp>
 
+#include <memory>
 #include <unordered_map>
 #include <string>
 #include <vector>
@@ -10,15 +11,22 @@
 namespace Core {
 class Package {
   public:
-    Package(const std::string name, const std::string version, std::vector<std::string> bin_paths);
+    Package(std::string * const _name, std::string * const _version) :
+                           name(_name),            version(_version) {  }
 
-    const std::string name,
-                      version;
+    // attempt to reify this specific package, return whether successful
+    bool reifySelf();
+
+    const std::shared_ptr<std::string> name,
+                                       version;
     std::vector<Binary> bins;
 
     std::unordered_map<std::string, std::string> settings,
                                                  options;
     std::vector<std::string> requires;
+
+  private:
+    bool _reified = false;
 };
 }
 

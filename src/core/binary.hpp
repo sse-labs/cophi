@@ -3,17 +3,25 @@
 
 #include <llvm/IR/Module.h>
 
+#include <memory>
 #include <string>
 
 namespace Core {
 class Binary {
   public:
-    Binary(std::string name, std::string path) : 
-                  name(name),       path(path) {  }
+    Binary(std::string *name, std::string path) : 
+          name(std::shared_ptr<std::string>(name)),       path(path) {  }
 
-    const std::string name;
+    // cache the internal llvm module, basically
+    bool reifySelf();
+    // hand out copy of the module
+    std::unique_ptr<llvm::Module> getModuleCopy() const;
+
+    const std::shared_ptr<std::string> name;
     const std::string path;
-    // llvm::IRModule _module;
+
+  private:
+    std::unique_ptr<llvm::Module> _module = nullptr;
 };
 }
 
