@@ -25,10 +25,10 @@ class Query {
     virtual void runOn(const Package &pkg, QueryResult * const res) const = 0;
 
   protected:
-    Query(std::string &name) : _name(name) {  }
+    Query(std::string name) : _name(name) {  }
 
   private:
-    const std::string &_name;
+    const std::string _name;
 };
 
 struct Location {
@@ -49,8 +49,7 @@ struct Feature {
                    query(_query),        type(type),       count(count),              locs(std::move(_locs)) {
       // if this is false, then `type` is not referring to a valid feature of `query`
       assert(type < query.getTypes().size());
-
-      // 
+      spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId()); 
     }
 
     std::string getUniqueId() const { return query.getName() + "/" + query.getTypes()[type]; }

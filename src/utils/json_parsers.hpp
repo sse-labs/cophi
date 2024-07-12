@@ -4,6 +4,7 @@
 #include <core/binary.hpp>
 #include <core/package.hpp>
 
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
@@ -65,21 +66,20 @@ bool parsePackages(const std::string &pkgs_file, std::vector<Core::Package> * co
   std::ifstream ifs(pkgs_file);
 
   if (!ifs.is_open()) {
-    // log
+    spdlog::error("could not open file `{}` to get packages information", pkgs_file);
     return false;
   }
 
   try {
     json arr = json::parse(ifs);
 
-    //std::vector<Core::Package> res;
     for (auto &elem : arr) {
       ret->push_back(parsePackage(elem));
     }
 
     return true;
   } catch (const json::exception &e) {
-    // log
+    spdlog::error("failed to parse packages from json: id={:d}, what=`{}`", e.id, e.what());
     return false;
   }
 }

@@ -20,7 +20,8 @@ void BinTypeQuery::runOn(const Package &pkg, QueryResult * const res) const {
 
   for (auto &bin : pkg.bins) {
     std::vector<std::string> entries {"main"};
-
+    
+    // TODO: this line is segfaulting/throwing/killing the process
     psr::HelperAnalyses HA(bin.getModuleCopy(), entries);
 
     const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");

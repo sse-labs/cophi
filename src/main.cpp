@@ -14,21 +14,21 @@ int main(int argc, char* argv[]) {
   std::cout << "Welcome to DelphiCpp!\n" << std::endl;
 
   Utils::initializeLogger();
-  spdlog::info("Logger Initialized");
+  spdlog::info("logger initialized");
 
   Core::CorpusAnalyzerConfig conf = {{"BinTypeQuery"}};
-  spdlog::info("Initilizing CorpusAnalyzer");
+  spdlog::info("initilizing CorpusAnalyzer...");
   Core::CorpusAnalyzer ca(conf);
-  spdlog::info("CorpusAnalyzer Initialized");
+  spdlog::info("CorpusAnalyzer initialized.");
 
   std::vector<Core::Package> pkgs;
-  spdlog::info("Parsing Packages");
+  spdlog::info("parsing packages...");
   Utils::parsePackages("../bitcode/packages.json", &pkgs);
-  spdlog::info("Packages Parsed");
+  spdlog::info("packages parsed.");
 
-  spdlog::info("Evaluating Packages");
+  spdlog::info("evaluating packages...");
   ca.evaluate(pkgs)->testPrint();
-  spdlog::info("Packages Evaluated");
+  spdlog::info("packages evaluated.");
 
   return EXIT_SUCCESS;
 }

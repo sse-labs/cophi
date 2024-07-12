@@ -6,11 +6,25 @@
 
 namespace Core {
   bool Package::reifySelf() {
-    bool successful = true;
+    spdlog::debug("attempting to reify Package `{}/{}`", *name, *version);
+    _reified = true;
     for (auto &bin : bins) {
-      successful &= bin.reifySelf();
+
+      bool ret = bin.reifySelf();
+
+      if (!ret) {
+        spdlog::warn("failed to reify Binary `{}` in Package `{}/{}`", *bin.name, *name, *version);
+      }
+
+      _reified &= ret;
     }
-    _reified = successful;
+
+    if (_reified) {
+      spdlog::debug("successfully reified Package `{}/{}`", *name, *version);
+    } else {
+      spdlog::warn("failed to reify Package `{}/{}`", *name, *version);
+    }
+
     return _reified;
   }
 }

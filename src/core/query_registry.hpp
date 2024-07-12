@@ -26,6 +26,9 @@ class QueryRegistry {
 
   public:
     static QueryRegistry &singleton() {
+
+      spdlog::trace("handing out QueryRegistry singleton");
+
       static QueryRegistry qr;
       return qr;
     }

@@ -3,6 +3,8 @@
 
 #include <core/binary.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -12,7 +14,9 @@ namespace Core {
 class Package {
   public:
     Package(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
-                                    name(_name),                     version(_version) {  }
+                                    name(_name),                     version(_version) {
+      spdlog::debug("successfully constructed Package `{}/{}`", *name, *version);
+    }
 
     // attempt to reify this specific package, return whether successful
     bool reifySelf();
