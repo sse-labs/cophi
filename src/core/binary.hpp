@@ -26,7 +26,8 @@ class Binary {
     std::shared_ptr<std::string> name;
     std::shared_ptr<std::string> path;
 
-  //private:
+  private:
+    std::unique_ptr<llvm::LLVMContext> _context;
     std::unique_ptr<llvm::Module> _module = nullptr;
 };
 }

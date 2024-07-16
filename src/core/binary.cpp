@@ -15,11 +15,10 @@ bool Binary::reifySelf() {
     spdlog::warn("called `reifySelf()` on already reified Binary {}", *name);
     return true;
   }
-
-  llvm::LLVMContext context;
   llvm::SMDiagnostic err;
 
-  _module = llvm::parseIRFile(*path, err, context);
+  _context = std::make_unique<llvm::LLVMContext>();
+  _module = llvm::parseIRFile(*path, err, *_context);
 
   bool ret = _module != nullptr;
   if (!ret) {

@@ -10,9 +10,10 @@
 
 namespace Core {
 // need to forward declare it
-class Feature;
+struct Feature;
 
-typedef std::vector<Feature> QueryResult;
+// TODO: move inside Query and rename to Result
+typedef std::vector<struct Feature> QueryResult;
 
 class Query {
   public:

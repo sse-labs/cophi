@@ -43,7 +43,7 @@ class FeatureMap {
       for (const auto &[k, v] : _M) {
         std::cout << k << "\n";
         for (const auto &e : v) {
-          std::cout << "\t\tPackage " << e.pkg_name << "/" << e.pkg_version << ", Binary: " << e.bin_name << "\n";
+          std::cout << "\t\tPackage " << *e.pkg_name << "/" << *e.pkg_version << ", Binary: " << *e.bin_name << "\n";
         }
         std::cout << std::endl;
       }

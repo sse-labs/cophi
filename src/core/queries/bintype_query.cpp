@@ -12,17 +12,14 @@ REGISTER_QUERY(BinTypeQuery)
 namespace Core::Queries {
 
 void BinTypeQuery::runOn(const Package &pkg, QueryResult * const res) const {
-  size_t num_bin = 0;
-  size_t num_lib = 0;
-
   std::vector<Location> execs;
   std::vector<Location> libs;
 
   for (auto &bin : pkg.bins) {
     std::vector<std::string> entries {"main"};
     
-    // TODO: this line is segfaulting/throwing/killing the process
-    psr::HelperAnalyses HA(bin.getModuleCopy(), entries);
+    auto ptr = bin.getModuleCopy();
+    psr::HelperAnalyses HA(std::move(ptr), entries);
 
     const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");
 
