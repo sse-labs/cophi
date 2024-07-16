@@ -45,21 +45,50 @@ struct Location {
   std::shared_ptr<std::string> bin_name;
 };
 
-struct Feature {
-    Feature(const Query &_query, const size_t type, const size_t count, const std::vector<Location> &_locs) :
-                   query(_query),        type(type),       count(count),              locs(std::move(_locs)) {
+struct FeatureID {
+  public:
+    FeatureID(const Query &query, const size_t type) {
       // if this is false, then `type` is not referring to a valid feature of `query`
       assert(type < query.getTypes().size());
-      spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId()); 
+
+      _query_name = query.getName();
+      _query_type = query.getTypes()[type];
     }
 
-    std::string getUniqueId() const { return query.getName() + "/" + query.getTypes()[type]; }
+    const std::string &name() const {return _query_name; }
+    const std::string &type() const {return _query_type; }
+    std::string toString() const { return _query_name + "/" + _query_type; }
 
-    const Query &query;
-    const size_t type;
-    const size_t count;
-    const std::vector<Location> locs;
+    bool operator==(const FeatureID &other) const {
+      return _query_name == other._query_name
+          && _query_type == other._query_type;
+    }
+ 
+  private:
+    std::string _query_name;
+    std::string _query_type;
+};
+
+struct Feature {
+  Feature(const Query &query, const size_t type, const std::vector<Location> &_locs)
+        : fid(query, type), locs(std::move(_locs)) {
+    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
+  }
+
+  const FeatureID &getUniqueId() const { return fid; }
+
+  const FeatureID fid;
+  const std::vector<Location> locs;
 };
 }
+
+// for hashing FeatureID
+template<>
+struct std::hash<Core::FeatureID> {
+  std::size_t operator()(const Core::FeatureID &fid) const {
+    return (std::hash<std::string>()(fid.name())
+        ^ ((std::hash<std::string>()(fid.type()) << 1) >> 1));
+  }
+};
 
 #endif  // DELPHICPP_FEATUREQUERY_HPP_

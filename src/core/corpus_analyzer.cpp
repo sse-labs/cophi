@@ -7,7 +7,7 @@
 
 namespace Core {
 
-CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) : _conf(conf) {
+CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
   _queries = std::vector<std::unique_ptr<Query>>();
   const QueryRegistry &registry = QueryRegistry::singleton();
 
@@ -75,8 +75,9 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
       spdlog::debug("got {} features from running query `{}` on package `{}/{}`", results.size(), query->getName(), *pkg.name, *pkg.version);
 
       for (const auto &res : results) {
-        spdlog::debug("extracted {} locations from feature `{}`", res.locs.size(), res.getUniqueId());
-        ret->insert(res.getUniqueId(), std::move(res.locs));
+        const auto id = res.getUniqueId();
+        spdlog::debug("extracted {} locations from feature `{}`", res.locs.size(), id.toString());
+        ret->insert(std::move(res));
       }
     }
   }

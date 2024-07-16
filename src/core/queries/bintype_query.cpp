@@ -30,8 +30,8 @@ void BinTypeQuery::runOn(const Package &pkg, QueryResult * const res) const {
     }
   }
 
-  if (execs.size() > 0) res->emplace_back(*static_cast<Query const *>(this), 0, execs.size(), execs);
-  if (libs.size() > 0) res->emplace_back(*static_cast<Query const *>(this), 1, libs.size(), libs);
+  if (execs.size() > 0) res->emplace_back(*static_cast<Query const *>(this), 0, execs);
+  if (libs.size() > 0) res->emplace_back(*static_cast<Query const *>(this), 1, libs);
 }
 
 }
