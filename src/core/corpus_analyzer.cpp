@@ -67,17 +67,17 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
   spdlog::info("starting to run queries...");
   for (const auto &query: _queries) {
     for (const auto &pkg : pkgs) {
-      spdlog::trace("running query `{}` on package `{}{}`", query->getName(), *pkg.name, *pkg.version);
+      spdlog::trace("running query `{}` on package `{}/{}`", query->getName(), *pkg.name, *pkg.version);
 
       QueryResult results;
       query->runOn(pkg, &results);
 
       spdlog::debug("got {} features from running query `{}` on package `{}/{}`", results.size(), query->getName(), *pkg.name, *pkg.version);
 
-      for (const auto &res : results) {
+      for (const Feature &res : results) {
         const auto id = res.getUniqueId();
         spdlog::debug("extracted {} locations from feature `{}`", res.locs.size(), id.toString());
-        ret->insert(std::move(res));
+        ret->insert(pkg.getID(), res);
       }
     }
   }

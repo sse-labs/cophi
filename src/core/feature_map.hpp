@@ -2,65 +2,83 @@
 #define DELPHICPP_FEATUREMAP_HPP_
 
 #include <core/feature_query.hpp>
+#include <core/package.hpp>
+#include <core/filter.hpp>
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-
-
-#include <iostream> // remove
-#include <iomanip>  // remove
 
 namespace Core {
 
-// add struct/class that represents a Filter
+// need to forward declare class
+class FilteredFM;
 
 class FeatureMap {
+  typedef std::unordered_map<PackageID, std::unordered_set<Feature>> InternalMap;
   public:
     FeatureMap() = default;
     //FeatureMap(csv file); // implement sometime
 
-    // method to write to csv
+    // method to write to json
     bool writeToJSON(const std::string &path) const;
     
 
-    // if kv mapping doesn't exist, creates it, otherwise appends locs
-    // to _M[key]
-    void insert(const Feature &ftr);
+    // if kv mapping doesn't exist, creates it, otherwise adds ftr to _M[pkgid]
+    void insert(const PackageID pkgid, const Feature &ftr);
     //void insert(const std::string &key, const Location &loc);
 
-    bool containsFeature(const FeatureID &id) const noexcept;
+    bool containsPackage(const PackageID &id) const noexcept;
 
-    // // add exception to throw if key not there
-    // const std::vector<Location> &get(const std::string &key) const;
-
-    // add method for filtering
-
-
-    // need iterator
-
-
-  
-    void testPrint() {
-      // for (const auto &[k, v] : _M) {
-      //   std::cout << "Query: " << k << "\n";
-      //   for (const auto &e : v) {
-      //     std::cout << "\tFeature Type: " << e.first << "\n";
-
-      //     for (const auto &loc : e.second) {
-      //       const auto pkg = *loc.pkg_name + "/" + *loc.pkg_version;
-      //       std::cout << "\t\t" << std::setw(20) << "Package:" << " Binary:\n"
-      //                 << "\t\t" << std::setw(20) << pkg        << *loc.bin_name << "\n";
-      //     }
-      //   }
-      //   std::cout << std::endl;
-      // }
-    }
-
+    // apply filters to this feature map, this affects the iterator it produces
+    FilteredFM filter(std::vector<Filter> filters);
 
   private:
-    // map from features to where those features have been located
-    std::unordered_map<FeatureID, std::vector<Location>> _M;
+    // map from packages to the features found in those packages
+    InternalMap _M;
+    friend class FilteredFM;
+};
+
+// produced by feature map after giving it filters - provides an
+// iterator to go over the filtered results
+class FilteredFM {
+  public:
+
+    FilteredFM(FeatureMap &fm, std::vector<Filter> filters) :
+              _fm(fm), _filters(std::move(filters)) { }
+
+    // iterator stuff
+    class iterator {
+      public:
+        iterator(const FeatureMap &fm, const FeatureMap::InternalMap::iterator it, const std::vector<Filter> &filters) :
+                       _fm(fm), _it(it), _filters(filters) {
+          while (!currentSatisfies()) _it++;
+        }
+
+        // the value type of the iterator
+        typedef std::pair<const PackageID&, std::vector<const Feature *>> package_features;
+
+        package_features operator*();
+        iterator &operator++();
+
+        bool operator!=(const iterator& other) { return other._it != _it; }
+
+      private:
+        // returns whether _it is pointing to a valid element (in terms of _filters)
+        bool currentSatisfies() const;
+
+        const FeatureMap &_fm;
+        FeatureMap::InternalMap::iterator _it;
+        const std::vector<Filter> &_filters;
+    };
+
+    iterator begin() const;
+    iterator end() const;
+
+  private:
+    FeatureMap &_fm;
+    std::vector<Filter> _filters;
 };
 
 }

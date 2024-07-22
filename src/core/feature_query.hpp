@@ -6,6 +6,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 
 namespace Core {
@@ -13,7 +14,7 @@ namespace Core {
 struct Feature;
 
 // TODO: move inside Query and rename to Result
-typedef std::vector<struct Feature> QueryResult;
+typedef std::unordered_set<struct Feature> QueryResult;
 
 class Query {
   public:
@@ -55,14 +56,12 @@ struct FeatureID {
       _query_type = query.getTypes()[type];
     }
 
+    FeatureID(const std::string &query, const std::string type) : 
+             _query_name(query), _query_type(type) { }
+
     const std::string &name() const {return _query_name; }
     const std::string &type() const {return _query_type; }
     std::string toString() const { return _query_name + "/" + _query_type; }
-
-    bool operator==(const FeatureID &other) const {
-      return _query_name == other._query_name
-          && _query_type == other._query_type;
-    }
  
   private:
     std::string _query_name;
@@ -75,19 +74,30 @@ struct Feature {
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
+  Feature(const FeatureID fid)
+        : fid(fid), locs({}) {
+    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
+  }
+
   const FeatureID &getUniqueId() const { return fid; }
+
+  bool operator==(const Feature &other) const {
+    return fid.name() == other.fid.name() &&
+           fid.type() == other.fid.type();
+  }
 
   const FeatureID fid;
   const std::vector<Location> locs;
 };
 }
 
-// for hashing FeatureID
+// for hashing PackageID
 template<>
-struct std::hash<Core::FeatureID> {
-  std::size_t operator()(const Core::FeatureID &fid) const {
+struct std::hash<Core::Feature> {
+  std::size_t operator()(const Core::Feature &ftr) const {
+    const auto fid = ftr.fid;
     return (std::hash<std::string>()(fid.name())
-        ^ ((std::hash<std::string>()(fid.type()) << 1) >> 1));
+         ^ (std::hash<std::string>()(fid.type()) << 1));
   }
 };
 

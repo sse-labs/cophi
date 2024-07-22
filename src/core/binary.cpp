@@ -33,7 +33,7 @@ std::unique_ptr<llvm::Module> Binary::getModuleCopy() const {
     spdlog::warn("`getModuleCopy()` from Binary `{}` handed out nullptr", *name);
     return nullptr;
   }
-  spdlog::debug("cloning module for Binary {}...", *name);
+  spdlog::debug("cloning module for Binary `{}`...", *name);
   return llvm::CloneModule(*_module);
 }
 

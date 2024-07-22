@@ -1,8 +1,8 @@
-#ifndef DELPHICPP_PACKAGESPARSER_HPP_
-#define DELPHICPP_PACKAGESPARSER_HPP_
-
+#include <utils/json_utils.hpp>
 #include <core/binary.hpp>
 #include <core/package.hpp>
+#include <core/feature_query.hpp>
+#include <core/feature_map.hpp>
 
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
@@ -16,7 +16,9 @@
 using json = nlohmann::json;
 namespace Utils {
 
-Core::Package parsePackage(json &jpkg) {
+// HELPERS
+
+static Core::Package parsePackage(json &jpkg) {
   const std::string name = jpkg["pkg_name"];
   const std::string version = jpkg["pkg_version"];
 
@@ -62,14 +64,38 @@ Core::Package parsePackage(json &jpkg) {
   return pkg;
 }
 
-bool parsePackages(const std::string &pkgs_file, std::vector<Core::Package> * const ret) {
-  std::ifstream ifs(pkgs_file);
+static json convertLocs(const std::vector<Core::Location> &locs) {
+  json arr = json::array();
+  for (const auto &loc : locs) {
+    json jloc = json::object();
+    jloc["package_name"] = *loc.pkg_name;
+    jloc["package_version"] = *loc.pkg_version;
+    jloc["binary_name"] = *loc.bin_name;
 
-  if (!ifs.is_open()) {
-    spdlog::error("could not open file `{}` to get packages information", pkgs_file);
+    arr.push_back(jloc);
+  }
+  return arr;
+}
+
+
+// END HELPERS
+
+bool parseCorpusAnalyzerConfig(std::ifstream &ifs, std::vector<std::string> queries) {
+  try {
+    json arr = json::parse(ifs);
+
+    for (auto &elem : arr) {
+      queries.push_back(elem);
+    }
+
+    return true;
+  } catch (const json::exception &e) {
+    spdlog::error("failed to parse packages from json: id={:d}, what=`{}`", e.id, e.what());
     return false;
   }
+}
 
+bool parsePackages(std::ifstream &ifs, std::vector<Core::Package> * const ret) {
   try {
     json arr = json::parse(ifs);
 
@@ -84,6 +110,19 @@ bool parsePackages(const std::string &pkgs_file, std::vector<Core::Package> * co
   }
 }
 
+std::string serializeFeatureMap(const Core::FeatureMap &fm) {
+  // json arr = json::array();
+  // // iterating through the feature id / locations pairs
+  // for (const auto &[k, v] : fm) {
+  //   json fid = json::object();
+  //   fid["query_name"] = k.name();
+  //   fid["feature_type"] = k.type();
+  //   fid["locations"] = convertLocs(v);
+
+  //   arr.push_back(fid);
+  // }
+
+  return "TODO"; //arr.dump(1, '\t');
 }
 
-#endif  // DELPHICPP_PACKAGESPARSER_HPP_
+}
