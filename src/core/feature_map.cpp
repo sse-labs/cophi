@@ -19,29 +19,12 @@ void FeatureMap::insert(const PackageID pkgid, const Feature &ftr) {
   }
 }
 
-// const std::vector<Location> &FeatureMap::get(const std::string &key) const {
-//   if (!this->containsFeature(ke y)) {
-//     spdlog::warn("attempted to get nonexistant feature `{}` from FeatureMap", key);
-//     // throw something maybe...?
-//   }
-
-//   return _M.at(key);
-// }
-
 bool FeatureMap::containsPackage(const PackageID &id) const noexcept {
   return _M.find(id) != _M.end();
 }
 
 bool FeatureMap::writeToJSON(const std::string &path) const {
-  // std::ofstream of(path);
-
-  // if (!of) {
-  //   spdlog::error("unable to write `FeatureMap` to file `{}`", path);
-  //   return false;
-  // }
-
-  // of << Utils::serializeFeatureMap(*this);
-  // of.close();
+  // TODO
   return true;
 }
 

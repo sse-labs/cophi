@@ -13,18 +13,21 @@ namespace Core {
 // need to forward declare it
 struct Feature;
 
-// TODO: move inside Query and rename to Result
-typedef std::unordered_set<struct Feature> QueryResult;
-
+// Interface
+// represents an operation which takes a package and produces
+// a set of features regarding that package
 class Query {
   public:
+    typedef std::unordered_set<struct Feature> Result;
+
     virtual ~Query() = default;
 
+    // returns name of concrete class
     virtual std::string getName() const { return _name; }
     virtual std::vector<std::string> &getTypes() const = 0;
 
-    // append to end of queryresult
-    virtual void runOn(const Package &pkg, QueryResult * const res) const = 0;
+    // takes the package and adds any features found to the set of features (res)
+    virtual void runOn(const Package &pkg, Result * const res) const = 0;
 
   protected:
     Query(std::string name) : _name(name) {  }
@@ -33,11 +36,14 @@ class Query {
     const std::string _name;
 };
 
+// represents where a feature was found
+// right now, just holds info on which binary the feature was found in
+// might be good to add more specific info in the future (like specific method, instruction)
 struct Location {
   Location(const std::shared_ptr<std::string> &name,
            const std::shared_ptr<std::string> &vers,
            const std::shared_ptr<std::string> &bin) :
-               pkg_name(name), pkg_version(vers),    bin_name(bin) {  }
+               pkg_name(name), pkg_version(vers), bin_name(bin) {  }
   
   Location &operator=(const Location&) = default;
 
@@ -46,6 +52,7 @@ struct Location {
   std::shared_ptr<std::string> bin_name;
 };
 
+// unique id for a feature
 struct FeatureID {
   public:
     FeatureID(const Query &query, const size_t type) {
@@ -68,6 +75,11 @@ struct FeatureID {
     std::string _query_type;
 };
 
+// a feature consists of query + type. the query tells you the general scope of
+// what information the feature will tell you, and the specific type is the specific information
+//
+// example: a feature with query "BinTypeQuery" is about the binary types of the binaries in a
+//          package. it then either has the type "exe" or "lib", telling you the specific binary type
 struct Feature {
   Feature(const Query &query, const size_t type, const std::vector<Location> &_locs)
         : fid(query, type), locs(std::move(_locs)) {
@@ -86,7 +98,10 @@ struct Feature {
            fid.type() == other.fid.type();
   }
 
+  // holds the query+type info
   const FeatureID fid;
+
+  // all the locations where this feature was found in a specific package
   const std::vector<Location> locs;
 };
 }

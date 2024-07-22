@@ -11,7 +11,7 @@ REGISTER_QUERY(BinTypeQuery)
 
 namespace Core::Queries {
 
-void BinTypeQuery::runOn(const Package &pkg, QueryResult * const res) const {
+void BinTypeQuery::runOn(const Package &pkg, Query::Result * const res) const {
   std::vector<Location> execs;
   std::vector<Location> libs;
 

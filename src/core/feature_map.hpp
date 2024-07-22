@@ -15,6 +15,7 @@ namespace Core {
 // need to forward declare class
 class FilteredFM;
 
+// map from packages to the features it contains
 class FeatureMap {
   typedef std::unordered_map<PackageID, std::unordered_set<Feature>> InternalMap;
   public:
@@ -29,26 +30,29 @@ class FeatureMap {
     void insert(const PackageID pkgid, const Feature &ftr);
     //void insert(const std::string &key, const Location &loc);
 
+    // does the map contain a package with this id?
     bool containsPackage(const PackageID &id) const noexcept;
 
-    // apply filters to this feature map, this affects the iterator it produces
+    // apply filters to this feature map, give back an object, which when
+    // iterated over, only shows the packages with the desired features
     FilteredFM filter(std::vector<Filter> filters);
 
   private:
     // map from packages to the features found in those packages
     InternalMap _M;
+    // FilteredFM need to have access to _M to iterate over it
     friend class FilteredFM;
 };
 
-// produced by feature map after giving it filters - provides an
-// iterator to go over the filtered results
+// produced by feature map after giving it filters - the only thing it does 
+// is provide an iterator over the feature map with filters applied
 class FilteredFM {
   public:
 
     FilteredFM(FeatureMap &fm, std::vector<Filter> filters) :
               _fm(fm), _filters(std::move(filters)) { }
 
-    // iterator stuff
+    // the iterator over the filtered results
     class iterator {
       public:
         iterator(const FeatureMap &fm, const FeatureMap::InternalMap::iterator it, const std::vector<Filter> &filters) :
@@ -59,9 +63,9 @@ class FilteredFM {
         // the value type of the iterator
         typedef std::pair<const PackageID&, std::vector<const Feature *>> package_features;
 
+        // the methods needed for an iterator
         package_features operator*();
         iterator &operator++();
-
         bool operator!=(const iterator& other) { return other._it != _it; }
 
       private:

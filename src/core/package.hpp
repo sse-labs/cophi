@@ -24,6 +24,7 @@ struct PackageID {
   }
 };
 
+// a container for (llvm bitcode) binaries + metadata about them
 class Package {
   public:
     Package(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
@@ -32,16 +33,19 @@ class Package {
     }
 
     // attempt to reify this specific package, return whether successful
+    // reification is said to be successful if *all* of the binaries are able
+    // to be reified
     bool reifySelf();
     bool isReified() const { return _reified; }
 
+    // returns id used to identify package
     PackageID getID() const { return PackageID(name, version); }
-
 
     std::shared_ptr<std::string> name,
                                  version;
     std::vector<Binary> bins;
 
+    // this is all just metadata that conan hands out
     std::unordered_map<std::string, std::string> settings,
                                                  options;
     std::vector<std::string> requires;
@@ -52,7 +56,7 @@ class Package {
 
 }
 
-// for hashing PackageID
+// for hashing PackageID so we can use it as a key in a map
 template<>
 struct std::hash<Core::PackageID> {
   std::size_t operator()(const Core::PackageID &pid) const {

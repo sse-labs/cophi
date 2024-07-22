@@ -47,9 +47,7 @@ int main(int argc, char* argv[]) {
 
   auto filters = { Core::Filter("BinTypeQuery", "exe") };
 
-  const auto thingy = fm->filter(filters);
-
-  for (const auto &[pkg, ftrs] : thingy) {
+  for (const auto &[pkg, ftrs] : fm->filter(filters)) {
     const auto name = *pkg.name;
     const auto version = *pkg.version;
     std::cout << "\tPackage: " << name << "/" << version << "\n"

@@ -9,20 +9,26 @@
 #include <string>
 
 namespace Core {
+
+// wrapper around a llvm bitcode module
 class Binary {
   public:
+    // initialize with name / path to bitcode
     Binary(std::shared_ptr<std::string> name, std::shared_ptr<std::string> path) : 
                                    name(name),                        path(path) {
       spdlog::trace("Binary `{}` succesfully constructed", *name);
     }
 
-    // cache the internal llvm module, basically
+    // try to load the llvm module from the file. return whether successful
     bool reifySelf();
 
+    // is the binary reified?
     bool isReified() const { return _module != nullptr; }
-    // hand out copy of the module
+
+    // hand out copy of the module, returns nullptr if not reified
     std::unique_ptr<llvm::Module> getModuleCopy() const;
 
+    // public for convenience
     std::shared_ptr<std::string> name;
     std::shared_ptr<std::string> path;
 

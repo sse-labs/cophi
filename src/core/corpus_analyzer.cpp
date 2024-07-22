@@ -17,7 +17,6 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
     auto reified_query = registry.getInstanceOf(query_name);
     if (!reified_query) {
       spdlog::warn("query `{}` does not exist, skipping", query_name);
-      // TODO: fail?
       continue;
     }
     spdlog::trace("reified query `{}`", query_name);
@@ -27,49 +26,29 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
 }
 
 std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs) const {
-  // reify packages 
-  //
-  // TODO: MOVE LOGIC BELOW OUT OF THIS FUNCTION AND INTO A WRAPPER CLASS AROUND VECTOR<PACKAGE>
-  //
-  // for (auto it = pkgs.begin(); it != pkgs.end(); it++) {
-  //   auto pkg = *it;
-
-  //   if (!pkg.isReified() && !pkg.reifySelf()) {
-  //     // log?
-  //     // uhh, fail? ig? no don't fail, just remove from vector
-  //     //pkgs.erase(it);
-  //   }
-  // }
-
+  // might wanna add concurrency here
   spdlog::info("start reifying packages...");
+  // store ptrs to sucessfully reified packages in here
+  std::vector<Package*> reified_pkgs;
   for (auto &pkg : pkgs) {
     if (!pkg.isReified() && !pkg.reifySelf()) {
-
       spdlog::warn("unable to reify package `{}`", *pkg.name);
-
-
-      // TODO: figure out what to do in this situation
-            // idea: separate types for query & reified query?
-            // yeah i think that's good: query = {name, path}
-            //                          rquery = {name, module}
-      // uhh, fail? ig? no don't fail, just remove from vector
-      // pkgs.erase(it);
+    } else {
+      reified_pkgs.emplace_back(&pkg);
     }
   }
   spdlog::info("done reifying packages.");
-
-
-
 
   // add concurrency here
   auto ret = std::make_unique<FeatureMap>();
 
   spdlog::info("starting to run queries...");
   for (const auto &query: _queries) {
-    for (const auto &pkg : pkgs) {
+    for (const auto *pkg_ptr : reified_pkgs) {
+      const auto pkg = *pkg_ptr;
       spdlog::trace("running query `{}` on package `{}/{}`", query->getName(), *pkg.name, *pkg.version);
 
-      QueryResult results;
+      Query::Result results;
       query->runOn(pkg, &results);
 
       spdlog::debug("got {} features from running query `{}` on package `{}/{}`", results.size(), query->getName(), *pkg.name, *pkg.version);

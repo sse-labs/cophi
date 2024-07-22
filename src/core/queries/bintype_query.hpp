@@ -16,7 +16,7 @@ namespace Core::Queries {
       static inline std::vector<std::string> types{"exe", "lib"};
 
       std::vector<std::string> &getTypes() const override { return types; }
-      void runOn(const Package &pkg, QueryResult * const res) const override;
+      void runOn(const Package &pkg, Query::Result * const res) const override;
   };
 }
 
