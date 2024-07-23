@@ -14,6 +14,10 @@ namespace Core::Queries {
       ~BinTypeQuery() = default;
 
       static inline std::vector<std::string> types{"exe", "lib"};
+      enum Type { 
+        EXE = 0,
+        LIB = 1,
+      };
 
       std::vector<std::string> &getTypes() const override { return types; }
       void runOn(Package const * const pkg, Query::Result * const res) const override;

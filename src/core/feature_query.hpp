@@ -42,14 +42,16 @@ class Query {
 struct Location {
   Location(const std::shared_ptr<std::string> &name,
            const std::shared_ptr<std::string> &vers,
-           const std::shared_ptr<std::string> &bin) :
-               pkg_name(name), pkg_version(vers), bin_name(bin) {  }
+           const std::shared_ptr<std::string> &bname,
+           const std::shared_ptr<std::string> &bpath) :
+  pkg_name(name), pkg_version(vers), bin_name(bname), bin_path(bpath) {  }
   
   Location &operator=(const Location&) = default;
 
   std::shared_ptr<std::string> pkg_name;
   std::shared_ptr<std::string> pkg_version;
   std::shared_ptr<std::string> bin_name;
+  std::shared_ptr<std::string> bin_path;
 };
 
 // unique id for a feature

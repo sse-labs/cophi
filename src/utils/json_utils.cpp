@@ -66,18 +66,18 @@ static Core::Package parsePackage(json &jpkg) {
   return pkg;
 }
 
-static json convertLocs(const std::vector<Core::Location> &locs) {
-  json arr = json::array();
-  for (const auto &loc : locs) {
-    json jloc = json::object();
-    jloc["package_name"] = *loc.pkg_name;
-    jloc["package_version"] = *loc.pkg_version;
-    jloc["binary_name"] = *loc.bin_name;
+// static json convertLocs(const std::vector<Core::Location> &locs) {
+//   json arr = json::array();
+//   for (const auto &loc : locs) {
+//     json jloc = json::object();
+//     jloc["package_name"] = *loc.pkg_name;
+//     jloc["package_version"] = *loc.pkg_version;
+//     jloc["binary_name"] = *loc.bin_name;
 
-    arr.push_back(jloc);
-  }
-  return arr;
-}
+//     arr.push_back(jloc);
+//   }
+//   return arr;
+// }
 
 
 // END HELPERS

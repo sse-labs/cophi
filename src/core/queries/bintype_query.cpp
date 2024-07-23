@@ -24,14 +24,14 @@ void BinTypeQuery::runOn(Package const * const pkg, Query::Result * const res) c
     const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");
 
     if (test) {
-      execs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName());
+      execs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName(), bin->sharedPath());
     } else {
-      libs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName());
+      libs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName(), bin->sharedPath());
     }
   }
 
-  if (execs.size() > 0) res->emplace(*static_cast<Query const *>(this), 0, execs);
-  if (libs.size() > 0) res->emplace(*static_cast<Query const *>(this), 1, libs);
+  if (execs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::EXE, execs);
+  if (libs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::LIB, libs);
 }
 
 }
