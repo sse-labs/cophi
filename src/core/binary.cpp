@@ -10,30 +10,28 @@
 
 namespace Core {
 
-bool Binary::reifySelf() {
-  if (_module) { // module already loaded
-    spdlog::warn("called `reifySelf()` on already reified Binary {}", *name);
-    return true;
-  }
+std::unique_ptr<ReifiedBinary> Binary::reify() {
+  std::unique_ptr<ReifiedBinary> ret = nullptr;
+
   llvm::SMDiagnostic err;
+  auto context = std::make_unique<llvm::LLVMContext>();
+  auto module = llvm::parseIRFile(*_path, err, *context);
 
-  _context = std::make_unique<llvm::LLVMContext>();
-  _module = llvm::parseIRFile(*path, err, *_context);
-
-  bool ret = _module != nullptr;
-  if (!ret) {
-    spdlog::warn("`llvm::parseIRFile()` failed on: `{}`", *path);
+  if (module == nullptr) {
+    spdlog::warn("`llvm::parseIRFile()` failed on: `{}`", *_path);
+  } else {
+    ret = std::unique_ptr<ReifiedBinary>(new ReifiedBinary(_name, _path, std::move(context), std::move(module)));
+    spdlog::debug("reified Binary `{}`", *_name);
   }
-  spdlog::debug("reified Binary `{}`", *name);
   return ret;
 }
 
-std::unique_ptr<llvm::Module> Binary::getModuleCopy() const {
+std::unique_ptr<llvm::Module> ReifiedBinary::getModuleCopy() const {
   if (!_module.get()) {
-    spdlog::warn("`getModuleCopy()` from Binary `{}` handed out nullptr", *name);
+    spdlog::warn("`getModuleCopy()` from Binary `{}` handed out nullptr", *_name);
     return nullptr;
   }
-  spdlog::debug("cloning module for Binary `{}`...", *name);
+  spdlog::debug("cloning module for Binary `{}`...", *_name);
   return llvm::CloneModule(*_module);
 }
 

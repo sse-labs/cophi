@@ -11,22 +11,22 @@ REGISTER_QUERY(BinTypeQuery)
 
 namespace Core::Queries {
 
-void BinTypeQuery::runOn(const Package &pkg, Query::Result * const res) const {
+void BinTypeQuery::runOn(Package const * const pkg, Query::Result * const res) const {
   std::vector<Location> execs;
   std::vector<Location> libs;
 
-  for (auto &bin : pkg.bins) {
+  for (auto &bin : pkg->bins()) {
     std::vector<std::string> entries {"main"};
     
-    auto ptr = bin.getModuleCopy();
+    auto ptr = bin->getModuleCopy();
     psr::HelperAnalyses HA(std::move(ptr), entries);
 
     const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");
 
     if (test) {
-      execs.emplace_back(pkg.name, pkg.version, bin.name);
+      execs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName());
     } else {
-      libs.emplace_back(pkg.name, pkg.version, bin.name);
+      libs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName());
     }
   }
 

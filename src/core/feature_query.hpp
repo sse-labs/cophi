@@ -27,7 +27,7 @@ class Query {
     virtual std::vector<std::string> &getTypes() const = 0;
 
     // takes the package and adds any features found to the set of features (res)
-    virtual void runOn(const Package &pkg, Result * const res) const = 0;
+    virtual void runOn(Package const * const pkg, Result * const res) const = 0;
 
   protected:
     Query(std::string name) : _name(name) {  }

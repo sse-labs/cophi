@@ -31,8 +31,8 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
   // store ptrs to sucessfully reified packages in here
   std::vector<Package*> reified_pkgs;
   for (auto &pkg : pkgs) {
-    if (!pkg.isReified() && !pkg.reifySelf()) {
-      spdlog::warn("unable to reify package `{}`", *pkg.name);
+    if (!pkg.reify()) {
+      spdlog::warn("unable to reify package `{}`", pkg.getID().str());
     } else {
       reified_pkgs.emplace_back(&pkg);
     }
@@ -44,19 +44,21 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
 
   spdlog::info("starting to run queries...");
   for (const auto &query: _queries) {
-    for (const auto *pkg_ptr : reified_pkgs) {
-      const auto pkg = *pkg_ptr;
-      spdlog::trace("running query `{}` on package `{}/{}`", query->getName(), *pkg.name, *pkg.version);
+    for (const auto *pkg : reified_pkgs) {
+      spdlog::trace("running query `{}` on package `{}`",
+                    query->getName(), pkg->getID().str());
 
       Query::Result results;
       query->runOn(pkg, &results);
 
-      spdlog::debug("got {} features from running query `{}` on package `{}/{}`", results.size(), query->getName(), *pkg.name, *pkg.version);
+      spdlog::debug("got {} features from running query `{}` on package `{}`",
+                    results.size(), query->getName(), pkg->getID().str());
 
       for (const Feature &res : results) {
         const auto id = res.getUniqueId();
-        spdlog::debug("extracted {} locations from feature `{}`", res.locs.size(), id.toString());
-        ret->insert(pkg.getID(), res);
+        spdlog::debug("extracted {} locations from feature `{}`",
+                      res.locs.size(), id.toString());
+        ret->insert(pkg->getID(), res);
       }
     }
   }

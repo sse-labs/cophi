@@ -10,31 +10,56 @@
 
 namespace Core {
 
-// wrapper around a llvm bitcode module
+// forward declaration
+class ReifiedBinary;
+
+// wrapper around the name/path to a llvm bitcode module
 class Binary {
   public:
     // initialize with name / path to bitcode
     Binary(std::shared_ptr<std::string> name, std::shared_ptr<std::string> path) : 
-                                   name(name),                        path(path) {
-      spdlog::trace("Binary `{}` succesfully constructed", *name);
-    }
+           _name(name), _path(path) {  }
 
-    // try to load the llvm module from the file. return whether successful
-    bool reifySelf();
+    // try to load the llvm module from the file.
+    // return nullptr if unsuccessful
+    std::unique_ptr<ReifiedBinary> reify();
 
-    // is the binary reified?
-    bool isReified() const { return _module != nullptr; }
-
-    // hand out copy of the module, returns nullptr if not reified
-    std::unique_ptr<llvm::Module> getModuleCopy() const;
-
-    // public for convenience
-    std::shared_ptr<std::string> name;
-    std::shared_ptr<std::string> path;
+    std::string name() const { return *_name; }
+    std::string path() const { return *_path; }
 
   private:
+    std::shared_ptr<std::string> _name;
+    std::shared_ptr<std::string> _path;
+};
+
+// llvm bitcode module which has been loaded into memory from a file
+class ReifiedBinary {
+  public:
+    // hand out copy of the module
+    std::unique_ptr<llvm::Module> getModuleCopy() const;
+
+    std::string name() const { return *_name; }
+    std::string path() const { return *_path; }
+
+    std::shared_ptr<std::string> sharedName() const { return _name; }
+    std::shared_ptr<std::string> sharedPath() const { return _path; }
+
+  protected:
+    friend class Binary;
+    ReifiedBinary(std::shared_ptr<std::string> name,
+                  std::shared_ptr<std::string> path,
+                  std::unique_ptr<llvm::LLVMContext> context,
+                  std::unique_ptr<llvm::Module> module) : 
+    _name(name), _path(path), _context(std::move(context)), _module(std::move(module)) {
+      spdlog::trace("Binary `{}` succesfully reified", *name);
+    }
+
+  private:
+    std::shared_ptr<std::string> _name;
+    std::shared_ptr<std::string> _path;
+    // we need the context because it owns the module
     std::unique_ptr<llvm::LLVMContext> _context;
-    std::unique_ptr<llvm::Module> _module = nullptr;
+    std::unique_ptr<llvm::Module> _module;
 };
 }
 

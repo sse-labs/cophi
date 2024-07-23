@@ -12,38 +12,40 @@
 
 namespace Core {
 
+// unique identifier for a package
 struct PackageID {
   PackageID(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
                                     name(_name),                     version(_version)  { }
   std::shared_ptr<std::string> name,
                                version;
 
+  std::string str() const { return *name + "/" + *version; }
+
+  // need this so we can use PackageID as the key type in FeatureMap
   bool operator==(const PackageID &other) const {
     return *name == *other.name &&
            *version == *other.version;
   }
 };
 
-// a container for (llvm bitcode) binaries + metadata about them
+// a container for unreified (llvm bitcode) binaries + metadata about them
 class Package {
   public:
-    Package(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
-                                    name(_name),                     version(_version) {
+    Package(std::shared_ptr<std::string> name, std::shared_ptr<std::string> version) :
+            _pid(name, version) {
       spdlog::debug("successfully constructed Package `{}/{}`", *name, *version);
     }
 
-    // attempt to reify this specific package, return whether successful
-    // reification is said to be successful if *all* of the binaries are able
+    // takes ownership
+    void setBins(std::vector<Binary> bins) { _bins = std::move(bins); }
+
+    // attempt to reify this specific package, return whether *all* of the binaries were able
     // to be reified
-    bool reifySelf();
-    bool isReified() const { return _reified; }
+    bool reify();
 
     // returns id used to identify package
-    PackageID getID() const { return PackageID(name, version); }
-
-    std::shared_ptr<std::string> name,
-                                 version;
-    std::vector<Binary> bins;
+    const PackageID &getID() const { return _pid; }
+    const std::vector<std::unique_ptr<ReifiedBinary>> &bins() const { return _rbins; }
 
     // this is all just metadata that conan hands out
     std::unordered_map<std::string, std::string> settings,
@@ -51,12 +53,13 @@ class Package {
     std::vector<std::string> requires;
 
   private:
-    bool _reified = false;
+    PackageID _pid;
+    std::vector<Binary> _bins;
+    std::vector<std::unique_ptr<ReifiedBinary>> _rbins; // the binaries we were able to reify
 };
-
 }
 
-// for hashing PackageID so we can use it as a key in a map
+// for hashing PackageID so we can use it as a key in FeatureMap
 template<>
 struct std::hash<Core::PackageID> {
   std::size_t operator()(const Core::PackageID &pid) const {

@@ -5,26 +5,29 @@
 #include <vector>
 
 namespace Core {
-  bool Package::reifySelf() {
-    spdlog::debug("attempting to reify Package `{}/{}`", *name, *version);
-    _reified = true;
-    for (auto &bin : bins) {
+  bool Package::reify() {
+    _rbins.clear();
 
-      bool ret = bin.reifySelf();
+    spdlog::debug("attempting to reify Package `{}`", _pid.str());
+    bool success = true;
+    for (auto &bin : _bins) {
 
-      if (!ret) {
-        spdlog::warn("failed to reify Binary `{}` in Package `{}/{}`", *bin.name, *name, *version);
+      auto rbin = bin.reify();
+
+      if (!rbin) {
+        success = false;
+        spdlog::warn("failed to reify Binary `{}` in Package `{}`", bin.name(), _pid.str());
+      } else {
+        _rbins.emplace_back(std::move(rbin));
       }
-
-      _reified &= ret;
     }
 
-    if (_reified) {
-      spdlog::debug("successfully reified Package `{}/{}`", *name, *version);
+    if (success) {
+      spdlog::debug("successfully reified Package `{}`", _pid.str());
     } else {
-      spdlog::warn("failed to reify Package `{}/{}`", *name, *version);
+      spdlog::warn("failed to reify Package `{}`", _pid.str());
     }
 
-    return _reified;
+    return success;
   }
 }

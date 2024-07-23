@@ -26,11 +26,13 @@ static Core::Package parsePackage(json &jpkg) {
                     std::make_shared<std::string>(version));
 
   // getting the binaries
+  std::vector<Core::Binary> bins;
   for (const json &e : jpkg["bins"]) {
     const std::string bin_name = e["bin_name"];
     const std::string bin_path = e["bin_path"];
-    pkg.bins.emplace_back(std::make_shared<std::string>(bin_name), std::make_shared<std::string>(bin_path));
+    bins.emplace_back(std::make_shared<std::string>(bin_name), std::make_shared<std::string>(bin_path));
   }
+  pkg.setBins(std::move(bins));
 
   // TODO: grab the settings and stuff (ok to fail here)
   const json &metadata = jpkg["metadata"];

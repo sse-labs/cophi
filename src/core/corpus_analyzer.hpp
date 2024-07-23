@@ -17,8 +17,6 @@ struct CorpusAnalyzerConfig {
 };
 
 // holds a set of queries to run on given packages and produce a FeatureMap
-// possible_todo: i'm not super happy with the logic for reifing queries/packages,
-//                maybe fix
 class CorpusAnalyzer {
   public:
     // given the config, will try to reify all the queries in it
