@@ -32,7 +32,7 @@ class FeatureMapTest : public testing::Test {
     Core::FeatureMap fm;
 
     // controls how many mapping we put into the map
-    const int num_mappings = 20;
+    const int num_mappings = 100;
 
     // stuff to easily construct dummy features
     std::shared_ptr<std::string> dummy_string = std::make_shared<std::string>("");

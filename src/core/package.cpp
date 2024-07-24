@@ -1,10 +1,18 @@
 #include <core/binary.hpp>
 #include <core/package.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <string>
+#include <memory>
 #include <vector>
 
 namespace Core {
+  PackageID::PackageID(const nlohmann::json &jid) {
+    name = std::make_shared<std::string>(jid["name"]);
+    version = std::make_shared<std::string>(jid["version"]);
+  }
+
   bool Package::reify() {
     _rbins.clear();
 

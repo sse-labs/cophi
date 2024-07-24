@@ -3,16 +3,26 @@
 
 #include <core/package.hpp>
 #include <core/feature_map.hpp>
+#include <core/filter.hpp>
 
-#include <fstream>
+#include <nlohmann/json.hpp>
+
 #include <string>
+#include <memory>
 #include <vector>
 
 namespace Utils {
 
-bool parseCorpusAnalyzerConfig(std::ifstream &in, std::vector<std::string> * const queries);
-bool parsePackages(std::ifstream &in, std::vector<Core::Package> * const ret);
-std::string serializeFeatureMap(const Core::FeatureMap &fm);
+bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string> * const queries);
+
+// throws on malformed json
+std::unordered_set<Core::Feature> parseFeatureSet(const nlohmann::json &jftr_set);
+
+bool parseFilters(const std::string &file, std::vector<Core::Filter> * const filters);
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const ret);
+
+// attempt to parse FeatureMap from JSON from the ifstream, returns nullptr on error
+std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file);
 
 }
 

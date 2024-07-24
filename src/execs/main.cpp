@@ -8,7 +8,9 @@
 #include <llvm/Support/CommandLine.h>
 #include <spdlog/spdlog.h>
 
+#include <cassert>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -36,28 +38,33 @@ int main(int argc, char* argv[]) {
 
   std::vector<Core::Package> pkgs;
   spdlog::info("parsing packages...");
-  std::ifstream ifs("../bitcode/packages.json");
-  Utils::parsePackages(ifs, &pkgs);
-  ifs.close();
+  Utils::parsePackages("../bitcode/packages.json", &pkgs);
   spdlog::info("packages parsed.");
 
   spdlog::info("evaluating packages...");
   auto fm = ca.evaluate(pkgs);
   spdlog::info("packages evaluated.");
 
-  auto filters = { Core::Filter("BinTypeQuery", "exe") };
+  // auto filters = { Core::Filter("BinTypeQuery", "exe") };
 
-  for (const auto &[pkg, ftrs] : fm->filter(filters)) {
-    const auto name = *pkg.name;
-    const auto version = *pkg.version;
-    std::cout << "\tPackage: " << name << "/" << version << "\n"
-              << "\t\tExecutables:\n";
-    for (const auto &loc : ftrs[0]->locs) {
-      std::cout << "\t\t\t" << *loc.bin_name << "\n";
-    }
-    std::cout << std::endl;
-  }
-  //feature_map->writeToJSON(OutputPath);
+  // for (const auto &[pkg, ftrs] : fm->filter(filters)) {
+  //   const auto name = *pkg.name;
+  //   const auto version = *pkg.version;
+  //   std::cout << "\tPackage: " << name << "/" << version << "\n"
+  //             << "\t\tExecutables:\n";
+  //   for (const auto &loc : ftrs[0]->locs) {
+  //     std::cout << "\t\t\t" << *loc.bin_name << "\n";
+  //   }
+  //   std::cout << std::endl;
+  // }
+
+  const std::string fm_file = "../feature_map.json";
+
+  std::ofstream of(fm_file);
+  of << fm->json().dump(1, '\t');
+  of.close();
+
+  assert(*Utils::deserializeFeatureMap(fm_file) == *fm);
 
   return EXIT_SUCCESS;
 }

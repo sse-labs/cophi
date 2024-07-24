@@ -5,6 +5,8 @@
 #include <core/package.hpp>
 #include <core/filter.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -20,7 +22,9 @@ class FeatureMap {
   typedef std::unordered_map<PackageID, std::unordered_set<Feature>> InternalMap;
   public:
     FeatureMap() = default;
-    //FeatureMap(csv file); // implement sometime
+
+    // parse from json, can throw if malformed
+    FeatureMap(const nlohmann::json &jfm);
 
     // method to write to json
     bool writeToJSON(const std::string &path) const;
@@ -37,6 +41,11 @@ class FeatureMap {
     // iterated over, only shows the packages with the desired features
     FilteredFM filter(std::vector<Filter> filters);
 
+    // serialize FeatureMap to json
+    nlohmann::json json() const;
+
+    // for testing
+    bool operator==(const FeatureMap &rhs) const { return _M == rhs._M; }
   private:
     // map from packages to the features found in those packages
     InternalMap _M;

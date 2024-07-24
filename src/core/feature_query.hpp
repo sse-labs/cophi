@@ -3,6 +3,8 @@
 
 #include <core/package.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <cassert>
 #include <string>
 #include <vector>
@@ -45,8 +47,12 @@ struct Location {
            const std::shared_ptr<std::string> &bname,
            const std::shared_ptr<std::string> &bpath) :
   pkg_name(name), pkg_version(vers), bin_name(bname), bin_path(bpath) {  }
+
+  Location(const nlohmann::json &jloc);
   
   Location &operator=(const Location&) = default;
+
+  nlohmann::json json() const;
 
   std::shared_ptr<std::string> pkg_name;
   std::shared_ptr<std::string> pkg_version;
@@ -67,10 +73,14 @@ struct FeatureID {
 
     FeatureID(const std::string &query, const std::string type) : 
              _query_name(query), _query_type(type) { }
+    
+    FeatureID(const nlohmann::json &jfid);
 
     const std::string &name() const {return _query_name; }
     const std::string &type() const {return _query_type; }
     std::string toString() const { return _query_name + "/" + _query_type; }
+
+    nlohmann::json json() const;
  
   private:
     std::string _query_name;
@@ -93,10 +103,12 @@ struct Feature {
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
-  Feature(const FeatureID fid)
-        : fid(fid), locs({}) {
+  Feature(const FeatureID fid) : Feature(fid, {}) {
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
+
+  // json ctor, can throw
+  Feature(const nlohmann::json &jftr);
 
   const FeatureID &getUniqueId() const { return fid; }
 
@@ -104,6 +116,8 @@ struct Feature {
     return fid.name() == other.fid.name() &&
            fid.type() == other.fid.type();
   }
+
+  nlohmann::json json() const;
 
   // holds the query+type info
   const FeatureID fid;

@@ -1,14 +1,25 @@
 #include <core/feature_map.hpp>
 #include <core/feature_query.hpp>
+#include <utils/json_utils.hpp>
 
 #include <spdlog/spdlog.h>
-#include <utils/json_utils.hpp>
+#include <nlohmann/json.hpp>
+using jsonf = nlohmann::json;
 
 #include <fstream>
 #include <memory>
 #include <vector>
 
 namespace Core {
+
+FeatureMap::FeatureMap(const jsonf &jfm) {
+  for (const auto &elem : jfm) {
+    Core::PackageID pid(elem["pkg_id"]);
+    auto ftr_set = Utils::parseFeatureSet(elem["ftr_set"]);
+
+    _M.insert(std::make_pair(pid, std::move(ftr_set)));
+  }
+}
 
 void FeatureMap::insert(const PackageID pkgid, const Feature &ftr) {
   if (this->containsPackage(pkgid)) { // key exists
@@ -30,6 +41,24 @@ bool FeatureMap::writeToJSON(const std::string &path) const {
 
 FilteredFM FeatureMap::filter(std::vector<Filter> filters) {
   return FilteredFM(*this, std::move(filters));
+}
+
+jsonf FeatureMap::json() const {  
+  jsonf ret = jsonf::array();
+  for (const auto &[key, val] : _M) {
+    jsonf mapping = jsonf::object();
+
+    mapping["pkg_id"] = key.json();
+
+    jsonf ftr_set = jsonf::array();
+    for (const auto &ftr : val) {
+      ftr_set.push_back(ftr.json());
+    }
+    mapping["ftr_set"] = ftr_set;
+
+    ret.push_back(mapping);
+  }
+  return ret;
 }
 
 /******************

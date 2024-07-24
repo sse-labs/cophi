@@ -18,7 +18,7 @@ namespace Utils {
 
 // HELPERS
 
-static Core::Package parsePackage(json &jpkg) {
+static Core::Package parsePackage(const json &jpkg) {
   const std::string name = jpkg["pkg_name"];
   const std::string version = jpkg["pkg_version"];
 
@@ -66,23 +66,15 @@ static Core::Package parsePackage(json &jpkg) {
   return pkg;
 }
 
-// static json convertLocs(const std::vector<Core::Location> &locs) {
-//   json arr = json::array();
-//   for (const auto &loc : locs) {
-//     json jloc = json::object();
-//     jloc["package_name"] = *loc.pkg_name;
-//     jloc["package_version"] = *loc.pkg_version;
-//     jloc["binary_name"] = *loc.bin_name;
-
-//     arr.push_back(jloc);
-//   }
-//   return arr;
-// }
-
 
 // END HELPERS
 
-bool parseCorpusAnalyzerConfig(std::ifstream &ifs, std::vector<std::string> queries) {
+bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string> queries) {
+  std::ifstream ifs(file);
+  if (!ifs) {
+    return false;
+  }
+
   try {
     json arr = json::parse(ifs);
 
@@ -92,39 +84,68 @@ bool parseCorpusAnalyzerConfig(std::ifstream &ifs, std::vector<std::string> quer
 
     return true;
   } catch (const json::exception &e) {
-    spdlog::error("failed to parse packages from json: id={:d}, what=`{}`", e.id, e.what());
+    spdlog::error("failed to parse packages from file {}. error: id={:d}, what=`{}`", file, e.id, e.what());
     return false;
   }
 }
 
-bool parsePackages(std::ifstream &ifs, std::vector<Core::Package> * const ret) {
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const ret) {
+  std::ifstream ifs(file);
+  if (!ifs) {
+    return false;
+  }
+  
   try {
     json arr = json::parse(ifs);
 
-    for (auto &elem : arr) {
+    for (const auto &elem : arr) {
       ret->push_back(parsePackage(elem));
     }
 
     return true;
   } catch (const json::exception &e) {
-    spdlog::error("failed to parse packages from json: id={:d}, what=`{}`", e.id, e.what());
+    spdlog::error("failed to parse packages from file {}. error: id={:d}, what=`{}`", file, e.id, e.what());
     return false;
   }
 }
 
-std::string serializeFeatureMap(const Core::FeatureMap &fm) {
-  // json arr = json::array();
-  // // iterating through the feature id / locations pairs
-  // for (const auto &[k, v] : fm) {
-  //   json fid = json::object();
-  //   fid["query_name"] = k.name();
-  //   fid["feature_type"] = k.type();
-  //   fid["locations"] = convertLocs(v);
+bool parseFilters(const std::string &file, std::vector<Core::Filter> * const filters) {
+  std::ifstream ifs(file);
+  if (!ifs) {
+    return false;
+  }
 
-  //   arr.push_back(fid);
-  // }
+  try {
+    json arr = json::parse(ifs);
 
-  return "TODO"; //arr.dump(1, '\t');
+    for (const auto &elem : arr) {
+      filters->emplace_back(elem);
+    }
+
+    return true;
+  } catch (const json::exception &e) {
+    spdlog::error("failed to parse filters from file {}. error: id={:d}, what=`{}`", file, e.id, e.what());
+    return false;
+  }
+}
+
+std::unordered_set<Core::Feature> parseFeatureSet(const nlohmann::json &jftr_set) {
+  return std::unordered_set<Core::Feature>(jftr_set.begin(), jftr_set.end());
+}
+
+std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file) {
+  std::ifstream ifs(file);
+  if (!ifs) {
+    return nullptr;
+  }
+  
+  try {
+    json jfm = json::parse(ifs);
+    return std::make_unique<Core::FeatureMap>(jfm);
+  } catch (const json::exception &e) {
+    spdlog::error("failed to parse FeatureMap from file {}: id={:d}, what=`{}`", file, e.id, e.what());
+    return nullptr;
+  }
 }
 
 }
