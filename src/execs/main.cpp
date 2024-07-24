@@ -57,7 +57,6 @@ int main(int argc, char* argv[]) {
     }
     std::cout << std::endl;
   }
-
   //feature_map->writeToJSON(OutputPath);
 
   return EXIT_SUCCESS;

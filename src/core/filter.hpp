@@ -15,13 +15,11 @@ struct Filter {
 
   // the feature has to appear with [min_locs, inf) appearances
   Filter(const std::string query_name, const std::string query_type, const size_t min) :
-          fid(query_name, query_type), min_locs(min), max_locs(std::numeric_limits<size_t>::max()) // ugly but it'll work
-  { }
+         Filter(query_name, query_type, min, std::numeric_limits<size_t>::max()) { }
 
   // the feature has to appear with at least 1 appearance
   Filter(const std::string query_name, const std::string query_type) :
-          fid(query_name, query_type), min_locs(1), max_locs(std::numeric_limits<size_t>::max())
-  { }
+         Filter(query_name, query_type, 1, std::numeric_limits<size_t>::max()) { }
 
   // the feature that has to appear
   FeatureID fid;

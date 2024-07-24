@@ -88,6 +88,11 @@ struct Feature {
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
+  Feature(const FeatureID fid, const std::vector<Location> &_locs)
+        : fid(fid), locs(std::move(_locs)) {
+    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
+  }
+
   Feature(const FeatureID fid)
         : fid(fid), locs({}) {
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
@@ -108,7 +113,7 @@ struct Feature {
 };
 }
 
-// for hashing PackageID
+// so we can put features in a set
 template<>
 struct std::hash<Core::Feature> {
   std::size_t operator()(const Core::Feature &ftr) const {

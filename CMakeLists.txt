@@ -10,7 +10,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-SET(BUILD_MODE Debug)
 SET(CMAKE_CXX_FLAGS "-Wall")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3")
@@ -31,21 +30,38 @@ FetchContent_MakeAvailable(json)
 # spdlog
 find_package(spdlog REQUIRED)
 
-##################
-# Add Executable #
-##################
+# gtest
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+FetchContent_MakeAvailable(googletest)
+
+################
+# Source Files #
+################
 
 # Get our source files
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
+file(GLOB_RECURSE SRC_FILES src/core/*.cpp src/utils/*.cpp)
 
-# Our main executable
-add_executable(${PROJECT_NAME} ${SRC_FILES})
-
+###################
+# Main Executable #
+###################
+add_executable(${PROJECT_NAME} src/execs/main.cpp ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 target_link_libraries(${PROJECT_NAME} PRIVATE phasar::llvm_ifdside 
                                               nlohmann_json::nlohmann_json 
                                               spdlog::spdlog)
 
-# TODO: figure out how this works
-# install(TARGETS ${PROJECT_NAME}
-#         DESTINATION bin)
+#############
+# Add Tests #
+#############
+
+# filter test
+add_executable(filter_test tests/filter_test.cpp ${SRC_FILES})
+target_include_directories(filter_test PRIVATE src )
+target_link_libraries(filter_test PRIVATE phasar::llvm_ifdside 
+                                          nlohmann_json::nlohmann_json 
+                                          spdlog::spdlog
+                                          GTest::gtest_main)
