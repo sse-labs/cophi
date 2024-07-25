@@ -34,11 +34,6 @@ bool FeatureMap::containsPackage(const PackageID &id) const noexcept {
   return _M.find(id) != _M.end();
 }
 
-bool FeatureMap::writeToJSON(const std::string &path) const {
-  // TODO
-  return true;
-}
-
 FilteredFM FeatureMap::filter(std::vector<Filter> filters) {
   return FilteredFM(*this, std::move(filters));
 }
@@ -53,6 +48,25 @@ jsonf FeatureMap::json() const {
     jsonf ftr_set = jsonf::array();
     for (const auto &ftr : val) {
       ftr_set.push_back(ftr.json());
+    }
+    mapping["ftr_set"] = ftr_set;
+
+    ret.push_back(mapping);
+  }
+  return ret;
+}
+
+jsonf FilteredFM::json() const {  
+  jsonf ret = jsonf::array();
+
+  for (const auto [key, val] : *this) {
+    jsonf mapping = jsonf::object();
+  
+    mapping["pkg_id"] = key.json();
+
+    jsonf ftr_set = jsonf::array();
+    for (const auto &ftr : val) {
+      ftr_set.push_back(ftr->json());
     }
     mapping["ftr_set"] = ftr_set;
 
@@ -113,7 +127,7 @@ FMIterator::package_features FMIterator::operator*() {
     ftrs.push_back(ftr_ref);
   }
 
-  return std::make_pair<const PackageID&, std::vector<const Feature *>>(pkgid, std::move(ftrs));
+  return std::make_pair<PackageID, std::vector<const Feature *>>(PackageID(pkgid), std::move(ftrs));
 }
 
 FMIterator FilteredFM::begin() const {

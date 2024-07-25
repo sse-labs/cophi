@@ -24,9 +24,9 @@ void BinTypeQuery::runOn(Package const * const pkg, Query::Result * const res) c
     const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");
 
     if (test) {
-      execs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName(), bin->sharedPath());
+      execs.emplace_back(bin->sharedName(), bin->sharedPath());
     } else {
-      libs.emplace_back(pkg->getID().name, pkg->getID().version, bin->sharedName(), bin->sharedPath());
+      libs.emplace_back(bin->sharedName(), bin->sharedPath());
     }
   }
 

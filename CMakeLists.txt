@@ -45,14 +45,25 @@ FetchContent_MakeAvailable(googletest)
 # Get our source files
 file(GLOB_RECURSE SRC_FILES src/core/*.cpp src/utils/*.cpp)
 
-###################
-# Main Executable #
-###################
-add_executable(${PROJECT_NAME} src/execs/main.cpp ${SRC_FILES})
-target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_link_libraries(${PROJECT_NAME} PRIVATE phasar::llvm_ifdside 
-                                              nlohmann_json::nlohmann_json 
-                                              spdlog::spdlog)
+####################
+# Main Executables #
+####################
+set(EXTRACT_EXECUTABLE dcpp_extract)
+set(FILTER_EXECUTABLE dcpp_filter)
+
+# executable for extracting a feature map
+add_executable(${EXTRACT_EXECUTABLE} src/execs/dcpp_extract.cpp ${SRC_FILES})
+target_include_directories(${EXTRACT_EXECUTABLE} PRIVATE src)
+target_link_libraries(${EXTRACT_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
+                                                    nlohmann_json::nlohmann_json 
+                                                    spdlog::spdlog)
+
+# executable for filtering a feature map
+add_executable(${FILTER_EXECUTABLE} src/execs/dcpp_filter.cpp ${SRC_FILES})
+target_include_directories(${FILTER_EXECUTABLE} PRIVATE src)
+target_link_libraries(${FILTER_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
+                                                   nlohmann_json::nlohmann_json 
+                                                   spdlog::spdlog)
 
 #############
 # Add Tests #

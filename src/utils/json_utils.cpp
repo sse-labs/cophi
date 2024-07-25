@@ -18,6 +18,7 @@ namespace Utils {
 
 // HELPERS
 
+// TODO: this rlly should be in a ctor for Package
 static Core::Package parsePackage(const json &jpkg) {
   const std::string name = jpkg["pkg_name"];
   const std::string version = jpkg["pkg_version"];
@@ -69,7 +70,7 @@ static Core::Package parsePackage(const json &jpkg) {
 
 // END HELPERS
 
-bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string> queries) {
+bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string> * const queries) {
   std::ifstream ifs(file);
   if (!ifs) {
     return false;
@@ -79,7 +80,7 @@ bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string>
     json arr = json::parse(ifs);
 
     for (auto &elem : arr) {
-      queries.push_back(elem);
+      queries->push_back(elem);
     }
 
     return true;

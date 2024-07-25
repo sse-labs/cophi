@@ -11,7 +11,6 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
   _queries = std::vector<std::unique_ptr<Query>>();
   const QueryRegistry &registry = QueryRegistry::singleton();
 
-  spdlog::info("reifying queries...");
   for (const auto &query_name : conf.query_subset) {
     spdlog::trace("reifying query `{}`", query_name);
     auto reified_query = registry.getInstanceOf(query_name);
@@ -22,13 +21,13 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
     spdlog::trace("reified query `{}`", query_name);
     _queries.push_back(std::move(reified_query));
   }
-  spdlog::info("queries reified.");
+  spdlog::info("queries reified");
 }
 
 std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs) const {
   // might wanna add concurrency here
-  spdlog::info("start reifying packages...");
   // store ptrs to sucessfully reified packages in here
+  spdlog::info("reifing packages...");
   std::vector<Package*> reified_pkgs;
   for (auto &pkg : pkgs) {
     if (!pkg.reify()) {
@@ -37,7 +36,7 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
       reified_pkgs.emplace_back(&pkg);
     }
   }
-  spdlog::info("done reifying packages.");
+  spdlog::info("packages reified");
 
   // add concurrency here
   auto ret = std::make_unique<FeatureMap>();
@@ -62,7 +61,7 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs)
       }
     }
   }
-  spdlog::info("finished running queries.");
+  spdlog::info("finished running queries");
   return ret;
 }
 } // namespace Core

@@ -13,13 +13,16 @@
 
 namespace Utils {
 
-bool parseCorpusAnalyzerConfig(const std::string &file, std::vector<std::string> * const queries);
+
+bool parseCorpusAnalyzerConfig(const std::string &file,
+                               std::vector<std::string> * const queries);
+bool parseFilters(const std::string &file, 
+                  std::vector<Core::Filter> * const filters);
+bool parsePackages(const std::string &file,
+                   std::vector<Core::Package> * const ret);
 
 // throws on malformed json
 std::unordered_set<Core::Feature> parseFeatureSet(const nlohmann::json &jftr_set);
-
-bool parseFilters(const std::string &file, std::vector<Core::Filter> * const filters);
-bool parsePackages(const std::string &file, std::vector<Core::Package> * const ret);
 
 // attempt to parse FeatureMap from JSON from the ifstream, returns nullptr on error
 std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file);

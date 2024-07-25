@@ -36,7 +36,7 @@ class FeatureMapTest : public testing::Test {
 
     // stuff to easily construct dummy features
     std::shared_ptr<std::string> dummy_string = std::make_shared<std::string>("");
-    Core::Location dummy = Core::Location(dummy_string, dummy_string, dummy_string, dummy_string);
+    Core::Location dummy = Core::Location(dummy_string, dummy_string);
 };
 
 TEST_F(FeatureMapTest, NoFilters) {

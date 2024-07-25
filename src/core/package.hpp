@@ -18,6 +18,8 @@ struct PackageID {
   PackageID(std::shared_ptr<std::string> _name, std::shared_ptr<std::string> _version) :
                                     name(_name),                     version(_version)  { }
   
+  PackageID(const PackageID &other) = default;
+  
   // can throw error on malformed json
   PackageID(const nlohmann::json &jid);
 
@@ -26,7 +28,7 @@ struct PackageID {
 
   std::string str() const { return *name + "/" + *version; }
 
-  nlohmann::json json() const { return { {"name", *name}, {"version", *version} }; };
+  nlohmann::json json() const;
 
   // need this so we can use PackageID as the key type in FeatureMap
   bool operator==(const PackageID &other) const {

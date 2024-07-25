@@ -8,16 +8,12 @@ using jsonf = nlohmann::json;
 namespace Core {
 
 Location::Location(const nlohmann::json &jloc) {
-  pkg_name = std::make_shared<std::string>(jloc["pkg_name"]);
-  pkg_version = std::make_shared<std::string>(jloc["pkg_version"]);
   bin_name = std::make_shared<std::string>(jloc["bin_name"]);
   bin_path = std::make_shared<std::string>(jloc["bin_path"]);
 }
 
 jsonf Location::json() const {
   jsonf ret = jsonf::object();
-  ret["pkg_name"] = *pkg_name;
-  ret["pkg_version"] = *pkg_version;
   ret["bin_name"] = *bin_name;
   ret["bin_path"] = *bin_path;
   return ret;

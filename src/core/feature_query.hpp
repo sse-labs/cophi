@@ -42,11 +42,9 @@ class Query {
 // right now, just holds info on which binary the feature was found in
 // might be good to add more specific info in the future (like specific method, instruction)
 struct Location {
-  Location(const std::shared_ptr<std::string> &name,
-           const std::shared_ptr<std::string> &vers,
-           const std::shared_ptr<std::string> &bname,
+  Location(const std::shared_ptr<std::string> &bname,
            const std::shared_ptr<std::string> &bpath) :
-  pkg_name(name), pkg_version(vers), bin_name(bname), bin_path(bpath) {  }
+  bin_name(bname), bin_path(bpath) {  }
 
   Location(const nlohmann::json &jloc);
   
@@ -54,8 +52,6 @@ struct Location {
 
   nlohmann::json json() const;
 
-  std::shared_ptr<std::string> pkg_name;
-  std::shared_ptr<std::string> pkg_version;
   std::shared_ptr<std::string> bin_name;
   std::shared_ptr<std::string> bin_path;
 };

@@ -2,16 +2,26 @@
 #include <core/package.hpp>
 
 #include <nlohmann/json.hpp>
+using jsonf = nlohmann::json;
+#include <spdlog/spdlog.h>
 
+#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
 
 namespace Core {
-  PackageID::PackageID(const nlohmann::json &jid) {
-    name = std::make_shared<std::string>(jid["name"]);
-    version = std::make_shared<std::string>(jid["version"]);
-  }
+  PackageID::PackageID(const nlohmann::json &jid) :
+    name(std::make_shared<std::string>(jid["name"])),
+    version(std::make_shared<std::string>(jid["version"]))
+  {  }
+
+  jsonf PackageID::json() const {
+    jsonf ret = jsonf::object();
+    ret["name"] = *name;
+    ret["version"] = *version;
+    return ret;
+  }  
 
   bool Package::reify() {
     _rbins.clear();

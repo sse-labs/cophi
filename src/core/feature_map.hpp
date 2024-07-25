@@ -26,10 +26,6 @@ class FeatureMap {
     // parse from json, can throw if malformed
     FeatureMap(const nlohmann::json &jfm);
 
-    // method to write to json
-    bool writeToJSON(const std::string &path) const;
-    
-
     // if kv mapping doesn't exist, creates it, otherwise adds ftr to _M[pkgid]
     void insert(const PackageID pkgid, const Feature &ftr);
     //void insert(const std::string &key, const Location &loc);
@@ -61,6 +57,9 @@ class FilteredFM {
     FilteredFM(FeatureMap &fm, std::vector<Filter> filters) :
               _fm(fm), _filters(std::move(filters)) { }
 
+    // turn self into json
+    nlohmann::json json() const;
+
     // the iterator over the filtered results
     class iterator {
       public:
@@ -70,7 +69,7 @@ class FilteredFM {
         }
 
         // the value type of the iterator
-        typedef std::pair<const PackageID&, std::vector<const Feature *>> package_features;
+        typedef std::pair<PackageID, std::vector<const Feature *>> package_features;
 
         // the methods needed for an iterator
         package_features operator*();
