@@ -1,7 +1,6 @@
 #ifndef DELPHICPP_LOGGING_HPP_
 #define DELPHICPP_LOGGING_HPP_
 
-
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>

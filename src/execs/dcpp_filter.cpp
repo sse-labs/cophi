@@ -1,6 +1,7 @@
 #include <core/package.hpp>
 #include <core/feature_map.hpp>
 #include <core/filter.hpp>
+#include <utils/exec_utils.hpp>
 #include <utils/json_utils.hpp>
 #include <utils/logging.hpp>
 
@@ -21,13 +22,6 @@ using namespace Utils;
 cl::opt<std::string> FeatureMapFile("m", cl::Required, cl::desc("Path to feature map file"), cl::value_desc("path"));
 cl::opt<std::string> FiltersFile("f", cl::Required, cl::desc("Path to filter config file"), cl::value_desc("path"));
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
-
-// Error Helper
-static void errAndExit(std::string errMessage) {
-  spdlog::error(errMessage);
-  std::cerr << "exiting..." << std::endl;
-  exit(1);
-}
 
 int main(int argc, char* argv[]) {
   // setup
