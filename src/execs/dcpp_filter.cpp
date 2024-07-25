@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
   // get filters
   std::vector<Filter> filters;
-  if (!parseFilters(FiltersFile, &filters)) {
+  if (!parseJSONArray(FiltersFile, &filters)) {
     errAndExit("unable to parse filters file");
   }
   spdlog::info("filters parsed");

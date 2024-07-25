@@ -30,14 +30,14 @@ int main(int argc, char* argv[]) {
 
   // get config
   CorpusAnalyzerConfig conf;
-  if (!parseCorpusAnalyzerConfig(AnalysisConfig, &conf.query_subset)) {
+  if (!parseJSONArray<std::string>(AnalysisConfig, &conf.query_subset)) {
     errAndExit("unable to parse query config file");
   }
   spdlog::info("query list parsed");
 
   // get packages
   std::vector<Package> pkgs;
-  if (!parsePackages(PackagesIndex, &pkgs)) {
+  if (!parseJSONArray<Package>(PackagesIndex, &pkgs)) {
     errAndExit("unable to parse packages file");
   }
   spdlog::info("packages parsed");

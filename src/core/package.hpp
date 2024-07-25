@@ -45,6 +45,9 @@ class Package {
       spdlog::debug("successfully constructed Package `{}/{}`", *name, *version);
     }
 
+    // will throw if json is malformed
+    Package(const nlohmann::json &jpkg);
+
     // takes ownership
     void setBins(std::vector<Binary> bins) { _bins = std::move(bins); }
 
