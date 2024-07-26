@@ -37,6 +37,9 @@ class ReifiedBinary {
   public:
     // hand out copy of the module
     std::unique_ptr<llvm::Module> getModuleCopy() const;
+    
+    // hand out const ref to module
+    const llvm::Module &getModuleRef() const { return *_module; }
 
     std::string name() const { return *_name; }
     std::string path() const { return *_path; }

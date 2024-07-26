@@ -91,7 +91,7 @@ bool FMIterator::currentSatisfies() const {
     const auto it = ftrs.find(filter.fid);
     
     if (it != ftrs.end()) {
-      const int num_locs = it->locs.size();
+      const int num_locs = it->num_locs;
       if (num_locs < filter.min_locs || num_locs > filter.max_locs) {
         return false;
       }

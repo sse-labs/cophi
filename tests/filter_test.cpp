@@ -12,14 +12,14 @@ namespace testing {
 
 class FeatureMapTest : public testing::Test {
   protected:
-    void insert(std::string pkg, std::string ftr, int num_locs) {
-      fm.insert(Core::PackageID(dummy_string, std::make_shared<std::string>(pkg)),
-                Core::Feature(Core::FeatureID("", ftr), std::vector<Core::Location>(num_locs, dummy)));
+    void insert(std::string pkg, std::string ftr, size_t num_locs) {
+      fm.insert(Core::PackageID(std::make_shared<std::string>(""), std::make_shared<std::string>(pkg)),
+                Core::Feature(Core::FeatureID("", ftr), num_locs));
     }
 
     // sets up feature map with `num_mappings` mappings. for package i in
     // the feature map, it will have i+1 features ([0, i]), and for each
-    // feature j, it has j number of locations
+    // feature j, it has i locations
     void SetUp() override {
      for (int i = 0; i < num_mappings; i++) { // "packages"
         for (int j = 0; j <= i; j++) { // features + how many times they appear
@@ -30,13 +30,8 @@ class FeatureMapTest : public testing::Test {
 
     // thing we're testing
     Core::FeatureMap fm;
-
     // controls how many mapping we put into the map
-    const int num_mappings = 100;
-
-    // stuff to easily construct dummy features
-    std::shared_ptr<std::string> dummy_string = std::make_shared<std::string>("");
-    Core::Location dummy = Core::Location(dummy_string, dummy_string);
+    const int num_mappings = 1000;
 };
 
 TEST_F(FeatureMapTest, NoFilters) {

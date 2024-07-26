@@ -1,10 +1,8 @@
 [
   {
     "ftr_id": {
-      "name": "BinTypeQuery",
-      "type": "exe"
-    },
-    "min_locs": 1,
-    "max_locs": 121212312
+      "name": "NumInstructionsQuery",
+      "type": "instr"
+    }
   }
 ]

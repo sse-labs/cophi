@@ -30,8 +30,8 @@ void BinTypeQuery::runOn(Package const * const pkg, Query::Result * const res) c
     }
   }
 
-  if (execs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::EXE, execs);
-  if (libs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::LIB, libs);
+  if (execs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::EXE, execs.size(), execs);
+  if (libs.size() > 0) res->emplace(*static_cast<Query const *>(this), Type::LIB, libs.size(), libs);
 }
 
 }

@@ -33,6 +33,7 @@ jsonf FeatureID::json() const {
 
 Feature::Feature(const nlohmann::json &jftr) :
   fid(FeatureID(jftr["ftr_id"])),
+  num_locs(jftr["num_locations"]),
   locs(jftr["locations"].begin(), jftr["locations"].end())
 { }
 
@@ -40,6 +41,8 @@ jsonf Feature::json() const {
   jsonf ret = jsonf::object();
 
   ret["ftr_id"] = fid.json();
+
+  ret["num_locations"] = num_locs;
 
   jsonf jlocs = jsonf::array();
   for (const auto &loc: locs) {

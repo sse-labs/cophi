@@ -89,17 +89,32 @@ struct FeatureID {
 // example: a feature with query "BinTypeQuery" is about the binary types of the binaries in a
 //          package. it then either has the type "exe" or "lib", telling you the specific binary type
 struct Feature {
-  Feature(const Query &query, const size_t type, const std::vector<Location> &_locs)
-        : fid(query, type), locs(std::move(_locs)) {
+  Feature(const Query &query, const size_t type, const size_t _num_locs, const std::vector<Location> &_locs)
+        : fid(query, type), num_locs(_num_locs), locs(std::move(_locs)) {
+    assert(locs.size() <= num_locs);
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
-  Feature(const FeatureID fid, const std::vector<Location> &_locs)
-        : fid(fid), locs(std::move(_locs)) {
+  Feature(const Query &query, const size_t type, const size_t _num_locs)
+        : fid(query, type), num_locs(_num_locs), locs({}) {
+    assert(locs.size() <= num_locs);
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
-  Feature(const FeatureID fid) : Feature(fid, {}) {
+  Feature(const FeatureID fid, const size_t _num_locs, const std::vector<Location> &_locs)
+        : fid(fid), num_locs(_num_locs), locs(std::move(_locs)) {
+    assert(locs.size() <= num_locs);
+    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
+  }
+
+  Feature(const FeatureID fid, const size_t _num_locs)
+        : fid(fid), num_locs(_num_locs), locs({}) {
+    assert(locs.size() <= num_locs);
+    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
+  }
+
+  Feature(const FeatureID fid) : Feature(fid, 1, {}) {
+    assert(locs.size() <= num_locs);
     spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
   }
 
@@ -118,7 +133,11 @@ struct Feature {
   // holds the query+type info
   const FeatureID fid;
 
-  // all the locations where this feature was found in a specific package
+  // number locs where this feature was found
+  const size_t num_locs;
+
+  // specific locations where this feature was found in a package
+  // inv: locs <= num_locs
   const std::vector<Location> locs;
 };
 }
