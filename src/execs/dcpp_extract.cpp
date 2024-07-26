@@ -22,6 +22,7 @@ using namespace Utils;
 cl::opt<std::string> PackagesIndex("p", cl::Required, cl::desc("Path to packages index"), cl::value_desc("path"));
 cl::opt<std::string> AnalysisConfig("c", cl::Required, cl::desc("Path to query config"), cl::value_desc("path"));
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
+cl::opt<bool> Parallel("parallel", cl::desc("use multithreading"));
 
 int main(int argc, char* argv[]) {
   // setup
@@ -51,7 +52,8 @@ int main(int argc, char* argv[]) {
   // get the queries
   CorpusAnalyzer ca(conf);
   // run queries on the packages
-  std::unique_ptr<FeatureMap> fm = ca.evaluate(pkgs);
+  std::unique_ptr<FeatureMap> fm = Parallel ? ca.parallelEvaluate(pkgs)
+                                            : ca.evaluate(pkgs);
 
   // write out FeatureMap
   of << fm->json().dump(1, '\t');

@@ -22,12 +22,14 @@ FeatureMap::FeatureMap(const jsonf &jfm) {
 }
 
 void FeatureMap::insert(const PackageID pkgid, const Feature &ftr) {
+  _insertMutex.lock();
   if (this->containsPackage(pkgid)) { // key exists
     _M[pkgid].insert(std::move(ftr));
   } else {
     spdlog::trace("inserting feature `{}` into FeatureMap for the first time", ftr.fid.toString());
     _M[pkgid] = std::unordered_set<Feature> {ftr};
   }
+  _insertMutex.unlock();
 }
 
 bool FeatureMap::containsPackage(const PackageID &id) const noexcept {

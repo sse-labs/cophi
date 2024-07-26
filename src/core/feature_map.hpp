@@ -7,6 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -27,6 +28,7 @@ class FeatureMap {
     FeatureMap(const nlohmann::json &jfm);
 
     // if kv mapping doesn't exist, creates it, otherwise adds ftr to _M[pkgid]
+    // thread safe (i think)
     void insert(const PackageID pkgid, const Feature &ftr);
     //void insert(const std::string &key, const Location &loc);
 
@@ -45,6 +47,8 @@ class FeatureMap {
   private:
     // map from packages to the features found in those packages
     InternalMap _M;
+    // mutex for insert()
+    std::mutex _insertMutex;
     // FilteredFM need to have access to _M to iterate over it
     friend class FilteredFM;
 };

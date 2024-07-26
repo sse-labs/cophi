@@ -24,6 +24,9 @@ class CorpusAnalyzer {
 
     // takes in packages and produces feature map
     std::unique_ptr<FeatureMap> evaluate(std::vector<Package> &pkgs) const;
+
+    // same as above, but with multithreading
+    std::unique_ptr<FeatureMap> parallelEvaluate(std::vector<Package> &pkgs) const;
   private:
     // all the reified queries
     std::vector<std::unique_ptr<Query>> _queries;
