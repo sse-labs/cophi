@@ -1,4 +1,4 @@
-import argparse, logging, os, yaml
+import argparse, logging, os, random, yaml
 from scraper.bitcode_extractor import BitcodeExtractor
 
 ##############################
@@ -35,6 +35,18 @@ fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(fh)
 
+def get_packages_already_scraped(bitcode_dir: str) -> set[str]:
+  if not os.path.isdir(bitcode_dir):
+    return set()
+
+  ret = set()
+  for package in os.listdir(bitcode_dir):
+    package_dir = os.path.join(bitcode_dir, package)
+    if os.path.isdir(package_dir):
+      for version in os.listdir(package_dir):
+        ret.add(package + '/' + version)
+  return ret
+
 def get_first_version(conf):
   """Given a `config.yml` file for a recipe, extract the first version listed in it.
   Raise an error if it has no versions.
@@ -51,27 +63,35 @@ def get_first_version(conf):
 def main():
   args = parser.parse_args()
   recipes = os.path.join(args.index, 'recipes')
+  already_scraped = get_packages_already_scraped(args.output)
 
   num_errored = 0
-  num_scraped = 0
+  num_scraped = len(already_scraped)
 
-  be = BitcodeExtractor(args.index, args.output, logger)
+  be = BitcodeExtractor(args.index, args.output, already_scraped, logger)
 
-  # go through all the recipes
-  for recipe in os.listdir(recipes):
+  # go through recipes in a random order
+  recipe_dirs = os.listdir(recipes)
+  random.shuffle(recipe_dirs)
+  for recipe in recipe_dirs:
+    exit = False
+
     try:
       version = get_first_version(os.path.join(recipes, recipe, 'config.yml'))
-      if not be.have_tried_extracting(recipe, version) and be.extract_bitcode(recipe, version, check_version=False):
+      if be.have_tried_extracting(recipe, version):
+        logger.info(f"skipping {recipe}/{version}, already tried to extract")
+        continue
+      elif be.extract_bitcode(recipe, version, check_version=False):
         num_scraped += 1
         logger.info(f'{recipe}/{version} installed successfully')
       else:
-        logger.info(f'{recipe}/{version} failed to install')
+        logger.warning(f'{recipe}/{version} failed to install')
         num_errored += 1
     except Exception as exp:
       logger.error(f'unexpected error trying to extract bitcode from `{recipe}/{version}`: {exp}')
       num_errored += 1
     except KeyboardInterrupt:
-      break
+      exit = True
 
     logger.info('going though dependencies')
     n = be.extract_from_deps()
@@ -80,7 +100,9 @@ def main():
 
     logger.info(f'{num_scraped} packages successful, {num_errored} packages errored')
     
-    if num_scraped >= args.total:
+    # get rid of everything in the local cache
+    be.destroy_local_cache()
+    if num_scraped >= args.total or exit:
       break
   
   be.dump_output_json()

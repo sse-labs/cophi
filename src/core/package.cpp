@@ -90,4 +90,8 @@ bool Package::reify() {
   return success;
 }
 
+void Package::unreify() {
+  _rbins.clear();
+}
+
 }

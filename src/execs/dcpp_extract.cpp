@@ -52,11 +52,18 @@ int main(int argc, char* argv[]) {
   // get the queries
   CorpusAnalyzer ca(conf);
   // run queries on the packages
-  std::unique_ptr<FeatureMap> fm = Parallel ? ca.parallelEvaluate(pkgs)
-                                            : ca.evaluate(pkgs);
+  FeatureMap fm;
+  // std::unique_ptr<FeatureMap> fm = Parallel ? ca.parallelEvaluate(pkgs)
+  //                                           : ca.evaluate(pkgs);
+
+  if (Parallel) {
+    ca.parallelEvaluate(pkgs, fm, 5);
+  } else {
+    ca.evaluate(pkgs, fm, 5);
+  }
 
   // write out FeatureMap
-  of << fm->json().dump(1, '\t');
+  of << fm.json().dump(1, '\t');
   of.close();
   spdlog::info("feature map written out");
 

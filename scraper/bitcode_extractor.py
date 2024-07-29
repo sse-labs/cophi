@@ -18,7 +18,7 @@ class BitcodeExtractor:
             "cpp": "gclang++",
         }
 
-  def __init__(self, conan_index: str, output_folder: str, logger: Logger):
+  def __init__(self, conan_index: str, output_folder: str, already_scraped: set[str], logger: Logger):
     """Initializes BitcodeExtractor.
 
     Args:
@@ -37,7 +37,7 @@ class BitcodeExtractor:
     self.__output = OutputJSON()
 
     # set of packages we've tried to install (strings should be `recipe/version`)
-    self.__set_tried: set[str] = set()
+    self.__set_tried: set[str] = already_scraped
   
   def have_tried_extracting(self, recipe: str, version: str) -> bool:
     return f'{recipe}/{version}' in self.__set_tried
@@ -88,7 +88,15 @@ class BitcodeExtractor:
         num_successful += 1
     
     return num_successful
-
+  
+  # remove everything from the local conan cache
+  def destroy_local_cache(self):
+    self.__logger.info("clearing conan cache")
+    info = subprocess.run(['conan', 'remove', '-c', '-vquiet', '*'])
+    if info.returncode != 0:
+      self.__logger.warn("not able to clear local conan cache")
+    else:
+      self.__logger.info("cleared local conan cache")
   
   def __get_conf_file_path(self, recipe: str) -> str:
     """Given a recipe name, return the path to its `config.yml` file (contains all its versions)."""
@@ -181,6 +189,7 @@ class BitcodeExtractor:
           num_written += 1
     
     if num_written == 0: # remove dir if we didn't get any bitcode
+      self.__logger.debug(f"no bitcode in {recipe}/{version}")
       self.__remove_out_dir(recipe, version)
       return False
     # we write out the metadata stuff now

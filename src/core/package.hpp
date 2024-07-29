@@ -55,6 +55,8 @@ class Package {
     // to be reified
     bool reify();
 
+    void unreify();
+
     // returns id used to identify package
     const PackageID &getID() const { return _pid; }
     const std::vector<std::unique_ptr<ReifiedBinary>> &bins() const { return _rbins; }

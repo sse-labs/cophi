@@ -4,6 +4,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <mutex>
 #include <thread>
 
@@ -64,30 +65,37 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
   spdlog::info("queries reified");
 }
 
-std::unique_ptr<FeatureMap> CorpusAnalyzer::evaluate(std::vector<Package> &pkgs) const {
-  spdlog::info("reifing packages...");
-  // store ptrs to sucessfully reified packages in here
-  std::vector<Package*> reified_pkgs;
-  for (auto &pkg : pkgs) {
-    attemptReify(pkg, reified_pkgs);
-  }
-  spdlog::info("packages reified");
+void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
+  for (int i = 0; i < pkgs.size(); i += chunkSize) {
+    const size_t end_ind = std::min(pkgs.size(), size_t(i + chunkSize));
 
-  auto ret = std::make_unique<FeatureMap>();
-
-  for (const auto &query: _queries) {
-    const std::string queryName = query->getName();
-    spdlog::info("running {} on packages...", queryName);
-    for (auto const * const pkg : reified_pkgs) {
-      extractFeatures(pkg, query.get(), ret.get());
+    spdlog::info("reifing packages...");
+    // store ptrs to sucessfully reified packages in here
+    std::vector<Package*> reified_pkgs;
+    //for (auto &pkg : pkgs) {
+    for (int j = i; j < end_ind; j++) {
+      attemptReify(pkgs[j], reified_pkgs);
     }
-    spdlog::info("done running {} on packages", queryName);
+    spdlog::info("packages reified");
+
+    for (const auto &query: _queries) {
+      const std::string queryName = query->getName();
+      spdlog::info("running {} on packages...", queryName);
+
+      for (auto const * const pkg : reified_pkgs) {
+        extractFeatures(pkg, query.get(), &fm);
+      }
+      spdlog::info("done running {} on packages", queryName);
+    }
+
+    for (int j = i; j < end_ind; j++) {
+      pkgs[j].unreify();
+    }
+    spdlog::info("all queries done");
   }
-  spdlog::info("all queries done");
-  return ret;
 }
 
-std::unique_ptr<FeatureMap> CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs) const {
+void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
   spdlog::info("reifing packages...");
 
   // store ptrs to sucessfully reified packages in here
@@ -100,22 +108,18 @@ std::unique_ptr<FeatureMap> CorpusAnalyzer::parallelEvaluate(std::vector<Package
 
   spdlog::info("packages reified");
 
-  auto ret = std::make_unique<FeatureMap>();
-
   for (const auto &query: _queries) {
     const std::string queryName = query->getName();
     spdlog::info("running {} on packages...", queryName);
 
     std::vector<std::thread> extractFeaturesThreads;
     for (auto const * const pkg : reified_pkgs) {
-      extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), ret.get());
+      extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
     }
     for (auto &thrd : extractFeaturesThreads) thrd.join();
     spdlog::info("done running {} on packages", queryName);
   }
   spdlog::info("all queries done");
-  return ret;
 }
-
 
 } // namespace Core
