@@ -52,6 +52,7 @@ file(GLOB_RECURSE SRC_FILES src/core/*.cpp src/utils/*.cpp)
 ####################
 set(EXTRACT_EXECUTABLE dcpp_extract)
 set(FILTER_EXECUTABLE dcpp_filter)
+set(EQUAL_EXECUTABLE dcpp_equal)
 
 # executable for extracting a feature map
 add_executable(${EXTRACT_EXECUTABLE} src/execs/dcpp_extract.cpp ${SRC_FILES})
@@ -66,6 +67,13 @@ target_include_directories(${FILTER_EXECUTABLE} PRIVATE src)
 target_link_libraries(${FILTER_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
                                                    nlohmann_json::nlohmann_json 
                                                    spdlog::spdlog)
+
+# executable for comparing two feature maps
+add_executable(${EQUAL_EXECUTABLE} src/execs/dcpp_equal.cpp ${SRC_FILES})
+target_include_directories(${EQUAL_EXECUTABLE} PRIVATE src)
+target_link_libraries(${EQUAL_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
+                                                  nlohmann_json::nlohmann_json 
+                                                  spdlog::spdlog)
 
 #############
 # Add Tests #
