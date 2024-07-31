@@ -1,6 +1,7 @@
 #include <core/feature_query.hpp>
 #include <core/queries/bintype_query.hpp>
 #include <core/query_registry.hpp>
+#include <core/queries/utils/query_utils.hpp>
 
 #include <phasar.h>
 
@@ -16,14 +17,7 @@ void BinTypeQuery::runOn(Package const * const pkg, Query::Result * const res) c
   std::vector<Location> libs;
 
   for (auto &bin : pkg->bins()) {
-    std::vector<std::string> entries {"main"};
-    
-    auto ptr = bin->getModuleCopy();
-    psr::HelperAnalyses HA(std::move(ptr), entries);
-
-    const auto *test = HA.getProjectIRDB().getFunctionDefinition("main");
-
-    if (test) {
+    if (Utils::isExecutable(bin->getModuleRef())) {
       execs.emplace_back(bin->sharedName(), bin->sharedPath());
     } else {
       libs.emplace_back(bin->sharedName(), bin->sharedPath());
