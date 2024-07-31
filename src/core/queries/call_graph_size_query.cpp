@@ -1,5 +1,6 @@
 #include <core/feature_query.hpp>
 #include <core/queries/call_graph_size_query.hpp>
+#include <core/queries/utils/query_utils.hpp>
 #include <core/query_registry.hpp>
 
 #include <phasar.h>
@@ -11,6 +12,18 @@ REGISTER_QUERY(CallGraphSizeQuery)
 
 namespace Core::Queries {
 
+static std::vector<std::string> getEntryPoints(const llvm::Module &mod) {
+  if (Utils::isExecutable(mod)) { // executable
+    return std::vector<std::string> {"main"};
+  } else { // library, we use all functions as entrypoints
+    std::vector<std::string> ret;
+    for (const auto &F : mod) {
+      ret.emplace_back(F.getName());
+    }
+    return ret;
+  }
+}
+
 void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const res) const {
   size_t num_bins = pkg->bins().size();
   
@@ -18,9 +31,11 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
   std::vector<std::pair<size_t, size_t>> cg_sizes(num_bins, std::make_pair(0, 0));
 
   for (size_t i = 0; i < num_bins; i++) {
-    auto mod = pkg->bins()[i]->getModuleCopy();
+    auto &bin = pkg->bins()[i];
+    auto entrypoints = getEntryPoints(bin->getModuleRef());
 
-    psr::HelperAnalyses HA(std::move(mod), {"main"}); // what should the entry points be??????????
+    auto mod = bin->getModuleCopy();
+    psr::HelperAnalyses HA(std::move(mod), entrypoints);
 
     const auto &cg = HA.getICFG().getCallGraph();
 
