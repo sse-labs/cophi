@@ -1,3 +1,5 @@
+#include <core/attribute.hpp>
+#include <core/attr_mapping.hpp>
 #include <core/feature_query.hpp>
 #include <core/queries/call_graph_size_query.hpp>
 #include <core/queries/utils/query_utils.hpp>
@@ -27,8 +29,8 @@ static std::vector<std::string> getEntryPoints(const llvm::Module &mod) {
 void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const res) const {
   size_t num_bins = pkg->bins().size();
   
-  // vector<(num_nodes, num_edges)>
-  std::vector<std::pair<size_t, size_t>> cg_sizes(num_bins, std::make_pair(0, 0));
+  std::vector<AttrMapping> num_nodes_mapping;
+  std::vector<AttrMapping> num_edges_mapping;
 
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
@@ -45,7 +47,8 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
     // llvm::DenseMap<F, FunctionVertexTy *> CallersOf{};
 
     // setting num nodes
-    cg_sizes[i].first = cg.getNumVertexFunctions(); // is this right? i dunno
+    size_t num_nodes = cg.getNumVertexFunctions(); // is this right? i dunno
+    num_nodes_mapping.emplace_back(bin->getID(), Attribute(num_nodes));
 
     // finding out num edges
     size_t num_edges = 0;
@@ -53,16 +56,13 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
       const auto it = cg.getCalleesOfCallAt(site);
       num_edges += std::distance(it.begin(), it.end());
     }
-    cg_sizes[i].second = num_edges; // change
+    num_edges_mapping.emplace_back(bin->getID(), Attribute(num_edges));
   }
+  FeatureID fid_node(*static_cast<Query const *>(this), Type::NODE, Attribute::Type::U_INT);
+  FeatureID fid_edge(*static_cast<Query const *>(this), Type::EDGE, Attribute::Type::U_INT);
 
-  for (size_t i = 0; i < num_bins; i++) {
-    const auto &bin = pkg->bins()[i];
-    std::vector<Location> locs{Location(bin->sharedName(), bin->sharedPath())};
-
-    res->emplace(*static_cast<Query const *>(this), Type::NODE, cg_sizes[i].first, locs);
-    res->emplace(*static_cast<Query const *>(this), Type::EDGE, cg_sizes[i].second, locs);
-  }
+  res->emplace(fid_node, num_nodes_mapping);
+  res->emplace(fid_edge, num_edges_mapping);
 }
 
 }

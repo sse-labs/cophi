@@ -12,7 +12,7 @@ namespace Core {
 struct Filter {
 // the feature has to appear with [min_locs, max_locs] appearances
 Filter(const std::string &query_name, const std::string &query_type, const size_t min, const size_t max) :
-       fid(query_name, query_type), min_locs(min), max_locs(max) { }
+       fid(query_name, query_type, Attribute::Type::UNIT), min_locs(min), max_locs(max) { }
 
 // the feature has to appear with [min_locs, inf) appearances
 Filter(const std::string &query_name, const std::string &query_type, const size_t min) :

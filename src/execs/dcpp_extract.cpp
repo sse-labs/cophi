@@ -1,6 +1,9 @@
 #include <core/corpus_analyzer.hpp>
 #include <core/package.hpp>
 #include <core/feature_map.hpp>
+
+#include <core/attribute.hpp>
+
 #include <utils/exec_utils.hpp>
 #include <utils/json_utils.hpp>
 #include <utils/logging.hpp>

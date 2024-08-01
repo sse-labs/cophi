@@ -77,8 +77,8 @@ class Package {
 template<>
 struct std::hash<Core::PackageID> {
   std::size_t operator()(const Core::PackageID &pid) const {
-    return (std::hash<std::string>()(*pid.name)
-         ^ (std::hash<std::string>()(*pid.version) << 1));
+    return std::hash<std::string>()(*pid.name)
+         ^ std::hash<std::string>()(*pid.version);
   }
 };
 

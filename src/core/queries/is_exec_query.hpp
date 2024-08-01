@@ -1,5 +1,5 @@
-#ifndef DELPHICPP_BINTYPEQUERY_HPP_
-#define DELPHICPP_BINTYPEQUERY_HPP_
+#ifndef DELPHICPP_ISEXECQUERY_HPP_
+#define DELPHICPP_ISEXECQUERY_HPP_
 
 #include <core/package.hpp>
 #include <core/feature_query.hpp>
@@ -8,15 +8,14 @@
 #include <vector>
 
 namespace Core::Queries {
-  class BinTypeQuery : public Query {
+  class IsExecQuery : public Query {
     public:
-      BinTypeQuery(std::string name) : Query(name) {  }
-      ~BinTypeQuery() = default;
+      IsExecQuery(std::string name) : Query(name) {  }
+      ~IsExecQuery() = default;
 
-      static inline std::vector<std::string> types{"exe", "lib"};
+      static inline std::vector<std::string> types{"unit"};
       enum Type { 
-        EXE = 0,
-        LIB = 1,
+        UNIT = 0,
       };
 
       std::vector<std::string> &getTypes() const override { return types; }
@@ -24,4 +23,4 @@ namespace Core::Queries {
   };
 }
 
-#endif  // DELPHICPP_BINTYPEQUERY_HPP_
+#endif  // DELPHICPP_ISEXECQUERY_HPP_

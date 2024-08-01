@@ -26,7 +26,7 @@ void FeatureMap::insert(const PackageID pkgid, const Feature &ftr) {
   if (this->containsPackage(pkgid)) { // key exists
     _M[pkgid].insert(std::move(ftr));
   } else {
-    spdlog::trace("inserting feature `{}` into FeatureMap for the first time", ftr.fid.toString());
+    spdlog::trace("inserting feature `{}` into FeatureMap for the first time", ftr.getUniqueId().toString());
     _M[pkgid] = std::unordered_set<Feature> {ftr};
   }
   _insertMutex.unlock();
@@ -93,7 +93,7 @@ bool FMIterator::currentSatisfies() const {
     const auto it = ftrs.find(filter.fid);
     
     if (it != ftrs.end()) {
-      const int num_locs = it->num_locs;
+      const int num_locs = it->numLocs();
       if (num_locs < filter.min_locs || num_locs > filter.max_locs) {
         return false;
       }

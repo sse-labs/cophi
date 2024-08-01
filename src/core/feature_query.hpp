@@ -1,6 +1,9 @@
 #ifndef DELPHICPP_FEATUREQUERY_HPP_
 #define DELPHICPP_FEATUREQUERY_HPP_
 
+#include <core/attribute.hpp>
+#include <core/attr_mapping.hpp>
+#include <core/binary.hpp>
 #include <core/package.hpp>
 
 #include <nlohmann/json.hpp>
@@ -13,14 +16,14 @@
 
 namespace Core {
 // need to forward declare it
-struct Feature;
+class Feature;
 
 // Interface
 // represents an operation which takes a package and produces
 // a set of features regarding that package
 class Query {
   public:
-    typedef std::unordered_set<struct Feature> Result;
+    typedef std::unordered_set<Feature> Result;
 
     virtual ~Query() = default;
 
@@ -38,42 +41,26 @@ class Query {
     const std::string _name;
 };
 
-// represents where a feature was found
-// right now, just holds info on which binary the feature was found in
-// might be good to add more specific info in the future (like specific method, instruction)
-struct Location {
-  Location(const std::shared_ptr<std::string> &bname,
-           const std::shared_ptr<std::string> &bpath) :
-  bin_name(bname), bin_path(bpath) {  }
-
-  Location(const nlohmann::json &jloc);
-  
-  Location &operator=(const Location&) = default;
-
-  nlohmann::json json() const;
-
-  std::shared_ptr<std::string> bin_name;
-  std::shared_ptr<std::string> bin_path;
-};
-
 // unique id for a feature
 struct FeatureID {
   public:
-    FeatureID(const Query &query, const size_t type) {
+    FeatureID(const Query &query, const size_t type, const Attribute::Type attr_type) {
       // if this is false, then `type` is not referring to a valid feature of `query`
       assert(type < query.getTypes().size());
 
       _query_name = query.getName();
       _query_type = query.getTypes()[type];
+      _attr_type = attr_type;
     }
 
-    FeatureID(const std::string &query, const std::string type) : 
-             _query_name(query), _query_type(type) { }
+    FeatureID(const std::string &query, const std::string type, const Attribute::Type attr_type) : 
+             _query_name(query), _query_type(type), _attr_type(attr_type) { }
     
     FeatureID(const nlohmann::json &jfid);
 
     const std::string &name() const {return _query_name; }
     const std::string &type() const {return _query_type; }
+    const Attribute::Type attr_type() const {return _attr_type; }
     std::string toString() const { return _query_name + "/" + _query_type; }
 
     nlohmann::json json() const;
@@ -81,6 +68,7 @@ struct FeatureID {
   private:
     std::string _query_name;
     std::string _query_type;
+    Attribute::Type _attr_type;
 };
 
 // a feature consists of query + type. the query tells you the general scope of
@@ -88,67 +76,45 @@ struct FeatureID {
 //
 // example: a feature with query "BinTypeQuery" is about the binary types of the binaries in a
 //          package. it then either has the type "exe" or "lib", telling you the specific binary type
-struct Feature {
-  Feature(const Query &query, const size_t type, const size_t _num_locs, const std::vector<Location> &_locs)
-        : fid(query, type), num_locs(_num_locs), locs(std::move(_locs)) {
-    assert(locs.size() <= num_locs);
-    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
-  }
+class Feature {
+  public:
+    Feature(const FeatureID fid, std::vector<AttrMapping> data) :
+                       _fid(fid),        _data(std::move(data)) {  }
+    
+    Feature(const FeatureID fid) : Feature(fid, {}) {  }
 
-  Feature(const Query &query, const size_t type, const size_t _num_locs)
-        : fid(query, type), num_locs(_num_locs), locs({}) {
-    assert(locs.size() <= num_locs);
-    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
-  }
+    // json ctor, can throw
+    Feature(const nlohmann::json &jftr);
 
-  Feature(const FeatureID fid, const size_t _num_locs, const std::vector<Location> &_locs)
-        : fid(fid), num_locs(_num_locs), locs(std::move(_locs)) {
-    assert(locs.size() <= num_locs);
-    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
-  }
+    const FeatureID &getUniqueId() const { return _fid; }
 
-  Feature(const FeatureID fid, const size_t _num_locs)
-        : fid(fid), num_locs(_num_locs), locs({}) {
-    assert(locs.size() <= num_locs);
-    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
-  }
+    size_t numLocs() const { return _data.size(); }
 
-  Feature(const FeatureID fid) : Feature(fid, 1, {}) {
-    assert(locs.size() <= num_locs);
-    spdlog::trace("successfully constructed Feature `{}`", this->getUniqueId().toString()); 
-  }
+    bool operator==(const Feature &other) const {
+      return _fid.name() == other._fid.name() &&
+             _fid.type() == other._fid.type() &&
+             _fid.attr_type() == other._fid.attr_type();
+    }
 
-  // json ctor, can throw
-  Feature(const nlohmann::json &jftr);
+    nlohmann::json json() const;
+  private:
+    // holds the query+type info
+    const FeatureID _fid;
+    std::vector<AttrMapping> _data;
 
-  const FeatureID &getUniqueId() const { return fid; }
-
-  bool operator==(const Feature &other) const {
-    return fid.name() == other.fid.name() &&
-           fid.type() == other.fid.type();
-  }
-
-  nlohmann::json json() const;
-
-  // holds the query+type info
-  const FeatureID fid;
-
-  // number locs where this feature was found
-  const size_t num_locs;
-
-  // specific locations where this feature was found in a package
-  // inv: locs <= num_locs
-  const std::vector<Location> locs;
+    // IMPORTANT inv
+    // forall d in _data. _fid._type == d.getAttr().type()
 };
 }
 
-// so we can put features in a set
+// provide hash for feature so we can put it in a set
 template<>
 struct std::hash<Core::Feature> {
   std::size_t operator()(const Core::Feature &ftr) const {
-    const auto fid = ftr.fid;
-    return (std::hash<std::string>()(fid.name())
-         ^ (std::hash<std::string>()(fid.type()) << 1));
+    const auto fid = ftr.getUniqueId();
+    return std::hash<std::string>()(fid.name())
+         ^ std::hash<std::string>()(fid.type())
+         ^ std::hash<int>()(static_cast<int>(fid.attr_type()));
   }
 };
 

@@ -13,9 +13,9 @@ namespace Core::Queries {
       NumInstructionsQuery(std::string name) : Query(name) {  }
       ~NumInstructionsQuery() = default;
 
-      static inline std::vector<std::string> types{"instr"};
+      static inline std::vector<std::string> types{"unit"};
       enum Type { 
-        INSTR = 0
+        UNIT = 0
       };
 
       std::vector<std::string> &getTypes() const override { return types; }
