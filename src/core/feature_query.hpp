@@ -97,6 +97,11 @@ class Feature {
     }
 
     nlohmann::json json() const;
+
+    // iter stuff
+    using const_iterator = std::vector<AttrMapping>::const_iterator;
+    const_iterator begin() const noexcept { return _data.cbegin(); }
+    const_iterator end() const noexcept { return _data.cend(); }
   private:
     // holds the query+type info
     const FeatureID _fid;

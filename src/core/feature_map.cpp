@@ -90,14 +90,9 @@ bool FMIterator::currentSatisfies() const {
   const auto ftrs = _it->second;
 
   for (const auto &filter : _filters) {
-    const auto it = ftrs.find(filter.fid);
+    const auto it = ftrs.find(filter.getFID());
     
-    if (it != ftrs.end()) {
-      const int num_locs = it->numLocs();
-      if (num_locs < filter.min_locs || num_locs > filter.max_locs) {
-        return false;
-      }
-    } else {
+    if (it == ftrs.end() || !filter.test(*it)) {
       return false;
     }
   }
@@ -116,7 +111,7 @@ FMIterator &FMIterator::operator++() {
 
 FMIterator::package_features FMIterator::operator*() {
   if (_it == _fm._M.end()) {
-    
+    throw std::runtime_error("dereferenced FMIterator past the end");
   }
 
   const PackageID &pkgid = _it->first;
@@ -125,7 +120,7 @@ FMIterator::package_features FMIterator::operator*() {
   // getting the features in the filter
   std::vector<const Feature *> ftrs;
   for (const auto &fltr : _filters) {
-    auto *ftr_ref = &*ftr_set.find(fltr.fid);
+    auto *ftr_ref = &*ftr_set.find(fltr.getFID());
     ftrs.push_back(ftr_ref);
   }
 
