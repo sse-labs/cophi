@@ -47,7 +47,7 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
     // llvm::DenseMap<F, FunctionVertexTy *> CallersOf{};
 
     // setting num nodes
-    size_t num_nodes = cg.getNumVertexFunctions(); // is this right? i dunno
+    size_t num_nodes = cg.size(); // is this right? i dunno
     num_nodes_mapping.emplace_back(bin->getID(), Attribute(num_nodes));
 
     // finding out num edges
