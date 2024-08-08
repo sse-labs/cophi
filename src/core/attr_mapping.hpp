@@ -9,6 +9,7 @@ using jsonf = nlohmann::json;
 
 #include <string>
 #include <variant>
+#include <unordered_map>
 
 namespace Core {
 

@@ -102,6 +102,9 @@ class Feature {
     using const_iterator = std::vector<AttrMapping>::const_iterator;
     const_iterator begin() const noexcept { return _data.cbegin(); }
     const_iterator end() const noexcept { return _data.cend(); }
+
+    // only for testing
+    const std::vector<AttrMapping> &getData() const { return _data; }
   private:
     // holds the query+type info
     const FeatureID _fid;

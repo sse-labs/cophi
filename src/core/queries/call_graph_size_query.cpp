@@ -47,7 +47,7 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
     // llvm::DenseMap<F, FunctionVertexTy *> CallersOf{};
 
     // setting num nodes
-    size_t num_nodes = cg.size(); // is this right? i dunno
+    size_t num_nodes = cg.size();
     num_nodes_mapping.emplace_back(bin->getID(), Attribute(num_nodes));
 
     // finding out num edges
@@ -56,6 +56,7 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
       const auto it = cg.getCalleesOfCallAt(site);
       num_edges += std::distance(it.begin(), it.end());
     }
+
     num_edges_mapping.emplace_back(bin->getID(), Attribute(num_edges));
   }
   FeatureID fid_node(*static_cast<Query const *>(this), Type::NODE, Attribute::Type::U_INT);
