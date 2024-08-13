@@ -1,4 +1,6 @@
 [
-  "BinTypeQuery",
+  "CallGraphSizeQuery",
+  "IsExecQuery",
+  "LongestInheritanceChainQuery",
   "NumInstructionsQuery"
 ]
