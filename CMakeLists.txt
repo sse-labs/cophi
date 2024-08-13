@@ -80,6 +80,14 @@ target_link_libraries(${EQUAL_EXECUTABLE} PRIVATE phasar::llvm_ifdside
 #############
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  # queries test
+  add_executable(query_tests tests/query_tests.cpp ${SRC_FILES})
+  target_include_directories(query_tests PRIVATE src )
+  target_link_libraries(query_tests PRIVATE phasar::llvm_ifdside 
+                                            nlohmann_json::nlohmann_json 
+                                            spdlog::spdlog
+                                            GTest::gtest_main)
+
   # filter test
   add_executable(filter_test tests/filter_test.cpp ${SRC_FILES})
   target_include_directories(filter_test PRIVATE src )
