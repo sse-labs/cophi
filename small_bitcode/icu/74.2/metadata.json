@@ -1,0 +1,34 @@
+{
+    "Local Cache": {
+        "icu/74.2": {
+            "revisions": {
+                "129a9b08abace8b2c748a567fc9b843a": {
+                    "timestamp": 1721994276.06145,
+                    "packages": {
+                        "ad421df7123eac873205112ca63730fcdf1f2137": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.cppstd": "gnu17",
+                                    "compiler.libcxx": "libstdc++11",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "data_packaging": "archive",
+                                    "fPIC": "True",
+                                    "shared": "False",
+                                    "with_dyload": "True",
+                                    "with_extras": "False",
+                                    "with_icuio": "True"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

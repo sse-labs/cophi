@@ -1,0 +1,47 @@
+{
+    "Local Cache": {
+        "harfbuzz/8.3.0": {
+            "revisions": {
+                "c83405ed297bad6c9e9587e2a19c686a": {
+                    "timestamp": 1721994276.0751576,
+                    "packages": {
+                        "93df0b466732c9500ae5d46f9d37e4b70d5c419a": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.cppstd": "gnu17",
+                                    "compiler.libcxx": "libstdc++11",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False",
+                                    "with_freetype": "True",
+                                    "with_glib": "True",
+                                    "with_icu": "False",
+                                    "with_subset": "False"
+                                },
+                                "requires": [
+                                    "brotli/1.1.Z",
+                                    "bzip2/1.0.Z",
+                                    "freetype/2.13.Z",
+                                    "glib/2.78.Z",
+                                    "libelf/0.8.Z",
+                                    "libffi/3.4.Z",
+                                    "libmount/2.39.Z",
+                                    "libpng/1.6.Z",
+                                    "libselinux/3.5.Z",
+                                    "pcre2/10.42.Z",
+                                    "zlib/1.3.Z"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

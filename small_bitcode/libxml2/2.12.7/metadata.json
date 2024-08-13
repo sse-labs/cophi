@@ -1,0 +1,61 @@
+{
+    "Local Cache": {
+        "libxml2/2.12.7": {
+            "revisions": {
+                "737a1eba03113d1aa22d67579ced7d5e": {
+                    "timestamp": 1721994276.3931289,
+                    "packages": {
+                        "e304ecc5e9a603720e1f3b9ac28142bf1aed8d6d": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "c14n": "True",
+                                    "catalog": "True",
+                                    "fPIC": "True",
+                                    "ftp": "True",
+                                    "html": "True",
+                                    "http": "True",
+                                    "iconv": "True",
+                                    "icu": "False",
+                                    "include_utils": "True",
+                                    "iso8859x": "True",
+                                    "legacy": "True",
+                                    "lzma": "False",
+                                    "mem-debug": "False",
+                                    "output": "True",
+                                    "pattern": "True",
+                                    "push": "True",
+                                    "python": "False",
+                                    "reader": "True",
+                                    "regexps": "True",
+                                    "sax1": "True",
+                                    "schemas": "True",
+                                    "schematron": "True",
+                                    "shared": "False",
+                                    "threads": "True",
+                                    "tree": "True",
+                                    "valid": "True",
+                                    "writer": "True",
+                                    "xinclude": "True",
+                                    "xpath": "True",
+                                    "xptr": "True",
+                                    "zlib": "True"
+                                },
+                                "requires": [
+                                    "libiconv/1.17.Z",
+                                    "zlib/1.3.Z"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "Local Cache": {
+        "expat/2.6.2": {
+            "revisions": {
+                "2d385d0d50eb5561006a7ff9e356656b": {
+                    "timestamp": 1721994276.001768,
+                    "packages": {
+                        "a31233b4bb35ca20a966b5f6b49de26b49335a13": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "char_type": "char",
+                                    "fPIC": "True",
+                                    "large_size": "False",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

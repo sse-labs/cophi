@@ -1,0 +1,32 @@
+{
+    "Local Cache": {
+        "libusb/1.0.26": {
+            "revisions": {
+                "c0c00750b383839aa140a0be628d552c": {
+                    "timestamp": 1721993691.9690082,
+                    "packages": {
+                        "d38c3b0c402e147db9857dc494fc660af618fa29": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "enable_udev": "True",
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                },
+                                "requires": [
+                                    "libudev/system"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

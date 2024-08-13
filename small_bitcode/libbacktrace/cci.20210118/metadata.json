@@ -1,0 +1,28 @@
+{
+    "Local Cache": {
+        "libbacktrace/cci.20210118": {
+            "revisions": {
+                "ec1aa63bbc10145c6a299e68e711670c": {
+                    "timestamp": 1721993721.050431,
+                    "packages": {
+                        "d954c05e8e9a90add1f6e99d4ef82d8ba3a8a73b": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

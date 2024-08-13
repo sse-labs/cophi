@@ -1,0 +1,29 @@
+{
+    "Local Cache": {
+        "bzip2/1.0.8": {
+            "revisions": {
+                "457c272f7da34cb9c67456dd217d36c4": {
+                    "timestamp": 1721993721.0371773,
+                    "packages": {
+                        "fb6b2cd99fc378d71022d9f9a2813901c31d5c37": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "build_executable": "True",
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

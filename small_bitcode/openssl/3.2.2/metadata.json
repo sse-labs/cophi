@@ -1,0 +1,89 @@
+{
+    "Local Cache": {
+        "openssl/3.2.2": {
+            "revisions": {
+                "899583c694f9deccec74dbe0bbc65a15": {
+                    "timestamp": 1721994275.8306448,
+                    "packages": {
+                        "6d990a8025d821a4e1b2a777476a535eca3c048b": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "386": "False",
+                                    "enable_trace": "False",
+                                    "enable_weak_ssl_ciphers": "False",
+                                    "fPIC": "True",
+                                    "no_apps": "False",
+                                    "no_aria": "False",
+                                    "no_asm": "False",
+                                    "no_async": "False",
+                                    "no_autoload_config": "False",
+                                    "no_bf": "False",
+                                    "no_blake2": "False",
+                                    "no_camellia": "False",
+                                    "no_cast": "False",
+                                    "no_chacha": "False",
+                                    "no_cms": "False",
+                                    "no_comp": "False",
+                                    "no_ct": "False",
+                                    "no_deprecated": "False",
+                                    "no_des": "False",
+                                    "no_dgram": "False",
+                                    "no_dh": "False",
+                                    "no_dsa": "False",
+                                    "no_dso": "False",
+                                    "no_ec": "False",
+                                    "no_ecdh": "False",
+                                    "no_ecdsa": "False",
+                                    "no_engine": "False",
+                                    "no_filenames": "False",
+                                    "no_fips": "False",
+                                    "no_gost": "False",
+                                    "no_idea": "False",
+                                    "no_legacy": "False",
+                                    "no_md2": "True",
+                                    "no_md4": "False",
+                                    "no_mdc2": "False",
+                                    "no_module": "False",
+                                    "no_ocsp": "False",
+                                    "no_pinshared": "False",
+                                    "no_rc2": "False",
+                                    "no_rc4": "False",
+                                    "no_rc5": "False",
+                                    "no_rfc3779": "False",
+                                    "no_rmd160": "False",
+                                    "no_seed": "False",
+                                    "no_sm2": "False",
+                                    "no_sm3": "False",
+                                    "no_sm4": "False",
+                                    "no_sock": "False",
+                                    "no_srp": "False",
+                                    "no_srtp": "False",
+                                    "no_sse2": "False",
+                                    "no_ssl": "False",
+                                    "no_ssl3": "False",
+                                    "no_stdio": "False",
+                                    "no_threads": "False",
+                                    "no_tls1": "False",
+                                    "no_ts": "False",
+                                    "no_whirlpool": "False",
+                                    "no_zlib": "False",
+                                    "shared": "False"
+                                },
+                                "requires": [
+                                    "zlib/1.3.Z"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

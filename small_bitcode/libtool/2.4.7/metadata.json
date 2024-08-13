@@ -1,0 +1,28 @@
+{
+    "Local Cache": {
+        "libtool/2.4.7": {
+            "revisions": {
+                "08316dad5c72c541ed21e039e4cf217b": {
+                    "timestamp": 1721994276.3101652,
+                    "packages": {
+                        "d954c05e8e9a90add1f6e99d4ef82d8ba3a8a73b": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

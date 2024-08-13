@@ -1,0 +1,1699 @@
+[
+	{
+		"pkg_name": "libfreenect",
+		"pkg_version": "0.7.0",
+		"bins": [
+			{
+				"bin_name": "libfreenect.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libfreenect/0.7.0/libfreenect.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			},
+			"requires": [
+				"libudev/system",
+				"libusb/1.0.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "icu",
+		"pkg_version": "74.2",
+		"bins": [
+			{
+				"bin_name": "genrb",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/genrb.bc"
+			},
+			{
+				"bin_name": "gendict",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gendict.bc"
+			},
+			{
+				"bin_name": "gennorm2",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gennorm2.bc"
+			},
+			{
+				"bin_name": "gencnval",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gencnval.bc"
+			},
+			{
+				"bin_name": "libicutu.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/libicutu.a.bc"
+			},
+			{
+				"bin_name": "icuexportdata",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/icuexportdata.bc"
+			},
+			{
+				"bin_name": "genccode",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/genccode.bc"
+			},
+			{
+				"bin_name": "genbrk",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/genbrk.bc"
+			},
+			{
+				"bin_name": "libicutest.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/libicutest.a.bc"
+			},
+			{
+				"bin_name": "derb",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/derb.bc"
+			},
+			{
+				"bin_name": "icuinfo",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/icuinfo.bc"
+			},
+			{
+				"bin_name": "pkgdata",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/pkgdata.bc"
+			},
+			{
+				"bin_name": "gencfu",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gencfu.bc"
+			},
+			{
+				"bin_name": "libicudata.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/libicudata.a.bc"
+			},
+			{
+				"bin_name": "libicuio.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/libicuio.a.bc"
+			},
+			{
+				"bin_name": "escapesrc",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/escapesrc.bc"
+			},
+			{
+				"bin_name": "gencmn",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gencmn.bc"
+			},
+			{
+				"bin_name": "icupkg",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/icupkg.bc"
+			},
+			{
+				"bin_name": "makeconv",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/makeconv.bc"
+			},
+			{
+				"bin_name": "gensprep",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/icu/74.2/gensprep.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.cppstd": "gnu17",
+				"compiler.libcxx": "libstdc++11",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"data_packaging": "archive",
+				"fPIC": "True",
+				"shared": "False",
+				"with_dyload": "True",
+				"with_extras": "False",
+				"with_icuio": "True"
+			}
+		}
+	},
+	{
+		"pkg_name": "gperf",
+		"pkg_version": "3.1",
+		"bins": [
+			{
+				"bin_name": "gperf",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/gperf/3.1/gperf.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			}
+		}
+	},
+	{
+		"pkg_name": "libpq",
+		"pkg_version": "15.4",
+		"bins": [
+			{
+				"bin_name": "libpgport.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/libpgport.a.bc"
+			},
+			{
+				"bin_name": "libpgport_shlib.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/libpgport_shlib.a.bc"
+			},
+			{
+				"bin_name": "pg_config",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/pg_config.bc"
+			},
+			{
+				"bin_name": "libpgcommon.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/libpgcommon.a.bc"
+			},
+			{
+				"bin_name": "libpq.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/libpq.a.bc"
+			},
+			{
+				"bin_name": "libpgcommon_shlib.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libpq/15.4/libpgcommon_shlib.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"disable_rpath": "False",
+				"fPIC": "True",
+				"shared": "False",
+				"with_openssl": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "odbc",
+		"pkg_version": "2.3.11",
+		"bins": [
+			{
+				"bin_name": "dltest",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/dltest.bc"
+			},
+			{
+				"bin_name": "slencheck",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/slencheck.bc"
+			},
+			{
+				"bin_name": "odbc_config",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/odbc_config.bc"
+			},
+			{
+				"bin_name": "odbcinst",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/odbcinst.bc"
+			},
+			{
+				"bin_name": "iusql",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/iusql.bc"
+			},
+			{
+				"bin_name": "libodbcinst.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/libodbcinst.a.bc"
+			},
+			{
+				"bin_name": "isql",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/isql.bc"
+			},
+			{
+				"bin_name": "libodbccr.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/libodbccr.a.bc"
+			},
+			{
+				"bin_name": "libodbc.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/odbc/2.3.11/libodbc.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False",
+				"with_libiconv": "True"
+			},
+			"requires": [
+				"libiconv/1.17.Z",
+				"libtool/2.4.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "openssl",
+		"pkg_version": "3.2.2",
+		"bins": [
+			{
+				"bin_name": "libssl.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/openssl/3.2.2/libssl.a.bc"
+			},
+			{
+				"bin_name": "openssl",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/openssl/3.2.2/openssl.bc"
+			},
+			{
+				"bin_name": "legacy.so",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/openssl/3.2.2/legacy.so.bc"
+			},
+			{
+				"bin_name": "fips.so",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/openssl/3.2.2/fips.so.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"386": "False",
+				"enable_trace": "False",
+				"enable_weak_ssl_ciphers": "False",
+				"fPIC": "True",
+				"no_apps": "False",
+				"no_aria": "False",
+				"no_asm": "False",
+				"no_async": "False",
+				"no_autoload_config": "False",
+				"no_bf": "False",
+				"no_blake2": "False",
+				"no_camellia": "False",
+				"no_cast": "False",
+				"no_chacha": "False",
+				"no_cms": "False",
+				"no_comp": "False",
+				"no_ct": "False",
+				"no_deprecated": "False",
+				"no_des": "False",
+				"no_dgram": "False",
+				"no_dh": "False",
+				"no_dsa": "False",
+				"no_dso": "False",
+				"no_ec": "False",
+				"no_ecdh": "False",
+				"no_ecdsa": "False",
+				"no_engine": "False",
+				"no_filenames": "False",
+				"no_fips": "False",
+				"no_gost": "False",
+				"no_idea": "False",
+				"no_legacy": "False",
+				"no_md2": "True",
+				"no_md4": "False",
+				"no_mdc2": "False",
+				"no_module": "False",
+				"no_ocsp": "False",
+				"no_pinshared": "False",
+				"no_rc2": "False",
+				"no_rc4": "False",
+				"no_rc5": "False",
+				"no_rfc3779": "False",
+				"no_rmd160": "False",
+				"no_seed": "False",
+				"no_sm2": "False",
+				"no_sm3": "False",
+				"no_sm4": "False",
+				"no_sock": "False",
+				"no_srp": "False",
+				"no_srtp": "False",
+				"no_sse2": "False",
+				"no_ssl": "False",
+				"no_ssl3": "False",
+				"no_stdio": "False",
+				"no_threads": "False",
+				"no_tls1": "False",
+				"no_ts": "False",
+				"no_whirlpool": "False",
+				"no_zlib": "False",
+				"shared": "False"
+			},
+			"requires": [
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "m4",
+		"pkg_version": "1.4.19",
+		"bins": [
+			{
+				"bin_name": "m4",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/m4/1.4.19/m4.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			}
+		}
+	},
+	{
+		"pkg_name": "zlib",
+		"pkg_version": "1.3.1",
+		"bins": [
+			{
+				"bin_name": "libz.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/zlib/1.3.1/libz.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "glib",
+		"pkg_version": "2.78.3",
+		"bins": [
+			{
+				"bin_name": "libgobject-2.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/libgobject-2.0.a.bc"
+			},
+			{
+				"bin_name": "gapplication",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gapplication.bc"
+			},
+			{
+				"bin_name": "gsettings",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gsettings.bc"
+			},
+			{
+				"bin_name": "gio-querymodules",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gio-querymodules.bc"
+			},
+			{
+				"bin_name": "gobject-query",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gobject-query.bc"
+			},
+			{
+				"bin_name": "glib-compile-schemas",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/glib-compile-schemas.bc"
+			},
+			{
+				"bin_name": "glib-compile-resources",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/glib-compile-resources.bc"
+			},
+			{
+				"bin_name": "libglib-2.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/libglib-2.0.a.bc"
+			},
+			{
+				"bin_name": "gio-launch-desktop",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gio-launch-desktop.bc"
+			},
+			{
+				"bin_name": "libgthread-2.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/libgthread-2.0.a.bc"
+			},
+			{
+				"bin_name": "libgio-2.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/libgio-2.0.a.bc"
+			},
+			{
+				"bin_name": "gio",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gio.bc"
+			},
+			{
+				"bin_name": "libgmodule-2.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/libgmodule-2.0.a.bc"
+			},
+			{
+				"bin_name": "gtester",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gtester.bc"
+			},
+			{
+				"bin_name": "gresource",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gresource.bc"
+			},
+			{
+				"bin_name": "gdbus",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/glib/2.78.3/gdbus.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False",
+				"with_elf": "True",
+				"with_mount": "True",
+				"with_selinux": "True"
+			},
+			"requires": [
+				"bzip2/1.0.Z",
+				"libelf/0.8.Z",
+				"libffi/3.4.Z",
+				"libmount/2.39.Z",
+				"libselinux/3.5.Z",
+				"pcre2/10.42.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "libtool",
+		"pkg_version": "2.4.7",
+		"bins": [
+			{
+				"bin_name": "libltdl.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libtool/2.4.7/libltdl.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "wayland",
+		"pkg_version": "1.22.0",
+		"bins": [
+			{
+				"bin_name": "libwayland-egl.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/wayland/1.22.0/libwayland-egl.a.bc"
+			},
+			{
+				"bin_name": "wayland-scanner",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/wayland/1.22.0/wayland-scanner.bc"
+			},
+			{
+				"bin_name": "libwayland-server.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/wayland/1.22.0/libwayland-server.a.bc"
+			},
+			{
+				"bin_name": "libwayland-cursor.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/wayland/1.22.0/libwayland-cursor.a.bc"
+			},
+			{
+				"bin_name": "libwayland-client.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/wayland/1.22.0/libwayland-client.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_dtd_validation": "True",
+				"enable_libraries": "True",
+				"fPIC": "True",
+				"shared": "False"
+			},
+			"requires": [
+				"expat/2.6.Z",
+				"libffi/3.4.Z",
+				"libiconv/1.17.Z",
+				"libxml2/2.12.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "boost",
+		"pkg_version": "1.80.0",
+		"bins": [
+			{
+				"bin_name": "libboost_type_erasure.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_type_erasure.a.bc"
+			},
+			{
+				"bin_name": "libboost_date_time.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_date_time.a.bc"
+			},
+			{
+				"bin_name": "libboost_log.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_log.a.bc"
+			},
+			{
+				"bin_name": "libboost_prg_exec_monitor.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_prg_exec_monitor.a.bc"
+			},
+			{
+				"bin_name": "libboost_test_exec_monitor.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_test_exec_monitor.a.bc"
+			},
+			{
+				"bin_name": "libboost_exception.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_exception.a.bc"
+			},
+			{
+				"bin_name": "libboost_wave.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_wave.a.bc"
+			},
+			{
+				"bin_name": "libboost_json.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_json.a.bc"
+			},
+			{
+				"bin_name": "libboost_iostreams.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_iostreams.a.bc"
+			},
+			{
+				"bin_name": "libboost_stacktrace_addr2line.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_stacktrace_addr2line.a.bc"
+			},
+			{
+				"bin_name": "libboost_coroutine.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_coroutine.a.bc"
+			},
+			{
+				"bin_name": "libboost_stacktrace_noop.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_stacktrace_noop.a.bc"
+			},
+			{
+				"bin_name": "libboost_container.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_container.a.bc"
+			},
+			{
+				"bin_name": "libboost_fiber_numa.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_fiber_numa.a.bc"
+			},
+			{
+				"bin_name": "libboost_system.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_system.a.bc"
+			},
+			{
+				"bin_name": "libboost_stacktrace_backtrace.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_stacktrace_backtrace.a.bc"
+			},
+			{
+				"bin_name": "libboost_log_setup.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_log_setup.a.bc"
+			},
+			{
+				"bin_name": "libboost_unit_test_framework.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_unit_test_framework.a.bc"
+			},
+			{
+				"bin_name": "libboost_timer.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_timer.a.bc"
+			},
+			{
+				"bin_name": "libboost_thread.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_thread.a.bc"
+			},
+			{
+				"bin_name": "libboost_serialization.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_serialization.a.bc"
+			},
+			{
+				"bin_name": "libboost_fiber.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_fiber.a.bc"
+			},
+			{
+				"bin_name": "libboost_chrono.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_chrono.a.bc"
+			},
+			{
+				"bin_name": "libboost_graph.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_graph.a.bc"
+			},
+			{
+				"bin_name": "libboost_program_options.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_program_options.a.bc"
+			},
+			{
+				"bin_name": "libboost_filesystem.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_filesystem.a.bc"
+			},
+			{
+				"bin_name": "libboost_wserialization.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_wserialization.a.bc"
+			},
+			{
+				"bin_name": "libboost_locale.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_locale.a.bc"
+			},
+			{
+				"bin_name": "libboost_nowide.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_nowide.a.bc"
+			},
+			{
+				"bin_name": "libboost_random.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_random.a.bc"
+			},
+			{
+				"bin_name": "libboost_contract.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_contract.a.bc"
+			},
+			{
+				"bin_name": "libboost_stacktrace_basic.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_stacktrace_basic.a.bc"
+			},
+			{
+				"bin_name": "libboost_regex.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_regex.a.bc"
+			},
+			{
+				"bin_name": "libboost_atomic.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/boost/1.80.0/libboost_atomic.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.cppstd": "gnu17",
+				"compiler.libcxx": "libstdc++11",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"addr2line_location": "/usr/bin/addr2line",
+				"asio_no_deprecated": "False",
+				"bzip2": "True",
+				"diagnostic_definitions": "False",
+				"error_code_header_only": "False",
+				"fPIC": "True",
+				"filesystem_no_deprecated": "False",
+				"filesystem_use_std_fs": "False",
+				"header_only": "False",
+				"i18n_backend_iconv": "libc",
+				"i18n_backend_icu": "False",
+				"layout": "system",
+				"lzma": "False",
+				"magic_autolink": "False",
+				"multithreading": "True",
+				"namespace": "boost",
+				"namespace_alias": "False",
+				"numa": "True",
+				"segmented_stacks": "False",
+				"shared": "False",
+				"system_no_deprecated": "False",
+				"system_use_utf8": "False",
+				"visibility": "hidden",
+				"with_stacktrace_backtrace": "True",
+				"without_atomic": "False",
+				"without_chrono": "False",
+				"without_container": "False",
+				"without_context": "False",
+				"without_contract": "False",
+				"without_coroutine": "False",
+				"without_date_time": "False",
+				"without_exception": "False",
+				"without_fiber": "False",
+				"without_filesystem": "False",
+				"without_graph": "False",
+				"without_graph_parallel": "True",
+				"without_iostreams": "False",
+				"without_json": "False",
+				"without_locale": "False",
+				"without_log": "False",
+				"without_math": "False",
+				"without_mpi": "True",
+				"without_nowide": "False",
+				"without_program_options": "False",
+				"without_python": "True",
+				"without_random": "False",
+				"without_regex": "False",
+				"without_serialization": "False",
+				"without_stacktrace": "False",
+				"without_system": "False",
+				"without_test": "False",
+				"without_thread": "False",
+				"without_timer": "False",
+				"without_type_erasure": "False",
+				"without_wave": "False",
+				"zlib": "True",
+				"zstd": "False"
+			},
+			"requires": [
+				"bzip2/1.0.Z",
+				"libbacktrace/cci",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "innoextract",
+		"pkg_version": "1.9.0",
+		"bins": [
+			{
+				"bin_name": "innoextract",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/innoextract/1.9.0/innoextract.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			}
+		}
+	},
+	{
+		"pkg_name": "libusb",
+		"pkg_version": "1.0.26",
+		"bins": [
+			{
+				"bin_name": "libusb-1.0.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libusb/1.0.26/libusb-1.0.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_udev": "True",
+				"fPIC": "True",
+				"shared": "False"
+			},
+			"requires": [
+				"libudev/system"
+			]
+		}
+	},
+	{
+		"pkg_name": "xz_utils",
+		"pkg_version": "5.2.5",
+		"bins": [
+			{
+				"bin_name": "lzma",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/lzma.bc"
+			},
+			{
+				"bin_name": "lzcat",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/lzcat.bc"
+			},
+			{
+				"bin_name": "xzcat",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/xzcat.bc"
+			},
+			{
+				"bin_name": "unlzma",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/unlzma.bc"
+			},
+			{
+				"bin_name": "liblzma.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/liblzma.a.bc"
+			},
+			{
+				"bin_name": "xzdec",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/xzdec.bc"
+			},
+			{
+				"bin_name": "lzmainfo",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/lzmainfo.bc"
+			},
+			{
+				"bin_name": "lzmadec",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/lzmadec.bc"
+			},
+			{
+				"bin_name": "xz",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/xz.bc"
+			},
+			{
+				"bin_name": "unxz",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xz_utils/5.2.5/unxz.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "md4c",
+		"pkg_version": "0.4.8",
+		"bins": [
+			{
+				"bin_name": "libmd4c-html.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/md4c/0.4.8/libmd4c-html.a.bc"
+			},
+			{
+				"bin_name": "libmd4c.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/md4c/0.4.8/libmd4c.a.bc"
+			},
+			{
+				"bin_name": "md2html",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/md4c/0.4.8/md2html.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"encoding": "utf-8",
+				"fPIC": "True",
+				"md2html": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "double-conversion",
+		"pkg_version": "3.3.0",
+		"bins": [
+			{
+				"bin_name": "libdouble-conversion.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/double-conversion/3.3.0/libdouble-conversion.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.cppstd": "gnu17",
+				"compiler.libcxx": "libstdc++11",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "pcre2",
+		"pkg_version": "10.42",
+		"bins": [
+			{
+				"bin_name": "libpcre2-16.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pcre2/10.42/libpcre2-16.a.bc"
+			},
+			{
+				"bin_name": "pcre2grep",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pcre2/10.42/pcre2grep.bc"
+			},
+			{
+				"bin_name": "libpcre2-32.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pcre2/10.42/libpcre2-32.a.bc"
+			},
+			{
+				"bin_name": "libpcre2-posix.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pcre2/10.42/libpcre2-posix.a.bc"
+			},
+			{
+				"bin_name": "libpcre2-8.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pcre2/10.42/libpcre2-8.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"build_pcre2_16": "True",
+				"build_pcre2_32": "True",
+				"build_pcre2_8": "True",
+				"build_pcre2grep": "True",
+				"fPIC": "True",
+				"grep_support_callout_fork": "True",
+				"link_size": "2",
+				"shared": "False",
+				"support_jit": "False",
+				"with_bzip2": "True",
+				"with_zlib": "True"
+			},
+			"requires": [
+				"bzip2/1.0.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "util-linux-libuuid",
+		"pkg_version": "2.39.2",
+		"bins": [
+			{
+				"bin_name": "libuuid.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/util-linux-libuuid/2.39.2/libuuid.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "expat",
+		"pkg_version": "2.6.2",
+		"bins": [
+			{
+				"bin_name": "libexpat.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/expat/2.6.2/libexpat.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"char_type": "char",
+				"fPIC": "True",
+				"large_size": "False",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "libmount",
+		"pkg_version": "2.39",
+		"bins": [
+			{
+				"bin_name": "libmount.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libmount/2.39/libmount.a.bc"
+			},
+			{
+				"bin_name": "libblkid.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libmount/2.39/libblkid.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "harfbuzz",
+		"pkg_version": "8.3.0",
+		"bins": [
+			{
+				"bin_name": "libharfbuzz-gobject.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/harfbuzz/8.3.0/libharfbuzz-gobject.a.bc"
+			},
+			{
+				"bin_name": "libharfbuzz.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/harfbuzz/8.3.0/libharfbuzz.a.bc"
+			},
+			{
+				"bin_name": "libharfbuzz-subset.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/harfbuzz/8.3.0/libharfbuzz-subset.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.cppstd": "gnu17",
+				"compiler.libcxx": "libstdc++11",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False",
+				"with_freetype": "True",
+				"with_glib": "True",
+				"with_icu": "False",
+				"with_subset": "False"
+			},
+			"requires": [
+				"brotli/1.1.Z",
+				"bzip2/1.0.Z",
+				"freetype/2.13.Z",
+				"glib/2.78.Z",
+				"libelf/0.8.Z",
+				"libffi/3.4.Z",
+				"libmount/2.39.Z",
+				"libpng/1.6.Z",
+				"libselinux/3.5.Z",
+				"pcre2/10.42.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "libiconv",
+		"pkg_version": "1.17",
+		"bins": [
+			{
+				"bin_name": "libcharset.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libiconv/1.17/libcharset.a.bc"
+			},
+			{
+				"bin_name": "iconv",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libiconv/1.17/iconv.bc"
+			},
+			{
+				"bin_name": "libiconv.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libiconv/1.17/libiconv.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "fontconfig",
+		"pkg_version": "2.15.0",
+		"bins": [
+			{
+				"bin_name": "libfontconfig.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/fontconfig/2.15.0/libfontconfig.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			},
+			"requires": [
+				"brotli/1.1.Z",
+				"bzip2/1.0.Z",
+				"expat/2.6.Z",
+				"freetype/2.13.Z",
+				"libpng/1.6.Z",
+				"util-linux-libuuid/2.39.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "libelf",
+		"pkg_version": "0.8.13",
+		"bins": [
+			{
+				"bin_name": "libelf.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libelf/0.8.13/libelf.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "bison",
+		"pkg_version": "3.8.2",
+		"bins": [
+			{
+				"bin_name": "liby.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/bison/3.8.2/liby.a.bc"
+			},
+			{
+				"bin_name": "bison",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/bison/3.8.2/bison.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True"
+			}
+		}
+	},
+	{
+		"pkg_name": "libbacktrace",
+		"pkg_version": "cci.20210118",
+		"bins": [
+			{
+				"bin_name": "libbacktrace.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libbacktrace/cci.20210118/libbacktrace.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "freetype",
+		"pkg_version": "2.13.2",
+		"bins": [
+			{
+				"bin_name": "libfreetype.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/freetype/2.13.2/libfreetype.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False",
+				"subpixel": "False",
+				"with_brotli": "True",
+				"with_bzip2": "True",
+				"with_png": "True",
+				"with_zlib": "True"
+			},
+			"requires": [
+				"brotli/1.1.Z",
+				"bzip2/1.0.Z",
+				"libpng/1.6.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "easy_profiler",
+		"pkg_version": "2.1.0",
+		"bins": [
+			{
+				"bin_name": "profiler_converter",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/easy_profiler/2.1.0/profiler_converter.bc"
+			},
+			{
+				"bin_name": "libeasy_profiler.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/easy_profiler/2.1.0/libeasy_profiler.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.cppstd": "gnu17",
+				"compiler.libcxx": "libstdc++11",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "ninja",
+		"pkg_version": "1.11.1",
+		"bins": [
+			{
+				"bin_name": "ninja",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/ninja/1.11.1/ninja.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			}
+		}
+	},
+	{
+		"pkg_name": "xkbcommon",
+		"pkg_version": "1.5.0",
+		"bins": [
+			{
+				"bin_name": "xkbcli-interactive-evdev",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-interactive-evdev.bc"
+			},
+			{
+				"bin_name": "libxkbcommon.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/libxkbcommon.a.bc"
+			},
+			{
+				"bin_name": "xkbcli-compile-keymap",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-compile-keymap.bc"
+			},
+			{
+				"bin_name": "xkbcli-how-to-type",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-how-to-type.bc"
+			},
+			{
+				"bin_name": "xkbcli-list",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-list.bc"
+			},
+			{
+				"bin_name": "xkbcli-interactive-wayland",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-interactive-wayland.bc"
+			},
+			{
+				"bin_name": "xkbcli-interactive-x11",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli-interactive-x11.bc"
+			},
+			{
+				"bin_name": "libxkbregistry.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/libxkbregistry.a.bc"
+			},
+			{
+				"bin_name": "xkbcli",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/xkbcli.bc"
+			},
+			{
+				"bin_name": "libxkbcommon-x11.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/xkbcommon/1.5.0/libxkbcommon-x11.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False",
+				"with_wayland": "True",
+				"with_x11": "True",
+				"xkbregistry": "True"
+			},
+			"requires": [
+				"expat/2.6.Z",
+				"libffi/3.4.Z",
+				"libiconv/1.17.Z",
+				"libxml2/2.12.Z",
+				"wayland/1.22.Z",
+				"xorg/system",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "pkgconf",
+		"pkg_version": "2.1.0",
+		"bins": [
+			{
+				"bin_name": "pkgconf",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pkgconf/2.1.0/pkgconf.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_lib": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "brotli",
+		"pkg_version": "1.1.0",
+		"bins": [
+			{
+				"bin_name": "libbrotlidec.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/brotli/1.1.0/libbrotlidec.a.bc"
+			},
+			{
+				"bin_name": "libbrotlienc.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/brotli/1.1.0/libbrotlienc.a.bc"
+			},
+			{
+				"bin_name": "libbrotlicommon.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/brotli/1.1.0/libbrotlicommon.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_debug": "False",
+				"enable_log": "False",
+				"enable_portable": "False",
+				"enable_rbit": "True",
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "flex",
+		"pkg_version": "2.6.4",
+		"bins": [
+			{
+				"bin_name": "libfl.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/flex/2.6.4/libfl.a.bc"
+			},
+			{
+				"bin_name": "flex++",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/flex/2.6.4/flex++.bc"
+			},
+			{
+				"bin_name": "flex",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/flex/2.6.4/flex.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "pkgconf",
+		"pkg_version": "2.2.0",
+		"bins": [
+			{
+				"bin_name": "pkgconf",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pkgconf/2.2.0/pkgconf.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_lib": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "sqlite3",
+		"pkg_version": "3.45.0",
+		"bins": [
+			{
+				"bin_name": "libsqlite3.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/sqlite3/3.45.0/libsqlite3.a.bc"
+			},
+			{
+				"bin_name": "sqlite3",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/sqlite3/3.45.0/sqlite3.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"build_executable": "True",
+				"disable_gethostuuid": "False",
+				"enable_column_metadata": "True",
+				"enable_dbpage_vtab": "False",
+				"enable_dbstat_vtab": "False",
+				"enable_default_secure_delete": "False",
+				"enable_default_vfs": "True",
+				"enable_explain_comments": "False",
+				"enable_fts3": "False",
+				"enable_fts3_parenthesis": "False",
+				"enable_fts4": "False",
+				"enable_fts5": "False",
+				"enable_json1": "False",
+				"enable_math_functions": "True",
+				"enable_preupdate_hook": "False",
+				"enable_rtree": "True",
+				"enable_soundex": "False",
+				"enable_unlock_notify": "True",
+				"fPIC": "True",
+				"omit_deprecated": "False",
+				"omit_load_extension": "False",
+				"shared": "False",
+				"threadsafe": "1",
+				"use_alloca": "False",
+				"use_uri": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "libselinux",
+		"pkg_version": "3.5",
+		"bins": [
+			{
+				"bin_name": "libselinux.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libselinux/3.5/libselinux.a.bc"
+			},
+			{
+				"bin_name": "libsepol.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libselinux/3.5/libsepol.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"fPIC": "True",
+				"shared": "False"
+			},
+			"requires": [
+				"bzip2/1.0.Z",
+				"pcre2/10.42.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	},
+	{
+		"pkg_name": "pkgconf",
+		"pkg_version": "2.0.3",
+		"bins": [
+			{
+				"bin_name": "pkgconf",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/pkgconf/2.0.3/pkgconf.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"os": "Linux"
+			},
+			"options": {
+				"enable_lib": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "bzip2",
+		"pkg_version": "1.0.8",
+		"bins": [
+			{
+				"bin_name": "bzip2",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/bzip2/1.0.8/bzip2.bc"
+			},
+			{
+				"bin_name": "libbz2.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/bzip2/1.0.8/libbz2.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"build_executable": "True",
+				"fPIC": "True",
+				"shared": "False"
+			}
+		}
+	},
+	{
+		"pkg_name": "libxml2",
+		"pkg_version": "2.12.7",
+		"bins": [
+			{
+				"bin_name": "xmlcatalog",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libxml2/2.12.7/xmlcatalog.bc"
+			},
+			{
+				"bin_name": "xmllint",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libxml2/2.12.7/xmllint.bc"
+			},
+			{
+				"bin_name": "libxml2.a",
+				"bin_path": "/workspaces/DelphiCpp/bitcode/libxml2/2.12.7/libxml2.a.bc"
+			}
+		],
+		"metadata": {
+			"settings": {
+				"arch": "armv8",
+				"build_type": "Debug",
+				"compiler": "clang",
+				"compiler.version": "14",
+				"os": "Linux"
+			},
+			"options": {
+				"c14n": "True",
+				"catalog": "True",
+				"fPIC": "True",
+				"ftp": "True",
+				"html": "True",
+				"http": "True",
+				"iconv": "True",
+				"icu": "False",
+				"include_utils": "True",
+				"iso8859x": "True",
+				"legacy": "True",
+				"lzma": "False",
+				"mem-debug": "False",
+				"output": "True",
+				"pattern": "True",
+				"push": "True",
+				"python": "False",
+				"reader": "True",
+				"regexps": "True",
+				"sax1": "True",
+				"schemas": "True",
+				"schematron": "True",
+				"shared": "False",
+				"threads": "True",
+				"tree": "True",
+				"valid": "True",
+				"writer": "True",
+				"xinclude": "True",
+				"xpath": "True",
+				"xptr": "True",
+				"zlib": "True"
+			},
+			"requires": [
+				"libiconv/1.17.Z",
+				"zlib/1.3.Z"
+			]
+		}
+	}
+]

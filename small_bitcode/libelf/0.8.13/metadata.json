@@ -1,0 +1,28 @@
+{
+    "Local Cache": {
+        "libelf/0.8.13": {
+            "revisions": {
+                "4f70a3555809ae50cc8add44f0f84288": {
+                    "timestamp": 1721994276.1186125,
+                    "packages": {
+                        "d954c05e8e9a90add1f6e99d4ef82d8ba3a8a73b": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

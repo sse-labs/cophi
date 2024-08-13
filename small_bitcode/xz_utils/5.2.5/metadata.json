@@ -1,0 +1,28 @@
+{
+    "Local Cache": {
+        "xz_utils/5.2.5": {
+            "revisions": {
+                "c99887b9646d3369581dfcf10e79cda5": {
+                    "timestamp": 1721993721.0819197,
+                    "packages": {
+                        "d954c05e8e9a90add1f6e99d4ef82d8ba3a8a73b": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

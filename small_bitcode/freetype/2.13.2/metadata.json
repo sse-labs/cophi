@@ -1,0 +1,39 @@
+{
+    "Local Cache": {
+        "freetype/2.13.2": {
+            "revisions": {
+                "7934d59c447d72edcd56025dc60e1aeb": {
+                    "timestamp": 1721994275.8805711,
+                    "packages": {
+                        "081b670d3899689ad5b5c9cbecdcd7c457366873": {
+                            "info": {
+                                "settings": {
+                                    "arch": "armv8",
+                                    "build_type": "Debug",
+                                    "compiler": "clang",
+                                    "compiler.version": "14",
+                                    "os": "Linux"
+                                },
+                                "options": {
+                                    "fPIC": "True",
+                                    "shared": "False",
+                                    "subpixel": "False",
+                                    "with_brotli": "True",
+                                    "with_bzip2": "True",
+                                    "with_png": "True",
+                                    "with_zlib": "True"
+                                },
+                                "requires": [
+                                    "brotli/1.1.Z",
+                                    "bzip2/1.0.Z",
+                                    "libpng/1.6.Z",
+                                    "zlib/1.3.Z"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
