@@ -1,0 +1,57 @@
+[
+	{
+		"pkg_name": "an_exec_pkg",
+		"pkg_version": "0.1",
+		"bins": [
+			{
+				"bin_name": "an_exec",
+				"bin_path": "/workspaces/DelphiCpp/test_bitcode/an_exec.ll"
+			}
+		],
+		"metadata": { }
+	},
+  {
+		"pkg_name": "buncha_calls_pkg",
+		"pkg_version": "0.1",
+		"bins": [
+			{
+				"bin_name": "buncha_calls",
+				"bin_path": "/workspaces/DelphiCpp/test_bitcode/buncha_calls.ll"
+			}
+		],
+		"metadata": { }
+	},
+  {
+		"pkg_name": "buncha_classes_pkg",
+		"pkg_version": "0.1",
+		"bins": [
+			{
+				"bin_name": "buncha_classes",
+				"bin_path": "/workspaces/DelphiCpp/test_bitcode/buncha_classes.ll"
+			}
+		],
+		"metadata": { }
+	},
+  {
+		"pkg_name": "just_main_basically_pkg",
+		"pkg_version": "0.1",
+		"bins": [
+			{
+				"bin_name": "just_main_basically",
+				"bin_path": "/workspaces/DelphiCpp/test_bitcode/just_main_basically.ll"
+			}
+		],
+		"metadata": { }
+	},
+  {
+		"pkg_name": "not_an_exec_pkg",
+		"pkg_version": "0.1",
+		"bins": [
+			{
+				"bin_name": "not_an_exec",
+				"bin_path": "/workspaces/DelphiCpp/test_bitcode/not_an_exec.ll"
+			}
+		],
+		"metadata": { }
+	}
+]
