@@ -11,7 +11,11 @@ namespace Core {
 
 class Attribute {
   public:
-    using var_t = std::variant<std::monostate, bool, size_t, double, std::string>;
+    using var_t = std::variant<std::monostate,
+                               bool,
+                               size_t,
+                               double,
+                               std::string>;
     enum Type {
       UNIT,
       BOOL,
@@ -35,6 +39,7 @@ class Attribute {
     explicit Attribute(const std::string &s) noexcept : // string ctor
              Attribute(Type::STRING, std::string(s)) { }
     
+    // can throw
     Attribute(const jsonf &jattr);
     jsonf json() const;
 
@@ -47,6 +52,11 @@ class Attribute {
     double      getFloat()  const { return std::get<double>(_attr); }
     std::string getString() const { return std::get<std::string>(_attr); }
 
+    // helpers for converting Attribute::Type to/from json
+    static std::string typeToString(const Attribute::Type type);
+    // can throw
+    static Attribute::Type typeFromJSON(const jsonf &jtype);
+
   private:
     Attribute(Type t, var_t v) noexcept : 
     _type(t), _attr(std::move(v)) {  }
@@ -54,12 +64,6 @@ class Attribute {
     Type _type;
     var_t _attr;
 };
-
-// helpers for converting Attribute::Type to/from json
-
-std::string typeToString(const Attribute::Type type);
-// can throw
-Attribute::Type typeFromJSON(const jsonf &jtype);
 
 }
 

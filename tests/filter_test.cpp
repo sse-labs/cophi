@@ -14,7 +14,7 @@
 //   protected:
 //     void insert(std::string pkg, std::string ftr, size_t num_locs) {
 //       fm.insert(Core::PackageID(std::make_shared<std::string>(""), std::make_shared<std::string>(pkg)),
-//                 Core::Feature(Core::FeatureID("", ftr), num_locs));
+//                 Core::Feature(Core::FeatureID("", ftr)));
 //     }
 
 //     // sets up feature map with `num_mappings` mappings. for package i in

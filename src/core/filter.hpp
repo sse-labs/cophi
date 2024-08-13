@@ -3,6 +3,7 @@
 
 #include <core/attribute.hpp>
 #include <core/feature_query.hpp>
+#include <core/feature_data.hpp>
 
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
@@ -52,18 +53,30 @@ class Range {
 
 class Filter {
   public:
-    enum Type {
+    enum FilterType {
+      // no attribute to check, test() returns true iff this->_fid matches the fid of the Feature
+      // (i.e. when the feature is of type FeatureData::Type::UNIT)
+      NOATTR,
+      // used when the feature just has one attribute
+      // (i.e. when the feature is of type FeatureData::Type::ATTR)
+      ONEATTR,
+      // these two meant to be used when the feature has a bin-attr map
+      // (i.e. when the feature is of type FeatureData::Type::BINMAP)
       FORALL,
       EXISTS,
     };
 
-    // precond: fid.type() == range.type()
-    Filter(const FeatureID &fid, const Type type, const Range &range);
+    // precond: fid.attr_type() == range.type()
+    //
+    // precond: fid.data_type() == UNIT   <--> type == NOATTR
+    //          fid.data_type() == ATTR   <--> type == ONEATTR
+    //          fid.data_type() == BINMAP <--> type == FORALL | EXISTS
+    Filter(const FeatureID &fid, const FilterType type, const Range &range);
 
     // bit of a hack so we can use FeatureID to search a set of Features
     // not a ctor meant to be used in any other circumstance
     Filter(const FeatureID &fid) : _fid(fid) {
-      _type = Type::FORALL;
+      _type = FilterType::NOATTR;
       _range = Range();
     }
 
@@ -83,12 +96,15 @@ class Filter {
     FeatureID getFID() const { return _fid; }
     
   private:
+
+    // precond: ftr_data.getDataType() == FeatureData::Type::BINMAP;
     bool testFeatureForAll(const Feature &ftr) const;
+    // precond: ftr_data.getDataType() == FeatureData::Type::BINMAP;
     bool testFeatureExists(const Feature &ftr) const;
 
-    FeatureID _fid;
-    Type      _type;
-    Range     _range;
+    FeatureID  _fid;
+    FilterType _type;
+    Range      _range;
 };
 
 }

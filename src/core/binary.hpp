@@ -75,4 +75,13 @@ class ReifiedBinary {
 };
 }
 
+// provide hash for binary so we can use it as a key in a map
+template<>
+struct std::hash<Core::Binary> {
+  std::size_t operator()(const Core::Binary &bin) const {
+    return std::hash<std::string>()(bin.name())
+         ^ std::hash<std::string>()(bin.path());
+  }
+};
+
 #endif  // DELPHICPP_BINARY_HPP_

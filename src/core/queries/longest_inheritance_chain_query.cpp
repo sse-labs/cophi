@@ -1,6 +1,7 @@
 #include <core/attribute.hpp>
-#include <core/attr_mapping.hpp>
+#include <core/bin_attr_map.hpp>
 #include <core/feature_query.hpp>
+#include <core/feature_data.hpp>
 #include <core/queries/longest_inheritance_chain_query.hpp>
 #include <core/queries/utils/graph_utils.hpp>
 #include <core/query_registry.hpp>
@@ -39,10 +40,10 @@ static Utils::UnweightedDAG extractTypeGraph(const psr::LLVMTypeHierarchy &lth) 
 }
 
 void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Result * const res) const {
-  size_t num_bins = pkg->bins().size();
+  const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
+  BinAttrMap longest_ic_map(Attribute::Type::U_INT);
 
-  std::vector<AttrMapping> mappings;
-  mappings.reserve(num_bins);
+  size_t num_bins = pkg->bins().size();
   
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
@@ -53,11 +54,10 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
     const auto typeGraph = extractTypeGraph(th);
     
     size_t longest = typeGraph.longestPath();
-    mappings.emplace_back(bin->getID(), Attribute(longest));
+    longest_ic_map.insert(bin->getID(), Attribute(longest));
   }
 
-  FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT);
-  res->emplace(fid, mappings);
+  res->emplace(fid, FeatureData(longest_ic_map));
 }
 
 }

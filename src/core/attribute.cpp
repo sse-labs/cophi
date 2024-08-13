@@ -53,7 +53,7 @@ jsonf Attribute::json() const {
   return ret;
 }
 
-std::string typeToString(const Attribute::Type type) {
+std::string Attribute::typeToString(const Attribute::Type type) {
   switch (type) {
     case Attribute::Type::UNIT:
       return "unit";
@@ -71,7 +71,7 @@ std::string typeToString(const Attribute::Type type) {
   }
 }
 // can throw
-Attribute::Type typeFromJSON(const jsonf &jtype) {
+Attribute::Type Attribute::typeFromJSON(const jsonf &jtype) {
   const auto type = static_cast<std::string>(jtype);
   if (type == "unit") {
     return Attribute::Type::UNIT;

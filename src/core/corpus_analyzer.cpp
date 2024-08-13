@@ -38,8 +38,7 @@ void extractFeatures(Package const * const pkg,
 
   for (const Feature &res : results) {
     const auto id = res.getUniqueId();
-    spdlog::debug("extracted {} locations from feature `{}`",
-                  res.numLocs(), id.toString());
+    spdlog::debug("extracted feature `{}`", id.toString());
     
     // FeatureMap is thread-safe for insert
     ret->insert(pkg->getID(), res);

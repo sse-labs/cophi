@@ -45,7 +45,7 @@ bool parseJSONArray(const std::string &file, std::vector<T> * const queries) {
   } catch (const jsonf::exception &e) {
       char const * type = typeid(T).name();
       spdlog::error("failed to parse array of {} from file {}. error: id={:d}, what()=`{}`",
-                    type, e.id, e.what());
+                    type, file, e.id, e.what());
     return false;
   }
 }
