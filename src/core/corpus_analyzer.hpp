@@ -26,14 +26,14 @@ class CorpusAnalyzer {
     //std::unique_ptr<FeatureMap> evaluate(std::vector<Package> &pkgs) const;
     void evaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const;
 
-    // same as above, but with multithreading
-    //std::unique_ptr<FeatureMap> parallelEvaluate(std::vector<Package> &pkgs) const;
-
-    void parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const;
+    // same as above, but with multithreading TODO: make gooder (with chunking)
+      // chunkSize: number of binaries ever reified at one time
+    //void parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const;
   private:
     // all the reified queries
     std::vector<std::unique_ptr<Query>> _queries;
 };
+
 }
 
 #endif  // DELPHICPP_PACKAGEANALYZER_HPP_

@@ -27,6 +27,8 @@ cl::opt<std::string> AnalysisConfig("c", cl::Required, cl::desc("Path to query c
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
 cl::opt<bool> Parallel("parallel", cl::desc("use multithreading"));
 
+cl::opt<size_t> ChunkSize("chunk_size", cl::desc("how many binaries are ever reified at one moment"), cl::init(5));
+
 int main(int argc, char* argv[]) {
   // setup
   cl::ParseCommandLineOptions(argc, argv);
@@ -56,13 +58,12 @@ int main(int argc, char* argv[]) {
   CorpusAnalyzer ca(conf);
   // run queries on the packages
   FeatureMap fm;
-  // std::unique_ptr<FeatureMap> fm = Parallel ? ca.parallelEvaluate(pkgs)
-  //                                           : ca.evaluate(pkgs);
 
   if (Parallel) {
-    ca.parallelEvaluate(pkgs, fm, 5);
+    //ca.parallelEvaluate(pkgs, fm, ChunkSize);
+    ca.evaluate(pkgs, fm, ChunkSize);
   } else {
-    ca.evaluate(pkgs, fm, 5);
+    ca.evaluate(pkgs, fm, ChunkSize);
   }
 
   // write out FeatureMap

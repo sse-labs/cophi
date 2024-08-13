@@ -94,31 +94,31 @@ void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm, const 
   }
 }
 
-void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
-  spdlog::info("reifing packages...");
+// void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
+//   spdlog::info("reifing packages...");
 
-  // store ptrs to sucessfully reified packages in here
-  std::vector<Package*> reified_pkgs;
-  std::vector<std::thread> pkgReifyThreads;
-  for (auto &pkg : pkgs) {
-    pkgReifyThreads.emplace_back(attemptReify, std::ref(pkg), std::ref(reified_pkgs));
-  }
-  for (auto &thrd : pkgReifyThreads) thrd.join();
+//   // store ptrs to sucessfully reified packages in here
+//   std::vector<Package*> reified_pkgs;
+//   std::vector<std::thread> pkgReifyThreads;
+//   for (auto &pkg : pkgs) {
+//     pkgReifyThreads.emplace_back(attemptReify, std::ref(pkg), std::ref(reified_pkgs));
+//   }
+//   for (auto &thrd : pkgReifyThreads) thrd.join();
 
-  spdlog::info("packages reified");
+//   spdlog::info("packages reified");
 
-  for (const auto &query: _queries) {
-    const std::string queryName = query->getName();
-    spdlog::info("running {} on packages...", queryName);
+//   for (const auto &query: _queries) {
+//     const std::string queryName = query->getName();
+//     spdlog::info("running {} on packages...", queryName);
 
-    std::vector<std::thread> extractFeaturesThreads;
-    for (auto const * const pkg : reified_pkgs) {
-      extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
-    }
-    for (auto &thrd : extractFeaturesThreads) thrd.join();
-    spdlog::info("done running {} on packages", queryName);
-  }
-  spdlog::info("all queries done");
-}
+//     std::vector<std::thread> extractFeaturesThreads;
+//     for (auto const * const pkg : reified_pkgs) {
+//       extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
+//     }
+//     for (auto &thrd : extractFeaturesThreads) thrd.join();
+//     spdlog::info("done running {} on packages", queryName);
+//   }
+//   spdlog::info("all queries done");
+// }
 
 } // namespace Core
