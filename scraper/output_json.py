@@ -1,8 +1,12 @@
 import json
 
 class OutputJSON:
-  def __init__(self):
+  def __init__(self, logger, prev_pkgs_file: None|str=None):
     self.packages = []
+    self.__logger = logger
+
+    if prev_pkgs_file is not None:
+      self.__parse_existing_packages(prev_pkgs_file)
   
   def add_package(self, name: str, version: str, bin_paths: list[str], metadata):
     package = {
@@ -13,6 +17,27 @@ class OutputJSON:
     }
 
     self.packages.append(package)
+
+  def __parse_existing_packages(self, pkgs_file: str):
+    f = open(pkgs_file)
+
+    try:
+      pkgs = json.load(f)
+
+      # check everything is there
+      for pkg in pkgs:
+        if ('pkg_name' not in pkg or
+            'pkg_version' not in pkg or
+            'bins' not in pkg or
+            'metadata' not in pkg):
+            raise Exception('malformed packages file')
+
+      self.packages = pkgs
+    except Exception:
+      self.packages = []
+      self.__logger.warning(f'packages file unable to be parsed')
+    
+    f.close()
   
 def get_metadata(conan_metadata_file):
   try:

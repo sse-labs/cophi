@@ -28,13 +28,16 @@ class BitcodeExtractor:
     """
     self.__index_dir = conan_index
     self.__out_dir = output_folder
+    self.__output_file_path = os.path.join(self.__out_dir, 'packages.json')
     self.__logger = logger
     db_path = BitcodeExtractor.__get_cache_path()
     # wrapper around db in local conan cache
     self.__cache: ConanCache = ConanCache(db_path, logger)
 
     # our output
-    self.__output = OutputJSON()
+    # if there were previously packages scraped, we take them into account
+    prev_pkgs_exists = os.path.isfile(self.__output_file_path)
+    self.__output = OutputJSON(logger, self.__output_file_path) if prev_pkgs_exists else OutputJSON(logger)
 
     # set of packages we've tried to install (strings should be `recipe/version`)
     self.__set_tried: set[str] = already_scraped
@@ -244,13 +247,12 @@ class BitcodeExtractor:
           metadata = get_metadata(fs.read())
           fs.close()
         else:
-          bins.append({"bin_name": file.removesuffix('.bc'), "bin_path": abs_path})
+          rel_path = os.path.relpath(abs_path, self.__output_file_path)
+          bins.append({"bin_name": file.removesuffix('.bc'), "bin_path": rel_path})
     
     self.__output.add_package(recipe, version, bins, metadata)
   
 
   def dump_output_json(self):
-    output_file_path = os.path.join(self.__out_dir, 'packages.json')
-    output_file = open(output_file_path, mode='w+')
-
+    output_file = open(self.__output_file_path, mode='w+')
     json.dump(self.__output.packages, output_file, separators=(',', ': '), indent='\t')
