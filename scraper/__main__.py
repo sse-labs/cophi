@@ -30,7 +30,8 @@ ch.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(ch)
 
 # configure handler for file output
-fh = logging.FileHandler('./scraper/logs/scraper.log', 'w', 'utf-8')
+#fh = logging.FileHandler('./scraper/logs/scraper.log', 'w', 'utf-8')
+fh = logging.FileHandler('/logs/scraper.log', 'w', 'utf-8')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(fh)
