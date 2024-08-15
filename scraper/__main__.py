@@ -14,6 +14,9 @@ parser.add_argument('--conan-index', '-i', default='/conan-center-index/', dest=
 parser.add_argument('--output', '-o', default='./bitcode/', dest='output',
                     help='which directory to output the metadata/bitcode to')
 
+parser.add_argument('--log_file', '-l', default='./scraper/logs/scraper.log', dest='logfile',
+                    help='where to output the logfile')
+
 parser.add_argument('--num-packages', '-n', required=True, dest='total', type=int,
                     help='how many packages to install (with no errors and >0 bitcode files)')
 
@@ -28,13 +31,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 ch.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
 logger.addHandler(ch)
-
-# configure handler for file output
-#fh = logging.FileHandler('./scraper/logs/scraper.log', 'w', 'utf-8')
-fh = logging.FileHandler('/logs/scraper.log', 'w', 'utf-8')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
-logger.addHandler(fh)
 
 def get_packages_already_scraped(bitcode_dir: str) -> set[str]:
   if not os.path.isdir(bitcode_dir):
@@ -63,6 +59,15 @@ def get_first_version(conf):
 
 def main():
   args = parser.parse_args()
+
+  # configure handler for file output
+  #fh = logging.FileHandler('./scraper/logs/scraper.log', 'w', 'utf-8')
+  fh = logging.FileHandler(args.logfile, 'w', 'utf-8')
+  fh.setLevel(logging.DEBUG)
+  fh.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
+  logger.addHandler(fh)
+
+
   recipes = os.path.join(args.index, 'recipes')
   already_scraped = get_packages_already_scraped(args.output)
 
