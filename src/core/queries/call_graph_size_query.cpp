@@ -7,6 +7,7 @@
 #include <core/query_registry.hpp>
 
 #include <phasar.h>
+#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <vector>
@@ -34,10 +35,14 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
   const FeatureID fid_edge(*static_cast<Query const *>(this), Type::EDGE, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap num_edges_map(Attribute::Type::U_INT);
 
-  size_t num_bins = pkg->bins().size();
+  const size_t num_bins = pkg->bins().size();
+
+  const auto pkg_name = pkg->getID().str();
 
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
+    spdlog::trace("running CallGraphSizeQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
+
     auto entrypoints = getEntryPoints(bin->getModuleRef());
 
     auto mod = bin->getModuleCopy();
@@ -62,6 +67,8 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
     }
 
     num_edges_map.insert(bin->getID(), Attribute(num_edges));
+
+    spdlog::trace("CallGraphSizeQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
 
   res->emplace(fid_node, FeatureData(num_nodes_map));

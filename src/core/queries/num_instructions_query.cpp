@@ -15,7 +15,14 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
   const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap num_instrs_map(Attribute::Type::U_INT);
 
+  const auto pkg_name = pkg->getID().str();
+  size_t i = 0;
+  const size_t num_bins = pkg->bins().size(); 
+
   for (const auto &bin : pkg->bins()) {
+    i++;
+    spdlog::trace("running NumInstructionsQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
+
     size_t num_instrs = 0;
     for (const auto &F : bin->getModuleRef()) {
       for (const auto &BB : F) {
@@ -23,6 +30,8 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
       }
     }
     num_instrs_map.insert(bin->getID(), Attribute(num_instrs));
+
+    spdlog::trace("NumInstructionsQuery has been run on {:d}/{:d} binaries in `{}`", i, num_bins, pkg_name);
   }
 
   res->emplace(fid, FeatureData(num_instrs_map));

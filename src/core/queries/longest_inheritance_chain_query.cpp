@@ -43,10 +43,12 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
   const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap longest_ic_map(Attribute::Type::U_INT);
 
-  size_t num_bins = pkg->bins().size();
+  const size_t num_bins = pkg->bins().size();
+  const auto pkg_name = pkg->getID().str();
   
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
+    spdlog::trace("running LongestInheritanceChainQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
     auto mod = bin->getModuleCopy();
     psr::HelperAnalyses HA(std::move(mod), {});
     
@@ -55,6 +57,7 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
     
     size_t longest = typeGraph.longestPath();
     longest_ic_map.insert(bin->getID(), Attribute(longest));
+    spdlog::trace("LongestInheritanceChainQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
 
   res->emplace(fid, FeatureData(longest_ic_map));
