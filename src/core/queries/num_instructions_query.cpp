@@ -19,6 +19,8 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
   size_t i = 0;
   const size_t num_bins = pkg->bins().size(); 
 
+  spdlog::debug("started running NumInstructionsQuery on `{}`", pkg_name);
+
   for (const auto &bin : pkg->bins()) {
     i++;
     spdlog::trace("running NumInstructionsQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
@@ -33,6 +35,8 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
 
     spdlog::trace("NumInstructionsQuery has been run on {:d}/{:d} binaries in `{}`", i, num_bins, pkg_name);
   }
+
+  spdlog::debug("finished running NumInstructionsQuery on `{}`", pkg_name);
 
   res->emplace(fid, FeatureData(num_instrs_map));
 }

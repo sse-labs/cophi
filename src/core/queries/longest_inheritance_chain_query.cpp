@@ -45,6 +45,8 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
 
   const size_t num_bins = pkg->bins().size();
   const auto pkg_name = pkg->getID().str();
+
+  spdlog::debug("started running LongestInheritanceChainQuery on `{}`", pkg_name);
   
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
@@ -59,6 +61,7 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
     longest_ic_map.insert(bin->getID(), Attribute(longest));
     spdlog::trace("LongestInheritanceChainQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
+  spdlog::debug("finished running LongestInheritanceChainQuery on `{}`", pkg_name);
 
   res->emplace(fid, FeatureData(longest_ic_map));
 }

@@ -38,6 +38,7 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
   const size_t num_bins = pkg->bins().size();
 
   const auto pkg_name = pkg->getID().str();
+  spdlog::debug("started running CallGraphSizeQuery on `{}`", pkg_name);
 
   for (size_t i = 0; i < num_bins; i++) {
     auto &bin = pkg->bins()[i];
@@ -70,6 +71,8 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
 
     spdlog::trace("CallGraphSizeQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
+
+  spdlog::debug("finished running CallGraphSizeQuery on `{}`", pkg_name);
 
   res->emplace(fid_node, FeatureData(num_nodes_map));
   res->emplace(fid_edge, FeatureData(num_edges_map));

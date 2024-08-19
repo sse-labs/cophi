@@ -48,7 +48,9 @@ std::unique_ptr<llvm::Module> ReifiedBinary::getModuleCopy() const {
     return nullptr;
   }
   spdlog::debug("cloning module for Binary `{}`...", _id.name());
-  return llvm::CloneModule(*_module);
+  auto ret = llvm::CloneModule(*_module);
+  spdlog::debug("done cloning module for Binary `{}`.", _id.name());
+  return ret;
 }
 
 }

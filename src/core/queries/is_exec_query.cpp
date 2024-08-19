@@ -23,6 +23,8 @@ void IsExecQuery::runOn(Package const * const pkg, Query::Result * const res) co
   size_t i = 0;
   const size_t num_bins = pkg->bins().size(); 
 
+  spdlog::debug("started running IsExecQuery on `{}`", pkg_name);
+
   for (auto &bin : pkg->bins()) {
     i++;
     spdlog::trace("running IsExecQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
@@ -30,6 +32,7 @@ void IsExecQuery::runOn(Package const * const pkg, Query::Result * const res) co
     exec_map.insert(bin->getID(), Attribute(is_exec));
     spdlog::trace("IsExecQuery has been run on {:d}/{:d} binaries in `{}`", i, num_bins, pkg_name);
   }
+  spdlog::debug("finished running IsExecQuery on `{}`", pkg_name);
   res->emplace(fid, FeatureData(exec_map));
 }
 
