@@ -1,6 +1,6 @@
 [
-  "CallGraphSizeQuery",
   "IsExecQuery",
   "LongestInheritanceChainQuery",
-  "NumInstructionsQuery"
+  "NumInstructionsQuery",
+  "CallGraphSizeQuery"
 ]

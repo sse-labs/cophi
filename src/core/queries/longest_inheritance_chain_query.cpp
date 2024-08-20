@@ -39,7 +39,9 @@ static Utils::UnweightedDAG extractTypeGraph(const psr::LLVMTypeHierarchy &lth) 
   return ret;
 }
 
-void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Result * const res) const {
+bool LongestInheritanceChainQuery::runOn(Package const * const pkg,
+                                         Query::Result * const res,
+                                         const std::shared_ptr<std::atomic_bool> &terminate) const {
   const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap longest_ic_map(Attribute::Type::U_INT);
 
@@ -49,21 +51,60 @@ void LongestInheritanceChainQuery::runOn(Package const * const pkg, Query::Resul
   spdlog::debug("started running LongestInheritanceChainQuery on `{}`", pkg_name);
   
   for (size_t i = 0; i < num_bins; i++) {
+    if (*terminate) {
+      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     auto &bin = pkg->bins()[i];
     spdlog::trace("running LongestInheritanceChainQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
+    if (*terminate) return false;
     auto mod = bin->getModuleCopy();
+
+    if (*terminate) {
+      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
+    if (*terminate) return false;
     psr::HelperAnalyses HA(std::move(mod), {});
     
+    if (*terminate) return false;
     const auto th = HA.getTypeHierarchy();
+
+    if (*terminate) {
+      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
+    if (*terminate) return false;
     const auto typeGraph = extractTypeGraph(th);
+
+    if (*terminate) {
+      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
     
+    if (*terminate) return false;
     size_t longest = typeGraph.longestPath();
+
+    if (*terminate) {
+      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     longest_ic_map.insert(bin->getID(), Attribute(longest));
     spdlog::trace("LongestInheritanceChainQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
   spdlog::debug("finished running LongestInheritanceChainQuery on `{}`", pkg_name);
 
+  if (*terminate) {
+    spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
+    return false;
+  }
+
   res->emplace(fid, FeatureData(longest_ic_map));
+  return true;
 }
 
 }

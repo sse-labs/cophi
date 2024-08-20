@@ -24,12 +24,13 @@ class CorpusAnalyzer {
 
     // takes in packages and produces feature map
     //std::unique_ptr<FeatureMap> evaluate(std::vector<Package> &pkgs) const;
-    void evaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const;
+    void evaluate(std::vector<Package> &pkgs, FeatureMap &fm) const;
 
-    // same as above, but with multithreading TODO: make gooder (with chunking)
-      // chunkSize: number of binaries ever reified at one time
-    //void parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const;
+    // same as above, but with multithreading
+    void parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t num_threads) const;
   private:
+    std::vector<Query*> getRawQueryPtrs() const;
+
     // all the reified queries
     std::vector<std::unique_ptr<Query>> _queries;
 };

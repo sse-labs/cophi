@@ -25,9 +25,7 @@ using namespace Utils;
 cl::opt<std::string> PackagesIndex("p", cl::Required, cl::desc("Path to packages index"), cl::value_desc("path"));
 cl::opt<std::string> AnalysisConfig("c", cl::Required, cl::desc("Path to query config"), cl::value_desc("path"));
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
-cl::opt<bool> Parallel("parallel", cl::desc("use multithreading"));
-
-cl::opt<size_t> ChunkSize("chunk_size", cl::desc("how many binaries are ever reified at one moment"), cl::init(5));
+cl::opt<size_t>      Parallel("parallel", cl::desc("use multithreading"), cl::value_desc("number of threads"));
 
 int main(int argc, char* argv[]) {
   // setup
@@ -59,12 +57,14 @@ int main(int argc, char* argv[]) {
   // run queries on the packages
   FeatureMap fm;
 
-  if (Parallel) {
-    //ca.parallelEvaluate(pkgs, fm, ChunkSize);
-    ca.evaluate(pkgs, fm, ChunkSize);
+  if (Parallel.getNumOccurrences() == 0) {
+    spdlog::info("evaluating packages...");
+    ca.evaluate(pkgs, fm);
   } else {
-    ca.evaluate(pkgs, fm, ChunkSize);
+    spdlog::info("evaluating packages with {:d} threads.", Parallel);
+    ca.parallelEvaluate(pkgs, fm, Parallel);
   }
+  spdlog::info("done evaluating packages");
 
   // write out FeatureMap
   of << fm.json().dump(1, '\t');

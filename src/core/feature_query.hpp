@@ -8,6 +8,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <atomic>
 #include <cassert>
 #include <string>
 #include <vector>
@@ -32,7 +33,10 @@ class Query {
     virtual std::vector<std::string> &getTypes() const = 0;
 
     // takes the package and adds any features found to the set of features (res)
-    virtual void runOn(Package const * const pkg, Result * const res) const = 0;
+    // returns whether successful
+    virtual bool runOn(Package const * const pkg,
+                       Result * const res,
+                       const std::shared_ptr<std::atomic_bool> &terminate) const = 0;
 
   protected:
     Query(std::string name) : _name(name) {  }

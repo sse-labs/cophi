@@ -15,7 +15,9 @@ REGISTER_QUERY(IsExecQuery)
 
 namespace Core::Queries {
 
-void IsExecQuery::runOn(Package const * const pkg, Query::Result * const res) const {
+bool IsExecQuery::runOn(Package const * const pkg,
+                        Query::Result * const res,
+                        const std::shared_ptr<std::atomic_bool> &terminate) const {
   const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::BOOL, FeatureData::Type::BINMAP);
   BinAttrMap exec_map(Attribute::Type::BOOL);
 
@@ -26,6 +28,11 @@ void IsExecQuery::runOn(Package const * const pkg, Query::Result * const res) co
   spdlog::debug("started running IsExecQuery on `{}`", pkg_name);
 
   for (auto &bin : pkg->bins()) {
+    if (*terminate) {
+      spdlog::debug("IsExecQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     i++;
     spdlog::trace("running IsExecQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
     bool is_exec = Utils::isExecutable(bin->getModuleRef());
@@ -33,7 +40,14 @@ void IsExecQuery::runOn(Package const * const pkg, Query::Result * const res) co
     spdlog::trace("IsExecQuery has been run on {:d}/{:d} binaries in `{}`", i, num_bins, pkg_name);
   }
   spdlog::debug("finished running IsExecQuery on `{}`", pkg_name);
+
+  if (*terminate) {
+    spdlog::debug("IsExecQuery timed out on `{}`, not writing out results", pkg_name);
+    return false;
+  }
+
   res->emplace(fid, FeatureData(exec_map));
+  return true;
 }
 
 }

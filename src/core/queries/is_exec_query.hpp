@@ -19,7 +19,9 @@ namespace Core::Queries {
       };
 
       std::vector<std::string> &getTypes() const override { return types; }
-      void runOn(Package const * const pkg, Query::Result * const res) const override;
+      bool runOn(Package const * const pkg,
+                 Query::Result * const res,
+                 const std::shared_ptr<std::atomic_bool> &terminate) const override;
   };
 }
 

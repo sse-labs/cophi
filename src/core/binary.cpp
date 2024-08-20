@@ -9,7 +9,10 @@ using jsonf = nlohmann::json;
 #include <llvm/IRReader/IRReader.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Transforms/Utils/Cloning.h>
+#include <llvm/IR/Verifier.h>
 
+#include <iostream>
+#include <cassert>
 #include <memory>
 
 namespace Core {
@@ -35,6 +38,8 @@ std::unique_ptr<ReifiedBinary> Binary::reify() {
 
   if (module == nullptr) {
     spdlog::warn("`llvm::parseIRFile()` failed on: `{}`", *_path);
+  } else if (llvm::verifyModule(*module)) { // returns true if module is bad
+    spdlog::warn("module for `{}` is malformed", *_name);
   } else {
     ret = std::unique_ptr<ReifiedBinary>(new ReifiedBinary(*this, std::move(context), std::move(module)));
     spdlog::debug("reified Binary `{}`", *_name);
@@ -47,9 +52,11 @@ std::unique_ptr<llvm::Module> ReifiedBinary::getModuleCopy() const {
     spdlog::warn("`getModuleCopy()` from Binary `{}` handed out nullptr", _id.name());
     return nullptr;
   }
+
   spdlog::debug("cloning module for Binary `{}`...", _id.name());
   auto ret = llvm::CloneModule(*_module);
   spdlog::debug("done cloning module for Binary `{}`.", _id.name());
+
   return ret;
 }
 

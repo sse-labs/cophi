@@ -28,7 +28,9 @@ static std::vector<std::string> getEntryPoints(const llvm::Module &mod) {
   }
 }
 
-void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const res) const {
+bool CallGraphSizeQuery::runOn(Package const * const pkg,
+                               Query::Result * const res,
+                               const std::shared_ptr<std::atomic_bool> &terminate) const {
   const FeatureID fid_node(*static_cast<Query const *>(this), Type::NODE, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap num_nodes_map(Attribute::Type::U_INT);
 
@@ -41,15 +43,31 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
   spdlog::debug("started running CallGraphSizeQuery on `{}`", pkg_name);
 
   for (size_t i = 0; i < num_bins; i++) {
+    if (*terminate) {
+      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     auto &bin = pkg->bins()[i];
     spdlog::trace("running CallGraphSizeQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
 
     auto entrypoints = getEntryPoints(bin->getModuleRef());
 
     auto mod = bin->getModuleCopy();
+
+    if (*terminate) {
+      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     psr::HelperAnalyses HA(std::move(mod), entrypoints);
 
     const auto &cg = HA.getICFG().getCallGraph();
+
+    if (*terminate) {
+      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
 
     // this is what's in the call graph:
 
@@ -67,6 +85,11 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
       num_edges += std::distance(it.begin(), it.end());
     }
 
+    if (*terminate) {
+      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+    
     num_edges_map.insert(bin->getID(), Attribute(num_edges));
 
     spdlog::trace("CallGraphSizeQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
@@ -74,8 +97,14 @@ void CallGraphSizeQuery::runOn(Package const * const pkg, Query::Result * const 
 
   spdlog::debug("finished running CallGraphSizeQuery on `{}`", pkg_name);
 
+  if (*terminate) {
+    spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
+    return false;
+  }
+
   res->emplace(fid_node, FeatureData(num_nodes_map));
   res->emplace(fid_edge, FeatureData(num_edges_map));
+  return true;
 }
 
 }

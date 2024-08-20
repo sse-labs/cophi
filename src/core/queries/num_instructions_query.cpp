@@ -11,7 +11,9 @@ REGISTER_QUERY(NumInstructionsQuery)
 
 namespace Core::Queries {
 
-void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * const res) const {
+bool NumInstructionsQuery::runOn(Package const * const pkg,
+                                 Query::Result * const res,
+                                 const std::shared_ptr<std::atomic_bool> &terminate) const {
   const FeatureID fid(*static_cast<Query const *>(this), Type::UNIT, Attribute::Type::U_INT, FeatureData::Type::BINMAP);
   BinAttrMap num_instrs_map(Attribute::Type::U_INT);
 
@@ -22,6 +24,11 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
   spdlog::debug("started running NumInstructionsQuery on `{}`", pkg_name);
 
   for (const auto &bin : pkg->bins()) {
+    if (*terminate) {
+      spdlog::debug("NumInstructionsQuery timed out on `{}`, not writing out results", pkg_name);
+      return false;
+    }
+
     i++;
     spdlog::trace("running NumInstructionsQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
 
@@ -38,7 +45,13 @@ void NumInstructionsQuery::runOn(Package const * const pkg, Query::Result * cons
 
   spdlog::debug("finished running NumInstructionsQuery on `{}`", pkg_name);
 
+  if (*terminate) {
+    spdlog::debug("NumInstructionsQuery timed out on `{}`, not writing out results", pkg_name);
+    return false;
+  }
+
   res->emplace(fid, FeatureData(num_instrs_map));
+  return true;
 }
 
 }

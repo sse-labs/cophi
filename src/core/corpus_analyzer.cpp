@@ -1,37 +1,80 @@
 #include <core/corpus_analyzer.hpp>
 #include <core/feature_map.hpp>
 #include <core/query_registry.hpp>
+#include <core/globals/globals.hpp>
+#include <utils/multithreading_utils.hpp>
 
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <algorithm>
 #include <mutex>
 #include <thread>
+
+#include <iostream>
 
 namespace Core {
 
 // Helpers
 
+// for parallel evaluation
 std::mutex reifyEmplace;
 void attemptReify(Package &pkg, std::vector<Package*> &reified_pkgs) {
+  const std::string pkg_name = pkg.getID().str();
+
+  spdlog::info("attempting to reify package `{}`", pkg_name);
   if (!pkg.reify()) {
-    spdlog::warn("unable to reify package `{}`", pkg.getID().str());
+    pkg.unreify();
+    spdlog::warn("unable to reify package `{}`", pkg_name);
   } else {
     reifyEmplace.lock();
     reified_pkgs.emplace_back(&pkg);
     reifyEmplace.unlock();
+    spdlog::info("successfully reified package `{}`", pkg_name);
   }
 }
 
-void extractFeatures(Package const * const pkg,
+// need this because Utils::run_with_timeout() doesn't play well with member functions
+bool queryRunOnWrapper(Package const * const pkg,
+                       Query const * const query,
+                       Query::Result * const results,
+                       std::shared_ptr<std::atomic_bool> terminate)
+{
+  return query->runOn(pkg, results, terminate);
+}
+
+bool runQueriesWrapper(Package const * const pkg,
+                       std::vector<Query*> &queries,
+                       Query::Result * const results,
+                       std::shared_ptr<std::atomic_bool> terminate)
+{
+  bool ret = true;
+  for (auto q : queries) {
+    ret &= q->runOn(pkg, results, terminate);
+  }
+  return ret;
+}
+
+bool extractFeatures(Package const * const pkg,
                      Query const * const query,
                      FeatureMap * const ret)
 {
-  spdlog::trace("running query `{}` on package `{}`",
+  spdlog::info("running query `{}` on package `{}`",
                 query->getName(), pkg->getID().str());
 
   Query::Result results;
-  query->runOn(pkg, &results);
+
+  //query->runOn(pkg, &results);
+  constexpr auto timeout = std::chrono::seconds(2);
+  if (!Utils::runOn_with_timeout(queryRunOnWrapper, timeout, pkg, query, &results,
+                                                    std::make_shared<std::atomic_bool>(false))) {
+    spdlog::error("failed on package `{}`", pkg->getID().str());
+    return false;
+  }
+
+ 
+  spdlog::info("finished running query `{}` on package `{}`",
+                query->getName(), pkg->getID().str());
 
   spdlog::debug("got {} features from running query `{}` on package `{}`",
                 results.size(), query->getName(), pkg->getID().str());
@@ -43,6 +86,41 @@ void extractFeatures(Package const * const pkg,
     // FeatureMap is thread-safe for insert
     ret->insert(pkg->getID(), res);
   }
+  return true;
+}
+
+bool extractFeaturesFromPackage(Package const * const pkg,
+                                std::vector<Query*> &queries,
+                                FeatureMap * const ret)
+{
+  // spdlog::info("running query `{}` on package `{}`",
+  //               query->getName(), pkg->getID().str());
+
+  Query::Result results;
+
+  //query->runOn(pkg, &results);
+  constexpr auto timeout = std::chrono::minutes(30);
+  if (!Utils::run_queries_with_timeout(runQueriesWrapper, timeout, pkg, queries, &results,
+                                                    std::make_shared<std::atomic_bool>(false))) {
+    spdlog::error("failed on package `{}`", pkg->getID().str());
+    return false;
+  }
+
+ 
+  // spdlog::info("finished running query `{}` on package `{}`",
+  //               query->getName(), pkg->getID().str());
+
+  // spdlog::debug("got {} features from running query `{}` on package `{}`",
+  //               results.size(), query->getName(), pkg->getID().str());
+
+  for (const Feature &res : results) {
+    const auto id = res.getUniqueId();
+    spdlog::debug("extracted feature `{}`", id.toString());
+    
+    // FeatureMap is thread-safe for insert
+    ret->insert(pkg->getID(), res);
+  }
+  return true;
 }
 
 // End Helpers
@@ -64,61 +142,101 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
   spdlog::info("queries reified");
 }
 
-void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
-  for (int i = 0; i < pkgs.size(); i += chunkSize) {
-    const size_t end_ind = std::min(pkgs.size(), size_t(i + chunkSize));
+void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm) const {
+  size_t total_pkgs = pkgs.size();
+  size_t num_done = 0;
+  size_t num_failed = 0;
 
-    spdlog::info("reifing packages...");
-    // store ptrs to sucessfully reified packages in here
-    std::vector<Package*> reified_pkgs;
-    //for (auto &pkg : pkgs) {
-    for (int j = i; j < end_ind; j++) {
-      attemptReify(pkgs[j], reified_pkgs);
+  auto raw_queries = this->getRawQueryPtrs();
+
+  for (Package &pkg : pkgs) {
+    const std::string pkg_name = pkg.getID().str();
+    spdlog::info("attempting to reify package `{}`", pkg_name);
+
+    bool not_failed_eval = true;
+
+    if (!pkg.reify()) {
+      spdlog::warn("unable to reify package `{}`, skipping", pkg_name);
+      num_failed += 1;
+    } else {
+      spdlog::info("reified package `{}`", pkg_name);
+      not_failed_eval = extractFeaturesFromPackage(&pkg, raw_queries, &fm);
+      // for (const auto &qry : _queries) {
+      //   // if (failed) {
+      //   //   num_failed++;
+      //   //   break;
+      //   // }
+      //   not_failed &= extractFeatures(&pkg, qry.get(), &fm);
+      // }
+      if (not_failed_eval) num_done += 1;
+      else num_failed += 1;
     }
-    spdlog::info("packages reified");
-
-    for (const auto &query: _queries) {
-      const std::string queryName = query->getName();
-      spdlog::info("running {} on packages...", queryName);
-
-      for (auto const * const pkg : reified_pkgs) {
-        extractFeatures(pkg, query.get(), &fm);
-      }
-      spdlog::info("done running {} on packages", queryName);
-    }
-
-    for (int j = i; j < end_ind; j++) {
-      pkgs[j].unreify();
-    }
-    spdlog::info("all queries done");
+    if (not_failed_eval) { pkg.unreify(); }
+    spdlog::info("successfully evaluated {:d}/{:d} packages, failed on {:d}", num_done, total_pkgs, num_failed);
   }
 }
 
-// void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t chunkSize) const {
-//   spdlog::info("reifing packages...");
+void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t num_threads) const {
+  // Utils::PackageQueue pkg_queue(10); // I have no justification for this number, add as option later :TODO
 
-//   // store ptrs to sucessfully reified packages in here
-//   std::vector<Package*> reified_pkgs;
-//   std::vector<std::thread> pkgReifyThreads;
-//   for (auto &pkg : pkgs) {
-//     pkgReifyThreads.emplace_back(attemptReify, std::ref(pkg), std::ref(reified_pkgs));
-//   }
-//   for (auto &thrd : pkgReifyThreads) thrd.join();
+  // std::vector<std::thread> worker_threads;
+  // worker_threads.reserve(num_threads);
 
-//   spdlog::info("packages reified");
+  // for (size_t i = 0; i < num_threads; i++) {
+  //   worker_threads.emplace_back(consume, std::ref(pkg_queue), )
+  // }
 
-//   for (const auto &query: _queries) {
-//     const std::string queryName = query->getName();
-//     spdlog::info("running {} on packages...", queryName);
+  size_t chunkSize = num_threads;
+  for (size_t i = 0; i < pkgs.size(); i += chunkSize) {
+    const size_t end_ind = std::min(pkgs.size(), i + chunkSize);
 
-//     std::vector<std::thread> extractFeaturesThreads;
-//     for (auto const * const pkg : reified_pkgs) {
-//       extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
-//     }
-//     for (auto &thrd : extractFeaturesThreads) thrd.join();
-//     spdlog::info("done running {} on packages", queryName);
-//   }
-//   spdlog::info("all queries done");
-// }
+    // the packages we managed to reify
+    std::vector<Package*> reified_pkgs;
+
+    spdlog::info("reifing {:d} packages...", chunkSize);
+    std::vector<std::thread> pkgReifyThreads;
+    for (size_t j = i; j < end_ind; j++) {
+      pkgReifyThreads.emplace_back(attemptReify, std::ref(pkgs[j]), std::ref(reified_pkgs));
+    }
+    for (auto &thrd : pkgReifyThreads) {
+      thrd.join();
+    }
+    spdlog::info("done reifing packages");
+
+    for (const auto &query: _queries) {
+      const std::string queryName = query->getName();
+      spdlog::info("running {} on {:d} packages in parallel...", queryName, chunkSize);
+
+      std::vector<std::thread> extractFeaturesThreads;
+      for (auto const * const pkg : reified_pkgs) {
+        extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
+      }
+      for (auto &thrd : extractFeaturesThreads) {
+        thrd.join();
+      }
+      spdlog::info("done running {}", queryName);
+    }
+
+    for (Package *rpkg : reified_pkgs) {
+      rpkg->unreify();
+    }
+  }
+}
+
+std::vector<Query*> CorpusAnalyzer::getRawQueryPtrs() const {
+  std::vector<Query*> ret;
+  
+  std::cerr << "here\n";
+  // std::transform(_queries.begin(), _queries.end(), ret.begin(), [](auto &q) {
+  //   return q.get();
+  // });
+
+  for (auto &q : _queries) {
+    ret.emplace_back(q.get());
+  }
+  std::cerr << "here2\n";
+
+  return ret;
+}
 
 } // namespace Core
