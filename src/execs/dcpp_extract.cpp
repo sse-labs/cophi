@@ -11,6 +11,7 @@
 #include <llvm/Support/CommandLine.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -25,7 +26,9 @@ using namespace Utils;
 cl::opt<std::string> PackagesIndex("p", cl::Required, cl::desc("Path to packages index"), cl::value_desc("path"));
 cl::opt<std::string> AnalysisConfig("c", cl::Required, cl::desc("Path to query config"), cl::value_desc("path"));
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
-cl::opt<size_t>      Parallel("parallel", cl::desc("use multithreading"), cl::value_desc("number of threads"));
+//cl::opt<size_t>      Parallel("parallel", cl::desc("use multithreading"), cl::value_desc("number of threads"));
+cl::opt<size_t> Timeout("t", cl::Required, cl::desc("How long to try to evaluate a package for"),
+                                           cl::value_desc("duration in minutes"));
 
 int main(int argc, char* argv[]) {
   // setup
@@ -57,13 +60,14 @@ int main(int argc, char* argv[]) {
   // run queries on the packages
   FeatureMap fm;
 
-  if (Parallel.getNumOccurrences() == 0) {
-    spdlog::info("evaluating packages...");
-    ca.evaluate(pkgs, fm);
-  } else {
-    spdlog::info("evaluating packages with {:d} threads.", Parallel);
-    ca.parallelEvaluate(pkgs, fm, Parallel);
-  }
+  //if (Parallel.getNumOccurrences() == 0) {
+  spdlog::info("evaluating packages...");\
+  auto timeout = std::chrono::minutes(Timeout);
+  ca.evaluate(pkgs, fm, timeout);
+  //} else {
+  //  spdlog::info("evaluating packages with {:d} threads.", Parallel);
+  //  ca.parallelEvaluate(pkgs, fm, Parallel);
+  //}
   spdlog::info("done evaluating packages");
 
   // write out FeatureMap
