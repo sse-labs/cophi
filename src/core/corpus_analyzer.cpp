@@ -17,32 +17,7 @@ namespace Core {
 
 // Helpers
 
-// for parallel evaluation
-std::mutex reifyEmplace;
-void attemptReify(Package &pkg, std::vector<Package*> &reified_pkgs) {
-  const std::string pkg_name = pkg.getID().str();
-
-  spdlog::info("attempting to reify package `{}`", pkg_name);
-  if (!pkg.reify()) {
-    pkg.unreify();
-    spdlog::warn("unable to reify package `{}`", pkg_name);
-  } else {
-    reifyEmplace.lock();
-    reified_pkgs.emplace_back(&pkg);
-    reifyEmplace.unlock();
-    spdlog::info("successfully reified package `{}`", pkg_name);
-  }
-}
-
 // need this because Utils::run_with_timeout() doesn't play well with member functions
-bool queryRunOnWrapper(Package const * const pkg,
-                       Query const * const query,
-                       Query::Result * const results,
-                       std::shared_ptr<std::atomic_bool> terminate)
-{
-  return query->runOn(pkg, results, terminate);
-}
-
 bool runQueriesWrapper(Package const * const pkg,
                        std::vector<Query*> &queries,
                        Query::Result * const results,
@@ -53,40 +28,6 @@ bool runQueriesWrapper(Package const * const pkg,
     ret &= q->runOn(pkg, results, terminate);
   }
   return ret;
-}
-
-bool extractFeatures(Package const * const pkg,
-                     Query const * const query,
-                     FeatureMap * const ret)
-{
-  spdlog::info("running query `{}` on package `{}`",
-                query->getName(), pkg->getID().str());
-
-  Query::Result results;
-
-  //query->runOn(pkg, &results);
-  constexpr auto timeout = std::chrono::seconds(2);
-  if (!Utils::runOn_with_timeout(queryRunOnWrapper, timeout, pkg, query, &results,
-                                                    std::make_shared<std::atomic_bool>(false))) {
-    spdlog::error("failed on package `{}`", pkg->getID().str());
-    return false;
-  }
-
- 
-  spdlog::info("finished running query `{}` on package `{}`",
-                query->getName(), pkg->getID().str());
-
-  spdlog::debug("got {} features from running query `{}` on package `{}`",
-                results.size(), query->getName(), pkg->getID().str());
-
-  for (const Feature &res : results) {
-    const auto id = res.getUniqueId();
-    spdlog::debug("extracted feature `{}`", id.toString());
-    
-    // FeatureMap is thread-safe for insert
-    ret->insert(pkg->getID(), res);
-  }
-  return true;
 }
 
 bool extractFeaturesFromPackage(Package const * const pkg,
@@ -176,53 +117,6 @@ void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
     spdlog::info("successfully evaluated {:d}/{:d} packages, failed on {:d}", num_done, total_pkgs, num_failed);
   }
 }
-
-// void CorpusAnalyzer::parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t num_threads) const {
-//   // Utils::PackageQueue pkg_queue(10); // I have no justification for this number, add as option later :TODO
-
-//   // std::vector<std::thread> worker_threads;
-//   // worker_threads.reserve(num_threads);
-
-//   // for (size_t i = 0; i < num_threads; i++) {
-//   //   worker_threads.emplace_back(consume, std::ref(pkg_queue), )
-//   // }
-
-//   size_t chunkSize = num_threads;
-//   for (size_t i = 0; i < pkgs.size(); i += chunkSize) {
-//     const size_t end_ind = std::min(pkgs.size(), i + chunkSize);
-
-//     // the packages we managed to reify
-//     std::vector<Package*> reified_pkgs;
-
-//     spdlog::info("reifing {:d} packages...", chunkSize);
-//     std::vector<std::thread> pkgReifyThreads;
-//     for (size_t j = i; j < end_ind; j++) {
-//       pkgReifyThreads.emplace_back(attemptReify, std::ref(pkgs[j]), std::ref(reified_pkgs));
-//     }
-//     for (auto &thrd : pkgReifyThreads) {
-//       thrd.join();
-//     }
-//     spdlog::info("done reifing packages");
-
-//     for (const auto &query: _queries) {
-//       const std::string queryName = query->getName();
-//       spdlog::info("running {} on {:d} packages in parallel...", queryName, chunkSize);
-
-//       std::vector<std::thread> extractFeaturesThreads;
-//       for (auto const * const pkg : reified_pkgs) {
-//         extractFeaturesThreads.emplace_back(extractFeatures, pkg, query.get(), &fm);
-//       }
-//       for (auto &thrd : extractFeaturesThreads) {
-//         thrd.join();
-//       }
-//       spdlog::info("done running {}", queryName);
-//     }
-
-//     for (Package *rpkg : reified_pkgs) {
-//       rpkg->unreify();
-//     }
-//   }
-// }
 
 std::vector<Query*> CorpusAnalyzer::getRawQueryPtrs() const {
   std::vector<Query*> ret;

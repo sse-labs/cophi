@@ -27,8 +27,6 @@ class CorpusAnalyzer {
     void evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
                   const std::chrono::minutes timeout) const;
 
-    // same as above, but with multithreading
-    //void parallelEvaluate(std::vector<Package> &pkgs, FeatureMap &fm, const size_t num_threads) const;
   private:
     std::vector<Query*> getRawQueryPtrs() const;
 
