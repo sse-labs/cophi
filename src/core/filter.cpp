@@ -111,7 +111,7 @@ bool Range::inRange(const Attribute &attr) const {
 
 // precond: fid.attr_type() == range.type()
 Filter::Filter(const FeatureID &fid, const FilterType type, const Range &range) :
-  _fid(fid), _type(type), _range(range)
+  _fid(fid), _type(type), _use_range(true), _range(range)
 {
   if (_fid.attr_type() != _range.type()) {
     spdlog::error("Filter constructed with FeatureID of type {} with range of type {}.",
@@ -129,9 +129,17 @@ Filter::Filter(const FeatureID &fid, const FilterType type, const Range &range) 
   }
 }
 
+Filter::Filter(const FeatureID &fid, const FilterType type) :
+  Filter(fid, type, Range())
+{
+  _use_range = false;
+}
+
 bool Filter::test(const Feature &ftr) const {
   if (ftr.getUniqueId() != _fid) {
     return false;
+  } else if (!_use_range) { // we only care if the ftr_id matches in this case
+    return true;
   }
 
   switch (_type) {
@@ -166,8 +174,16 @@ bool Filter::testFeatureExists(const Feature &ftr) const {
 
 // throws on malformed json
 Filter::Filter(const jsonf &jfilter) :
-  _fid(jfilter["fid"]), _range(jfilter["range"])
+  _fid(jfilter["feature_id"]), _use_range(static_cast<bool>(jfilter["use_range"])) //, _range(jfilter["range"])
 {
+  if (!_use_range) {
+    _range = Range();
+    _type = FilterType::NOATTR;
+    return;
+  }
+
+  _range = Range(jfilter["range"]);
+
   std::string type = jfilter["filter_type"];
 
   if (type == "no_attr") {

@@ -73,6 +73,10 @@ class Filter {
     //          fid.data_type() == BINMAP <--> type == FORALL | EXISTS
     Filter(const FeatureID &fid, const FilterType type, const Range &range);
 
+    // same as above, except it only checks for the existence of a feature,
+    // and not whether its data falls into a given range
+    Filter(const FeatureID &fid, const FilterType type);
+
     // bit of a hack so we can use FeatureID to search a set of Features
     // not a ctor meant to be used in any other circumstance
     Filter(const FeatureID &fid) : _fid(fid) {
@@ -104,6 +108,9 @@ class Filter {
 
     FeatureID  _fid;
     FilterType _type;
+
+    // should we use the range on the feature we get
+    bool       _use_range;
     Range      _range;
 };
 

@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   initializeLogger();
 
   // get filters
+  spdlog::info("parsing filters...");
   std::vector<Filter> filters;
   if (!parseJSONArray(FiltersFile, &filters)) {
     errAndExit("unable to parse filters file");
