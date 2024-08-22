@@ -1,8 +1,11 @@
 [
   {
-    "ftr_id": {
+    "feature_id": {
       "name": "NumInstructionsQuery",
-      "type": "instr"
-    }
+      "type": "unit",
+      "attr_type": "uint",
+      "data_type": "binmap"
+    },
+    "use_range": false
   }
 ]
