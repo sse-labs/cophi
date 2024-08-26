@@ -141,4 +141,4 @@ WORKDIR /workspaces/DelphiCpp/build/
 RUN cmake -DCMAKE_BUILD_TYPE=Release /workspaces/DelphiCpp/CMakeLists.txt
 RUN make
 
-ENTRYPOINT [ "/workspaces/DelphiCpp/build/dcpp_extract", "-c", "/workspaces/DelphiCpp/example_configs/config.json", "-p", "/workspaces/DelphiCpp/bitcode/packages.json", "-o", "/my_vol/res_fm.json" ]
+ENTRYPOINT [ "/workspaces/DelphiCpp/build/dcpp_extract", "-c", "/workspaces/DelphiCpp/example_configs/config.json", "-p", "/workspaces/DelphiCpp/bitcode/packages.json", "-o", "/my_vol/res_fm.json", "-s", "/my_vol/eval_stats.json" ]
