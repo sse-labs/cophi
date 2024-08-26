@@ -5,6 +5,8 @@
 #include <utils/multithreading_utils.hpp>
 
 #include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
+using jsonf = nlohmann::json;
 
 #include <chrono>
 #include <algorithm>
@@ -33,32 +35,27 @@ bool runQueriesWrapper(Package const * const pkg,
 bool extractFeaturesFromPackage(Package const * const pkg,
                                 std::vector<Query*> &queries,
                                 FeatureMap * const ret,
-                                const std::chrono::minutes timeout)
+                                const std::chrono::minutes timeout,
+                                PackageStats::dur_t *time)
 {
-  // spdlog::info("running query `{}` on package `{}`",
-  //               query->getName(), pkg->getID().str());
-
   Query::Result results;
 
-  //query->runOn(pkg, &results);
-  if (!Utils::run_queries_with_timeout(runQueriesWrapper, timeout, pkg, queries, &results,
-                                                    std::make_shared<std::atomic_bool>(false))) {
+  auto begin = std::chrono::steady_clock::now();
+  bool success = Utils::run_queries_with_timeout(runQueriesWrapper, timeout, pkg, queries, &results,
+                                                                    std::make_shared<std::atomic_bool>(false));
+  auto end = std::chrono::steady_clock::now();
+
+  *time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+
+  if (!success) {
     spdlog::error("failed on package `{}`", pkg->getID().str());
     return false;
   }
-
- 
-  // spdlog::info("finished running query `{}` on package `{}`",
-  //               query->getName(), pkg->getID().str());
-
-  // spdlog::debug("got {} features from running query `{}` on package `{}`",
-  //               results.size(), query->getName(), pkg->getID().str());
 
   for (const Feature &res : results) {
     const auto id = res.getUniqueId();
     spdlog::debug("extracted feature `{}`", id.toString());
     
-    // FeatureMap is thread-safe for insert
     ret->insert(pkg->getID(), res);
   }
   return true;
@@ -83,8 +80,9 @@ CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
   spdlog::info("queries reified");
 }
 
-void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
-                              const std::chrono::minutes timeout) const {
+CorpusAnalyzer::EvalStats CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
+                                                    const std::chrono::minutes timeout) const {
+  EvalStats ret;
   size_t total_pkgs = pkgs.size();
   size_t num_done = 0;
   size_t num_failed = 0;
@@ -95,42 +93,50 @@ void CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
     const std::string pkg_name = pkg.getID().str();
     spdlog::info("attempting to reify package `{}`", pkg_name);
 
-    bool not_failed_eval = true;
+    bool successful = true;
 
     if (!pkg.reify()) {
       spdlog::warn("unable to reify package `{}`, skipping", pkg_name);
       num_failed += 1;
     } else {
       spdlog::info("reified package `{}`", pkg_name);
-      not_failed_eval = extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout);
-      // for (const auto &qry : _queries) {
-      //   // if (failed) {
-      //   //   num_failed++;
-      //   //   break;
-      //   // }
-      //   not_failed &= extractFeatures(&pkg, qry.get(), &fm);
-      // }
-      if (not_failed_eval) num_done += 1;
+
+      PackageStats::dur_t elapsed_time;
+      successful = extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout, &elapsed_time);
+
+      // put stats in
+      ret.insert({pkg.getID(), PackageStats(successful, elapsed_time)});
+
+      if (successful) num_done += 1;
       else num_failed += 1;
     }
-    if (not_failed_eval) { pkg.unreify(); }
+    if (successful) { pkg.unreify(); }
     spdlog::info("successfully evaluated {:d}/{:d} packages, failed on {:d}", num_done, total_pkgs, num_failed);
   }
+  return ret;
 }
 
 std::vector<Query*> CorpusAnalyzer::getRawQueryPtrs() const {
   std::vector<Query*> ret;
-  
-  std::cerr << "here\n";
-  // std::transform(_queries.begin(), _queries.end(), ret.begin(), [](auto &q) {
-  //   return q.get();
-  // });
-
   for (auto &q : _queries) {
     ret.emplace_back(q.get());
   }
-  std::cerr << "here2\n";
+  return ret;
+}
 
+jsonf CorpusAnalyzer::serializeStats(EvalStats &stats) {
+  jsonf ret = jsonf::array();
+  for (const auto &[k, v] : stats) {
+    jsonf elem = jsonf::object();
+    jsonf pkg_stats = jsonf::object();
+
+    pkg_stats["successful"] = v.successful;
+    pkg_stats["time_ns"] = v.time.count();
+
+    elem[k.str()] = pkg_stats;
+
+    ret.emplace_back(elem);
+  }
   return ret;
 }
 
