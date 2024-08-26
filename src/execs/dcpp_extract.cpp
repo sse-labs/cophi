@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
   // get packages
   std::vector<Package> pkgs;
-  if (!parseJSONArray<Package>(PackagesIndex, &pkgs)) {
+  if (!parsePackages(PackagesIndex, &pkgs)) {
     errAndExit("unable to parse packages file");
   }
   spdlog::info("packages parsed");

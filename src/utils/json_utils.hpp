@@ -21,6 +21,9 @@ std::unordered_set<Core::Feature> parseFeatureSet(const jsonf &jftr_set);
 // attempt to parse FeatureMap from JSON from the ifstream, returns nullptr on error
 std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file);
 
+// parse packages
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs);
+
 // parses a json file containing an array of some type.
 // T must have a ctor of the form `T(const nlohmann::json&)`
 //
@@ -28,7 +31,7 @@ std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file)
 // returns false if the entire array was not able to be parsed or the file
 // not able to be opened
 template<class T>
-bool parseJSONArray(const std::string &file, std::vector<T> * const queries) {
+bool parseJSONArray(const std::string &file, std::vector<T> * const elems) {
   std::ifstream ifs(file);
   if (!ifs) {
     return false;
@@ -38,7 +41,7 @@ bool parseJSONArray(const std::string &file, std::vector<T> * const queries) {
     jsonf arr = jsonf::parse(ifs);
 
     for (auto &elem : arr) {
-      queries->emplace_back(elem);
+      elems->emplace_back(elem);
     }
 
     return true;

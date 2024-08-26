@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace Core {
 
@@ -46,7 +48,7 @@ class Package {
     }
 
     // will throw if json is malformed
-    Package(const nlohmann::json &jpkg);
+    Package(const fs::path &index, const nlohmann::json &jpkg);
 
     // takes ownership
     void setBins(std::vector<Binary> bins) { _bins = std::move(bins); }

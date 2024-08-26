@@ -11,6 +11,8 @@ using jsonf = nlohmann::json;
 #include <fstream>
 #include <memory>
 #include <string>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace Utils {
 
@@ -30,6 +32,30 @@ std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file)
   } catch (const jsonf::exception &e) {
     spdlog::error("failed to parse FeatureMap from file {}: id={:d}, what=`{}`", file, e.id, e.what());
     return nullptr;
+  }
+}
+
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs) {
+  std::ifstream ifs(file);
+  if (!ifs) {
+    return false;
+  }
+
+  fs::path index_path(file);
+
+
+  try {
+    jsonf arr = jsonf::parse(ifs);
+
+    for (auto &elem : arr) {
+      pkgs->emplace_back(index_path, elem);
+    }
+
+    return true;
+  } catch (const jsonf::exception &e) {
+      spdlog::error("failed to parse array of Packages from file {}. error: id={:d}, what()=`{}`",
+                    file, e.id, e.what());
+    return false;
   }
 }
 
