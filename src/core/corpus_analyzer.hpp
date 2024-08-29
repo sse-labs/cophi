@@ -48,6 +48,10 @@ class CorpusAnalyzer {
 
     // all the reified queries
     std::vector<std::unique_ptr<Query>> _queries;
+
+    // TODO: make this a cl option
+    // the maximum number of bins a package can have
+    const size_t _max_bins = 20;
 };
 
 }

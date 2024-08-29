@@ -59,6 +59,8 @@ class Package {
 
     void unreify();
 
+    size_t numBins() const { return _bins.size(); }
+
     // returns id used to identify package
     const PackageID &getID() const { return _pid; }
     const std::vector<std::unique_ptr<ReifiedBinary>> &bins() const { return _rbins; }

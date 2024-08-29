@@ -93,24 +93,27 @@ CorpusAnalyzer::EvalStats CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, F
     const std::string pkg_name = pkg.getID().str();
     spdlog::info("attempting to reify package `{}`", pkg_name);
 
-    bool successful = true;
+    bool did_not_detach_thread = true;
 
-    if (!pkg.reify()) {
+    if (pkg.numBins() > _max_bins) {
+      spdlog::warn("package `{}` exceeds maximum number of bins, skipping", pkg_name);
+      num_failed += 1;
+    } else if (!pkg.reify()) {
       spdlog::warn("unable to reify package `{}`, skipping", pkg_name);
       num_failed += 1;
     } else {
       spdlog::info("reified package `{}`", pkg_name);
 
       PackageStats::dur_t elapsed_time;
-      successful = extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout, &elapsed_time);
+      did_not_detach_thread = extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout, &elapsed_time);
 
       // put stats in
-      ret.insert({pkg.getID(), PackageStats(successful, elapsed_time)});
+      ret.insert({pkg.getID(), PackageStats(did_not_detach_thread, elapsed_time)});
 
-      if (successful) num_done += 1;
+      if (did_not_detach_thread) num_done += 1;
       else num_failed += 1;
     }
-    if (successful) { pkg.unreify(); }
+    if (did_not_detach_thread) { pkg.unreify(); }
     spdlog::info("successfully evaluated {:d}/{:d} packages, failed on {:d}", num_done, total_pkgs, num_failed);
   }
   return ret;
