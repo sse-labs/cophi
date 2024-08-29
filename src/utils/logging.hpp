@@ -19,7 +19,7 @@ void initializeLogger() {
     console_sink->set_level(spdlog::level::trace);
     console_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%l]  %v");
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/delphi_cpp.log", true);
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("/my_vol/logs/delphi_cpp.log", true);
     file_sink->set_level(spdlog::level::trace);
 
     spdlog::sinks_init_list sink_list = { file_sink, console_sink };
