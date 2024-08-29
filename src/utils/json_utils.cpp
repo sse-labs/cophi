@@ -35,7 +35,7 @@ std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file)
   }
 }
 
-bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs) {
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs, const size_t chunkSize, const size_t ind) {
   std::ifstream ifs(file);
   if (!ifs) {
     return false;
@@ -43,12 +43,12 @@ bool parsePackages(const std::string &file, std::vector<Core::Package> * const p
 
   fs::path index_path(file);
 
-
   try {
     jsonf arr = jsonf::parse(ifs);
 
-    for (auto &elem : arr) {
-      pkgs->emplace_back(index_path, elem);
+    size_t end = std::min(ind + chunkSize, arr.size());
+    for (size_t i = ind; i < end; i++) { 
+      pkgs->emplace_back(index_path, arr[i]);
     }
 
     return true;

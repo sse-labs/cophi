@@ -22,7 +22,7 @@ std::unordered_set<Core::Feature> parseFeatureSet(const jsonf &jftr_set);
 std::unique_ptr<Core::FeatureMap> deserializeFeatureMap(const std::string &file);
 
 // parse packages
-bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs);
+bool parsePackages(const std::string &file, std::vector<Core::Package> * const pkgs, const size_t chunkSize, const size_t ind=0);
 
 // parses a json file containing an array of some type.
 // T must have a ctor of the form `T(const nlohmann::json&)`
