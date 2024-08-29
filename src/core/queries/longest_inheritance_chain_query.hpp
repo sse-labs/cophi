@@ -14,9 +14,10 @@ class LongestInheritanceChainQuery : public Query {
     LongestInheritanceChainQuery(std::string name) : Query(name) {  }
     ~LongestInheritanceChainQuery() = default;
 
-    static inline std::vector<std::string> types{"unit"};
+    static inline std::vector<std::string> types{"notcpp", "cpp"};
     enum Type { 
-      UNIT = 0,
+      NOTCPP = 0,
+      CPP = 1,
     };
 
     std::vector<std::string> &getTypes() const override { return types; }
