@@ -53,7 +53,7 @@ bool LongestInheritanceChainQuery::runOn(Package const * const pkg,
   
   // if this package isn't written in C++ for sure, don't bother analyzing
   if (!Utils::forSureCpp(pkg)) {
-    const FeatureID fid_notcpp(*static_cast<Query const *>(this), Type::NOTCPP, Attribute::Type::UNIT, FeatureData::Type::BINMAP);
+    const FeatureID fid_notcpp(*static_cast<Query const *>(this), Type::NOTCPP, Attribute::Type::UNIT, FeatureData::Type::UNIT);
     res->emplace(fid_notcpp, FeatureData());
     return true;
   }

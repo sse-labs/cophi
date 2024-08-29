@@ -45,18 +45,23 @@ def main():
 
   init_fm(args.prev_fm)
   
-  ind = args.pkg_start
-  while ind < num_pkgs:
+  pkg_ind = args.pkg_start
+  chunk_ind = 1
+  while pkg_ind < num_pkgs:
+    print(f'[info] starting chunk {str(chunk_ind)}')
     run_info = subprocess.run(['/workspaces/DelphiCpp/build/dcpp_partial_extract',
                                '-p', args.pkgs_index,
                                '-c', args.config,
                                '-fm', args.prev_fm,
-                               '-s', args.stats + str(ind) + '.json',
+                               '-s', args.stats + str(pkg_ind) + '.json',
                                '-cs', str(args.chunk_size),
-                               '-pi', str(ind),
+                               '-pi', str(pkg_ind),
                                '-t', str(args.timeout)])
     if run_info.returncode != 0:
-      print('[info] FAILED ON INDEX ' + str(ind))
-    ind += args.chunk_size
+      print('[info] failed on chunk ' + str(chunk_ind))
+    else:
+      print(f'[info] finished chunk {str(chunk_ind)}')
+    pkg_ind += args.chunk_size
+    chunk_ind += 1
 
 main()
