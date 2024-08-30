@@ -141,4 +141,4 @@ WORKDIR /workspaces/DelphiCpp/build/
 RUN cmake -DCMAKE_BUILD_TYPE=Release /workspaces/DelphiCpp/CMakeLists.txt
 RUN make
 
-ENTRYPOINT [ "python3", "/workspaces/DelphiCpp/partial_extract.py", "-c", "/workspaces/DelphiCpp/example_configs/config.json", "-pi", "/workspaces/DelphiCpp/bitcode/packages.json", "-fm", "/my_vol/res_fm.json", "-s", "/my_vol/stats/eval_stats" ]
+ENTRYPOINT [ "python3", "/workspaces/DelphiCpp/partial_extract.py", "-c", "/workspaces/DelphiCpp/example_configs/config.json", "-pi", "/workspaces/DelphiCpp/bitcode/packages.json", "-fm", "/my_vol/res_fm.json", "-s", "/my_vol/eval_stats" ]
