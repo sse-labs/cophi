@@ -84,18 +84,6 @@ target_link_libraries(${EQUAL_EXECUTABLE} PRIVATE phasar::llvm_ifdside
                                                   spdlog::spdlog)
 
 #############
-# Test Exec #
-#############
-
-# add_executable(test src/execs/test.cpp ${SRC_FILES})
-# target_include_directories(test PRIVATE src)
-# target_link_libraries(test PRIVATE phasar::llvm_ifdside 
-#                                    nlohmann_json::nlohmann_json 
-#                                    spdlog::spdlog)
-
-
-
-#############
 # Add Tests #
 #############
 
