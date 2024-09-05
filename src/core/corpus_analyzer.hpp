@@ -17,6 +17,13 @@ namespace Core {
 
 // names of queries 
 struct CorpusAnalyzerConfig {
+  // the number of packages to process at a time before saving
+  size_t chunk_size;
+  // how long to spend evaluating a package before timing out
+  size_t timeout_mins;
+  // the max number of bins a package can have (we skip over it otherwise)
+  size_t max_bins;
+  // the queries we run on the packages
   std::vector<std::string> query_subset;
 };
 
@@ -48,10 +55,7 @@ class CorpusAnalyzer {
 
     // all the reified queries
     std::vector<std::unique_ptr<Query>> _queries;
-
-    // TODO: make this a cl option
-    // the maximum number of bins a package can have
-    const size_t _max_bins = 20;
+    const CorpusAnalyzerConfig _config;
 };
 
 }

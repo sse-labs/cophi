@@ -11,15 +11,13 @@
 
 namespace Utils {
 
-// this returns the logger, but if you want to use the logger 
-// in other translation units (cpp files), call ``
-void initializeLogger() {
+void initializeLogger(const std::string log_file_path) {
   try {
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_level(spdlog::level::trace);
     console_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%l]  %v");
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("/my_vol/logs/delphi_cpp.log", true);
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(log_file_path, true);
     file_sink->set_level(spdlog::level::trace);
 
     spdlog::sinks_init_list sink_list = { file_sink, console_sink };

@@ -1,11 +1,8 @@
 #include <core/feature_map.hpp>
 #include <utils/exec_utils.hpp>
 #include <utils/json_utils.hpp>
-#include <utils/logging.hpp>
 
 #include <llvm/Support/CommandLine.h>
-#include <spdlog/spdlog.h>
-
 
 #include <iostream>
 #include <memory>
@@ -21,7 +18,6 @@ cl::opt<std::string> SecondFM(cl::Positional, cl::desc("<input feature map>"), c
 int main(int argc, char* argv[]) {
   // setup
   cl::ParseCommandLineOptions(argc, argv);
-  initializeLogger();
 
   std::unique_ptr<FeatureMap> fm1 = deserializeFeatureMap(FirstFM);
   std::unique_ptr<FeatureMap> fm2 = deserializeFeatureMap(SecondFM);

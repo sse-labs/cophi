@@ -22,11 +22,13 @@ using namespace Utils;
 cl::opt<std::string> FeatureMapFile("m", cl::Required, cl::desc("Path to feature map file"), cl::value_desc("path"));
 cl::opt<std::string> FiltersFile("f", cl::Required, cl::desc("Path to filter config file"), cl::value_desc("path"));
 cl::opt<std::string> OutputFile("o", cl::Required, cl::desc("Path to output file"), cl::value_desc("path"));
+cl::opt<std::string> LogFile("l", cl::Required, cl::desc("Path to log file"), cl::value_desc("path"));
+
 
 int main(int argc, char* argv[]) {
   // setup
   cl::ParseCommandLineOptions(argc, argv);
-  initializeLogger();
+  initializeLogger(LogFile);
 
   // get filters
   spdlog::info("parsing filters...");

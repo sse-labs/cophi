@@ -88,57 +88,24 @@ RUN mkdir -p build && cd build && \
 # putting PhASAR in PATH
 ENV PATH="$PATH:/usr/local/lib:/usr/local/include/"
 
-# installing go (for gllvm)
-RUN apt-get -y update && \
-    apt-get -y install golang-go
-
-# setting env vars needed for gllvm
-ENV LLVM_COMPILER_PATH=/bin/
-ENV LLVM_CC_NAME=clang-14
-ENV LLVM_CXX_NAME=clang++-14
-ENV LLVM_LINK_NAME=llvm-link-14
-
-####################
-# Installing gllvm #
-####################
-
-RUN go install github.com/SRI-CSL/gllvm/cmd/...@latest
-
-# adding to PATH
-ENV PATH="$PATH:/root/go/bin"
-
-# necessary for get-bc
-RUN apt-get -y install file
-
-####################
-# Installing Conan #
-####################
-
-RUN pipx ensurepath
-RUN pipx install conan
-# putting conan in PATH
-ENV PATH="$PATH:/root/.local/bin/"
-# removing remote conancenter and cloning it locally
-RUN conan remote remove conancenter
-WORKDIR /
-RUN git clone https://github.com/conan-io/conan-center-index
-RUN conan remote add conan-index /conan-center-index
-RUN conan profile detect
-
 # logging library for c++
 RUN sudo apt install -y libspdlog-dev
 
+####################
+# Getting DelpiCpp #
+####################
 
-#####################
-# Building DelpiCpp #
-#####################
+WORKDIR /DelphiCpp/
 
-WORKDIR /workspaces/
-
-RUN git clone https://github.com/sse-labs/delphiCpp.git
-RUN mv /workspaces/delphiCpp/ /workspaces/DelphiCpp/
-WORKDIR /workspaces/DelphiCpp/build/
-RUN cmake -DCMAKE_BUILD_TYPE=Release /workspaces/DelphiCpp/CMakeLists.txt
+COPY ../src/ /DelphiCpp/src/
+COPY ../CMakeLists.txt /DelphiCpp/CMakeLists.txt
+COPY ../entrypoints/vol_paths.py /DelphiCpp/entrypoints/vol_paths.py
+COPY ../entrypoints/extract_entrypoint.py /DelphiCpp/entrypoints/extract_entrypoint.py
+WORKDIR /DelphiCpp/build/
+RUN cmake -DCMAKE_BUILD_TYPE=Release /DelphiCpp/CMakeLists.txt
 RUN make
 
-ENTRYPOINT [ "/workspaces/DelphiCpp/build/dcpp_extract", "-c", "/workspaces/DelphiCpp/example_configs/config.json", "-p", "/workspaces/DelphiCpp/bitcode/packages.json", "-o", "/my_vol/res_fm.json", "-s", "/my_vol/eval_stats.json" ]
+# creating the volumes/logs dir
+WORKDIR /volumes/logs/
+
+ENTRYPOINT [ "python3", "/DelphiCpp/entrypoints/extract_entrypoint.py" ]

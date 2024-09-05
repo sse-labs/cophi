@@ -14,7 +14,7 @@ parser.add_argument('--conan-index', '-i', default='/conan-center-index/', dest=
 parser.add_argument('--output', '-o', default='./bitcode/', dest='output',
                     help='which directory to output the metadata/bitcode to')
 
-parser.add_argument('--log_file', '-l', default='./scraper/logs/scraper.log', dest='logfile',
+parser.add_argument('--log-file', '-l', default='./scraper/logs/scraper.log', dest='logfile',
                     help='where to output the logfile')
 
 parser.add_argument('--num-packages', '-n', required=True, dest='total', type=int,
