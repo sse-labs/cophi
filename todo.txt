@@ -1,0 +1,8 @@
+list of things to fix up
+------------------------
+
+- make error reporting better for when filters are malformed for the features they're filtering (currently an assertion just fails)
+- allow for the scraping of specific packages (should be easy)
+- ADD TESTS
+- put cl flags in config file for dcpp_extract
+- add `operator==` to `FeatureData` so that dcpp_equals is actually correct (and then change == for `FeatureMap`)
