@@ -51,7 +51,6 @@ file(GLOB_RECURSE SRC_FILES src/core/*.cpp src/utils/*.cpp)
 # Main Executables #
 ####################
 set(EXTRACT_EXECUTABLE dcpp_extract)
-set(PARTIAL_EXTRACT_EXECUTABLE dcpp_partial_extract)
 set(FILTER_EXECUTABLE dcpp_filter)
 set(EQUAL_EXECUTABLE dcpp_equal)
 
@@ -59,13 +58,6 @@ set(EQUAL_EXECUTABLE dcpp_equal)
 add_executable(${EXTRACT_EXECUTABLE} src/execs/dcpp_extract.cpp ${SRC_FILES})
 target_include_directories(${EXTRACT_EXECUTABLE} PRIVATE src)
 target_link_libraries(${EXTRACT_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
-                                                    nlohmann_json::nlohmann_json 
-                                                    spdlog::spdlog)
-
-# executable for partially extracting a feature map
-add_executable(${PARTIAL_EXTRACT_EXECUTABLE} src/execs/dcpp_partial_extract.cpp ${SRC_FILES})
-target_include_directories(${PARTIAL_EXTRACT_EXECUTABLE} PRIVATE src)
-target_link_libraries(${PARTIAL_EXTRACT_EXECUTABLE} PRIVATE phasar::llvm_ifdside 
                                                     nlohmann_json::nlohmann_json 
                                                     spdlog::spdlog)
 

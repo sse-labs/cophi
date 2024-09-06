@@ -63,11 +63,11 @@ bool extractFeaturesFromPackage(Package const * const pkg,
 
 // End Helpers
 
-CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) {
+CorpusAnalyzer::CorpusAnalyzer(const CorpusAnalyzerConfig &conf) : _config(conf) {
   _queries = std::vector<std::unique_ptr<Query>>();
   const QueryRegistry &registry = QueryRegistry::singleton();
 
-  for (const auto &query_name : conf.query_subset) {
+  for (const auto &query_name : _config.query_subset) {
     spdlog::trace("reifying query `{}`", query_name);
     auto reified_query = registry.getInstanceOf(query_name);
     if (!reified_query) {
@@ -95,7 +95,7 @@ CorpusAnalyzer::EvalStats CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, F
 
     bool did_not_detach_thread = true;
 
-    if (pkg.numBins() > _max_bins) {
+    if (pkg.numBins() > _config.max_bins) {
       spdlog::warn("package `{}` exceeds maximum number of bins, skipping", pkg_name);
       num_failed += 1;
     } else if (!pkg.reify()) {

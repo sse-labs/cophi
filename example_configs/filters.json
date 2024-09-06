@@ -1,11 +1,16 @@
 [
   {
     "feature_id": {
-      "name": "NumInstructionsQuery",
-      "type": "unit",
+      "name": "LongestInheritanceChainQuery",
+      "type": "cpp",
       "attr_type": "uint",
       "data_type": "binmap"
     },
-    "use_range": false
+    "use_range": true,
+    "filter_type": "exists",
+    "range": {
+      "lower_bound": 2,
+      "upper_bound": 5
+    }
   }
 ]
