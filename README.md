@@ -9,12 +9,19 @@ delphi-cpp is a collection of tools allowing for the creation of copora of C/C++
 
 ## General Usage
 
-delphi-cpp is used through Docker containers. To build the necessary images, clone this repo, `cd` into its top level directory, and then run
-
-```docker build . -t YOUR_NAME -f ./dockerfiles/{dcpp_scrape, dcpp_extract, dcpp_filter}.Dockerfile```
+delphi-cpp is used through Docker containers. To build the necessary images, clone this repo, `cd` into its top level directory, and then run the following three commands:
+```
+docker build . -t dcpp_scrape -f ./dockerfiles/dcpp_scrape.Dockerfile
+docker build . -t dcpp_extract -f ./dockerfiles/dcpp_extract.Dockerfile
+docker build . -t dcpp_filter -f ./dockerfiles/dcpp_filter.Dockerfile
+```
 
 ### Reminder on Binding Single File Volumes
-Make sure you `touch` files before binding them into the container - even if they're files used for container output. Otherwise, Docker will create it, but as a directory, which will cause the container to fail.
+Make sure you `touch` files before binding them into the container - even if they're files used for container output. Otherwise, Docker will create it, but as a directory, which will cause the container to fail. The workflow goes like this:
+```
+$ touch ./file/to/bind.file
+$ docker run -v ./file/to/bind.file:/path/in/container command
+```
 
 ### General Usage for One Container
 ```docker run -v {bind_1} -v {bind_2} ... dcpp_{scrape, extract, filter} --flag-1 arg1 ...```
@@ -28,6 +35,7 @@ This container allows you to scrape C/C++ packages from ConanCenter. You can pro
 
 #### Command-Line Options
 - `--num-packages/-n {NUMBER OF PACKAGES TO SCRAPE}`
+    - as reference, scraping 10 packages would take ~5 minutes on average
 
 ### `dcpp_extract` usage
 This container runs the desired queries over the scraped packages and constructs a map from packages to the features they contain. There are also various configuration options related to performance.
@@ -35,13 +43,17 @@ This container runs the desired queries over the scraped packages and constructs
 #### Volumes
 - packages input: `-v ./path/to/packages/dir/:/volumes/packages/`
 - configuration input: `-v ./path/to/config.json:/volumes/config.json`
+    - [example](#configuration-file) of a config file
 - feature map output: `-v ./path/to/ftr_map.json:/volumes/ftr_map.json`
 - log directory output: `-v ./path/to/log/dir/:/volumes/logs/`
 
 #### Command-Line Options
 - `--chunk-size/-cs {HOW MANY PACKAGES TO PROCESS AT A TIME}`
+    - how many packages to analyze at a time in between saving results
 - `--max-bins/-mb {MAX NUMBER OF BINARIES A PACKAGE CAN HAVE}`
+    - most packages have between 1 and 5 binaries, as reference
 - `--timeout/-t {TIMEOUT (IN MINUTES) FOR ANALYZING A PACKAGE}`
+    - the time it takes to analyze packages varies wildly, but 15 minutes should allow a good number of packages to finish
 
 ### `dcpp_filter` usage
 This container, given a feature map and a list of filters, outputs the packages matching the list of features.
@@ -49,39 +61,41 @@ This container, given a feature map and a list of filters, outputs the packages 
 #### Volumes
 - feature map input: `-v ./path/to/ftr_map.json:/volumes/ftr_map.json`
 - filters input: `-v ./path/to/filters.json:/volumes/filters.json`
+    - [example](#filters-file) of a filters file
 - filtered results output: `-v ./path/to/results.json:/volumes/fltrd_map.json`
 - log file output: `-v ./path/to/file.log:/volumes/log.log`
 
 ## File Formats
 
-### `dcpp_extract` Configuration File
-This is a json configuration file which specifies the queries to be run. This is its format:
+### Configuration File
+This is an example configuration file which specifies the queries to be run:
 ```
 [
-    "Query1Name",
-    "Query2Name",
-    ...
+    "IsExecQuery",
+    "LongestInheritanceChainQuery",
 ]
 ```
 
-### `dcpp_filter` Filters File
+### Filters File
 The filters file is a JSON file consisting of an array of filters, where each filter is an object in the following form:
 ```
-{
-    "feature_id": {
-        "name": "LongestInheritanceChainQuery",
-        "type": "cpp",
-        "attr_type": "uint",
-        "data_type": "binmap"
-    },
-    "use_range": true,
-    "filter_type": "exists",
-    "range": {
-        "attr_type": "uint",
-        "lower_bound": 2,
-        "upper_bound": 5
+[
+    {
+        "feature_id": {
+            "name": "LongestInheritanceChainQuery",
+            "type": "cpp",
+            "attr_type": "uint",
+            "data_type": "binmap"
+        },
+        "use_range": true,
+        "filter_type": "exists",
+        "range": {
+            "attr_type": "uint",
+            "lower_bound": 0,
+            "upper_bound": 5
+        }
     }
-}
+]
 ```
 If `use_range` is set to `false`, then `filter_type` and `range` need not be included. The options for `filter_type` are:
 - `exists`: one binary in the binary map has to fulfill the range
