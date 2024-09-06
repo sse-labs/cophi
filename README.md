@@ -1,4 +1,4 @@
-DelphiCpp
+delphi-cpp
 =========
 
 DelphiCpp is a collection of tools allowing for the creation of copora of C/C++ packages with specific desired features. Features can range from API usage, to language features, to just about anything that can be detected with static analysis. We provide three containerized tools for this:
