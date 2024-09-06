@@ -20,7 +20,7 @@ Make sure you `touch` files before binding them into the container - even if the
 ```docker run -v {bind_1} -v {bind_2} ... dcpp_{scrape, extract, filter} --flag-1 arg1 ...```
 
 ### `dcpp_scrape` usage
-good desc.
+This container allows you to scrape C/C++ packages from ConanCenter. You can provide the number of packages you want to scrape.
 
 #### Volumes
 - packages output: `-v ./path/to/local/dir/:/volumes/packages/`
@@ -30,7 +30,7 @@ good desc.
 - `--num-packages/-n {NUMBER OF PACKAGES TO SCRAPE}`
 
 ### `dcpp_extract` usage
-good desc.
+This container runs the desired queries over the scraped packages and constructs a map from packages to the features they contain. There are also various configuration options related to performance.
 
 #### Volumes
 - packages input: `-v ./path/to/packages/dir/:/volumes/packages/`
@@ -44,7 +44,7 @@ good desc.
 - `--timeout/-t {TIMEOUT (IN MINUTES) FOR ANALYZING A PACKAGE}`
 
 ### `dcpp_filter` usage
-good desc.
+This container, given a feature map and a list of filters, outputs the packages matching the list of features.
 
 #### Volumes
 - feature map input: `-v ./path/to/ftr_map.json:/volumes/ftr_map.json`
