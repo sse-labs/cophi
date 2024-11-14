@@ -77,15 +77,15 @@ bool runOn_with_timeout(run_on_f_t f,
 
 
 using run_on_mul_f_t = bool (Core::Package const * const,
-                             std::vector<Core::Query*>&,
+                             Core::Query *,
                              Core::Query::Result * const,
                              std::shared_ptr<std::atomic_bool>);
 
 template <typename TDuration>
-bool run_queries_with_timeout(run_on_mul_f_t f,
+bool run_query_with_timeout(run_on_mul_f_t f,
                         TDuration timeout,
                         Core::Package const * const pkg,
-                        std::vector<Core::Query*> &queries,
+                        Core::Query* query,
                         Core::Query::Result * const res,
                         std::shared_ptr<std::atomic_bool> terminate_flag)
 {
@@ -93,7 +93,7 @@ bool run_queries_with_timeout(run_on_mul_f_t f,
   std::packaged_task<run_on_mul_f_t> task(*f);
   auto future = task.get_future();
 
-  std::thread thr(std::move(task), pkg, std::ref(queries), res, terminate_flag);
+  std::thread thr(std::move(task), pkg, query, res, terminate_flag);
   if (future.wait_for(timeout) != std::future_status::timeout)
   {
     thr.join();

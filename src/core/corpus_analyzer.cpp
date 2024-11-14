@@ -21,36 +21,44 @@ namespace Core {
 
 // need this because Utils::run_with_timeout() doesn't play well with member functions
 bool runQueriesWrapper(Package const * const pkg,
-                       std::vector<Query*> &queries,
+                       Query* query,
                        Query::Result * const results,
                        std::shared_ptr<std::atomic_bool> terminate)
 {
-  bool ret = true;
-  for (auto q : queries) {
-    ret &= q->runOn(pkg, results, terminate);
-  }
-  return ret;
+  return query->runOn(pkg, results, terminate);
 }
 
-bool extractFeaturesFromPackage(Package const * const pkg,
+void extractFeaturesFromPackage(Package const * const pkg,
                                 std::vector<Query*> &queries,
                                 FeatureMap * const ret,
                                 const std::chrono::minutes timeout,
-                                PackageStats::dur_t *time)
+                                PackageStats *stats)
 {
+  stats->successful = true;
   Query::Result results;
 
-  auto begin = std::chrono::steady_clock::now();
-  bool success = Utils::run_queries_with_timeout(runQueriesWrapper, timeout, pkg, queries, &results,
-                                                                    std::make_shared<std::atomic_bool>(false));
-  auto end = std::chrono::steady_clock::now();
+  for (auto *query : queries) {
+    Query::Result partial_res;
 
-  *time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+    auto begin = std::chrono::steady_clock::now();
+    const bool res = Utils::run_query_with_timeout(runQueriesWrapper, timeout, pkg, query, &partial_res,
+                                                   std::make_shared<std::atomic_bool>(false));
+    auto end = std::chrono::steady_clock::now();
 
-  if (!success) {
-    spdlog::error("failed on package `{}`", pkg->getID().str());
-    return false;
+    if (!res) {  
+      stats->successful = false;                                              
+      spdlog::error("query {} timed out on package `{}`", query->getName(), pkg->getID().str());
+      break;
+    } else {
+      PackageStats::dur_t time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+
+      stats->timings[query->getName()] = time;
+      results.insert(partial_res.begin(), partial_res.end());
+    }
   }
+  
+
+  //*time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
   for (const Feature &res : results) {
     const auto id = res.getUniqueId();
@@ -58,7 +66,6 @@ bool extractFeaturesFromPackage(Package const * const pkg,
     
     ret->insert(pkg->getID(), res);
   }
-  return true;
 }
 
 // End Helpers
@@ -104,11 +111,13 @@ CorpusAnalyzer::EvalStats CorpusAnalyzer::evaluate(std::vector<Package> &pkgs, F
     } else {
       spdlog::info("reified package `{}`", pkg_name);
 
-      PackageStats::dur_t elapsed_time;
-      did_not_detach_thread = extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout, &elapsed_time);
+      PackageStats stats;
+      extractFeaturesFromPackage(&pkg, raw_queries, &fm, timeout, &stats);
+
+      did_not_detach_thread = stats.successful;
 
       // put stats in
-      ret.insert({pkg.getID(), PackageStats(did_not_detach_thread, elapsed_time)});
+      ret.insert({pkg.getID(), stats}); //PackageStats(did_not_detach_thread, elapsed_time)});
 
       if (did_not_detach_thread) num_done += 1;
       else num_failed += 1;
@@ -127,14 +136,19 @@ std::vector<Query*> CorpusAnalyzer::getRawQueryPtrs() const {
   return ret;
 }
 
-jsonf CorpusAnalyzer::serializeStats(EvalStats &stats) {
-  jsonf ret = jsonf::array();
+jsonf CorpusAnalyzer::serializeStats(jsonf &prev, EvalStats &stats) {
+  jsonf ret = prev;
   for (const auto &[k, v] : stats) {
     jsonf elem = jsonf::object();
     jsonf pkg_stats = jsonf::object();
 
     pkg_stats["successful"] = v.successful;
-    pkg_stats["time_ns"] = v.time.count();
+
+    jsonf timings = jsonf::object();
+    for (const auto &[k, v] : v.timings) {
+      timings[k] = v.count();
+    }
+    pkg_stats["timings"] = timings;
 
     elem[k.str()] = pkg_stats;
 

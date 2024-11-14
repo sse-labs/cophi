@@ -29,10 +29,13 @@ struct CorpusAnalyzerConfig {
 
 struct PackageStats {
   using dur_t = std::chrono::nanoseconds;
-  PackageStats(bool s, dur_t t) : successful(s), time(t) { }
+  using timing_map_t = std::unordered_map<std::string, dur_t>;
+
+  PackageStats() : successful(true) { }
 
   bool successful;
-  dur_t time;
+  // queries -> time taken
+  timing_map_t timings;
 };
 
 // holds a set of queries to run on given packages and produce a FeatureMap
@@ -48,7 +51,7 @@ class CorpusAnalyzer {
     EvalStats evaluate(std::vector<Package> &pkgs, FeatureMap &fm,
                        const std::chrono::minutes timeout) const;
     
-    static jsonf serializeStats(EvalStats &stats);
+    static jsonf serializeStats(jsonf &prev, EvalStats &stats);
 
   private:
     std::vector<Query*> getRawQueryPtrs() const;

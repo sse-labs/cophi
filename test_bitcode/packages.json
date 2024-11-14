@@ -5,7 +5,7 @@
 		"bins": [
 			{
 				"bin_name": "an_exec",
-				"bin_path": "/workspaces/DelphiCpp/test_bitcode/an_exec.ll"
+				"bin_path": "../an_exec.ll"
 			}
 		],
 		"metadata": { }
@@ -16,7 +16,7 @@
 		"bins": [
 			{
 				"bin_name": "buncha_calls",
-				"bin_path": "/workspaces/DelphiCpp/test_bitcode/buncha_calls.ll"
+				"bin_path": "../buncha_calls.ll"
 			}
 		],
 		"metadata": { }
@@ -27,7 +27,7 @@
 		"bins": [
 			{
 				"bin_name": "buncha_classes",
-				"bin_path": "/workspaces/DelphiCpp/test_bitcode/buncha_classes.ll"
+				"bin_path": "../buncha_classes.ll"
 			}
 		],
 		"metadata": { }
@@ -38,7 +38,7 @@
 		"bins": [
 			{
 				"bin_name": "just_main_basically",
-				"bin_path": "/workspaces/DelphiCpp/test_bitcode/just_main_basically.ll"
+				"bin_path": "../just_main_basically.ll"
 			}
 		],
 		"metadata": { }
@@ -49,7 +49,7 @@
 		"bins": [
 			{
 				"bin_name": "not_an_exec",
-				"bin_path": "/workspaces/DelphiCpp/test_bitcode/not_an_exec.ll"
+				"bin_path": "../not_an_exec.ll"
 			}
 		],
 		"metadata": { }

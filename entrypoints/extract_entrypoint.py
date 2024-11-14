@@ -40,7 +40,7 @@ def main():
                                '-p', pkgs_index,
                                '-c', paths['conf'],
                                '-fm', paths['ftr_map'],
-                               '-s', os.path.join(paths['log_dir'], 'time_log' + str(pkg_ind) + '.json'),
+                               '-s', os.path.join(paths['log_dir'], 'stats.json'),
                                '-l', os.path.join(paths['log_dir'], 'extract.log'),
                                '-cs', str(args.chunk_size),
                                '-pi', str(pkg_ind),
