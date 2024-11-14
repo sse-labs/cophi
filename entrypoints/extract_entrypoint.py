@@ -20,7 +20,7 @@ def get_num_pkgs(pkgs_index):
   f.close()
   return size
 
-def init_fm(fm_file):
+def init_json_array(fm_file):
   f = open(fm_file, 'w+')
   f.write('[]')
   f.close()
@@ -30,7 +30,8 @@ def main():
   pkgs_index = os.path.join(paths['pkgs'], 'packages.json')
   num_pkgs = get_num_pkgs(pkgs_index)
 
-  init_fm(paths['ftr_map'])
+  init_json_array(paths['ftr_map'])
+  init_json_array(os.path.join(paths['log_dir'], 'stats.json'))
   
   pkg_ind = 0
   chunk_ind = 1
