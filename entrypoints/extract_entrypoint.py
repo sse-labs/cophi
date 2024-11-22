@@ -37,7 +37,7 @@ def main():
   chunk_ind = 1
   while pkg_ind < num_pkgs:
     print(f'[info] starting chunk {str(chunk_ind)}')
-    run_info = subprocess.run(['/delphi-cpp/build/dcpp_extract',
+    run_info = subprocess.run(['/workspaces/delphi-cpp/build/dcpp_extract',
                                '-p', pkgs_index,
                                '-c', paths['conf'],
                                '-fm', paths['ftr_map'],
@@ -45,7 +45,8 @@ def main():
                                '-l', os.path.join(paths['log_dir'], 'extract.log'),
                                '-cs', str(args.chunk_size),
                                '-pi', str(pkg_ind),
-                               '-t', str(args.timeout)])
+                               '-t', str(args.timeout),
+                               '-mb', str(args.max_bins)])
     if run_info.returncode != 0:
       print('[info] failed on chunk ' + str(chunk_ind))
     else:

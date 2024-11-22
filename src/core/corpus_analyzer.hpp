@@ -18,9 +18,9 @@ namespace Core {
 // names of queries 
 struct CorpusAnalyzerConfig {
   // the number of packages to process at a time before saving
-  size_t chunk_size;
+  //size_t chunk_size;
   // how long to spend evaluating a package before timing out
-  size_t timeout_mins;
+  //size_t timeout_mins;
   // the max number of bins a package can have (we skip over it otherwise)
   size_t max_bins;
   // the queries we run on the packages

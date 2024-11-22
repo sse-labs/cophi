@@ -31,6 +31,9 @@ cl::opt<std::string> LogFile("l", cl::Required, cl::desc("Path to log file"), cl
 
 cl::opt<size_t> ChunkSize("cs", cl::Required, cl::desc(""),
                                              cl::value_desc(""));
+
+cl::opt<size_t> MaxBins("mb", cl::Required, cl::desc(""),
+                                             cl::value_desc(""));
 cl::opt<size_t> PkgIndex("pi", cl::Required, cl::desc(""),
                                             cl::value_desc(""));
 
@@ -59,6 +62,7 @@ int main(int argc, char* argv[]) {
     // get config
   spdlog::debug("parsing configuration...");
   CorpusAnalyzerConfig conf;
+  conf.max_bins = MaxBins;
   // TOOOOOOOODOOOOOOO TODO TODO: initialize rest of conf
   if (!parseJSONArray<std::string>(AnalysisConfig, &conf.query_subset)) {
     errAndExit("unable to parse query config file");
