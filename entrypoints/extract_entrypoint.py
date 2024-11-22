@@ -37,7 +37,7 @@ def main():
   chunk_ind = 1
   while pkg_ind < num_pkgs:
     print(f'[info] starting chunk {str(chunk_ind)}')
-    run_info = subprocess.run(['/workspaces/delphi-cpp/build/dcpp_extract',
+    run_info = subprocess.run(['/delphi-cpp/build/dcpp_extract',
                                '-p', pkgs_index,
                                '-c', paths['conf'],
                                '-fm', paths['ftr_map'],
