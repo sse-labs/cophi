@@ -51,9 +51,9 @@ int main(int argc, char* argv[]) {
   // }
 
   // verify we can write out stats
-  std::fstream f_stats(StatsFile);
-  if (!f_stats) {
-    errAndExit("cannot write to stats file");
+  std::ifstream if_stats(StatsFile);
+  if (!if_stats) {
+    errAndExit("cannot access stats file");
   }
 
     // get config
@@ -96,9 +96,12 @@ int main(int argc, char* argv[]) {
   spdlog::info("feature map written out");
 
   // write out Stats
-  jsonf prev = jsonf::parse(f_stats);
-  f_stats << CorpusAnalyzer::serializeStats(prev, stats).dump(1, '\t');
-  f_stats.close();
+  jsonf prev = jsonf::parse(if_stats);
+  if_stats.close();
+
+  std::ofstream of_stats(StatsFile);
+  of_stats << CorpusAnalyzer::serializeStats(prev, stats).dump(1, '\t');
+  of_stats.close();
   spdlog::info("stats written out");
 
   return EXIT_SUCCESS;
