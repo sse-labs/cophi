@@ -22,7 +22,6 @@ bool NumInstructionsQuery::runOn(Package const * const pkg,
   const size_t num_bins = pkg->bins().size(); 
 
   spdlog::debug("started running NumInstructionsQuery on `{}`", pkg_name);
-
   for (const auto &bin : pkg->bins()) {
     if (*terminate) {
       spdlog::debug("NumInstructionsQuery timed out on `{}`, not writing out results", pkg_name);
@@ -48,10 +47,10 @@ bool NumInstructionsQuery::runOn(Package const * const pkg,
   if (*terminate) {
     spdlog::debug("NumInstructionsQuery timed out on `{}`, not writing out results", pkg_name);
     return false;
+  } else {
+    res->emplace(fid, FeatureData(num_instrs_map));
+    return true;
   }
-
-  res->emplace(fid, FeatureData(num_instrs_map));
-  return true;
 }
 
 }

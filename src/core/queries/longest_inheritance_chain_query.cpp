@@ -46,11 +46,6 @@ bool LongestInheritanceChainQuery::runOn(Package const * const pkg,
   const size_t num_bins = pkg->bins().size();
   const auto pkg_name = pkg->getID().str();
   
-  if (*terminate) {
-    spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
-    return false;
-  }
-  
   // if this package isn't written in C++ for sure, don't bother analyzing
   if (!Utils::forSureCpp(pkg)) {
     const FeatureID fid_notcpp(*static_cast<Query const *>(this), Type::NOTCPP, Attribute::Type::UNIT, FeatureData::Type::UNIT);
@@ -68,44 +63,15 @@ bool LongestInheritanceChainQuery::runOn(Package const * const pkg,
       spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
       return false;
     }
-
     auto &bin = pkg->bins()[i];
     spdlog::trace("running LongestInheritanceChainQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
-    if (*terminate) return false;
+
     auto mod = bin->getModuleCopy();
-
-    if (*terminate) {
-      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
-
-    if (*terminate) return false;
     psr::HelperAnalyses HA(std::move(mod), {});
-    
-    if (*terminate) return false;
     const auto th = HA.getTypeHierarchy();
 
-    if (*terminate) {
-      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
-
-    if (*terminate) return false;
     const auto typeGraph = extractTypeGraph(th);
-
-    if (*terminate) {
-      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
-    
-    if (*terminate) return false;
     size_t longest = typeGraph.longestPath();
-
-    if (*terminate) {
-      spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
-
     longest_ic_map.insert(bin->getID(), Attribute(longest));
     spdlog::trace("LongestInheritanceChainQuery has been run on {:d}/{:d} binaries in `{}`", i+1, num_bins, pkg_name);
   }
@@ -114,10 +80,10 @@ bool LongestInheritanceChainQuery::runOn(Package const * const pkg,
   if (*terminate) {
     spdlog::debug("LongestInheritanceChainQuery timed out on `{}`, not writing out results", pkg_name);
     return false;
+  } else {
+    res->emplace(fid, FeatureData(longest_ic_map));
+    return true;
   }
-
-  res->emplace(fid, FeatureData(longest_ic_map));
-  return true;
 }
 
 }

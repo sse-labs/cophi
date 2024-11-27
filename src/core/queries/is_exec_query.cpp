@@ -44,10 +44,10 @@ bool IsExecQuery::runOn(Package const * const pkg,
   if (*terminate) {
     spdlog::debug("IsExecQuery timed out on `{}`, not writing out results", pkg_name);
     return false;
+  } else {
+    res->emplace(fid, FeatureData(exec_map));
+    return true;
   }
-
-  res->emplace(fid, FeatureData(exec_map));
-  return true;
 }
 
 }

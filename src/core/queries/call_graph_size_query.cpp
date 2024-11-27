@@ -50,24 +50,10 @@ bool CallGraphSizeQuery::runOn(Package const * const pkg,
 
     auto &bin = pkg->bins()[i];
     spdlog::trace("running CallGraphSizeQuery on binary `{}` in `{}`", bin->getID().name(), pkg_name);
-
     auto entrypoints = getEntryPoints(bin->getModuleRef());
-
     auto mod = bin->getModuleCopy();
-
-    if (*terminate) {
-      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
-
     psr::HelperAnalyses HA(std::move(mod), entrypoints);
-
     const auto &cg = HA.getICFG().getCallGraph();
-
-    if (*terminate) {
-      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
 
     // this is what's in the call graph:
 
@@ -84,11 +70,6 @@ bool CallGraphSizeQuery::runOn(Package const * const pkg,
       const auto it = cg.getCalleesOfCallAt(site);
       num_edges += std::distance(it.begin(), it.end());
     }
-
-    if (*terminate) {
-      spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
-      return false;
-    }
     
     num_edges_map.insert(bin->getID(), Attribute(num_edges));
 
@@ -100,11 +81,11 @@ bool CallGraphSizeQuery::runOn(Package const * const pkg,
   if (*terminate) {
     spdlog::debug("CallGraphSizeQuery timed out on `{}`, not writing out results", pkg_name);
     return false;
+  } else {
+    res->emplace(fid_node, FeatureData(num_nodes_map));
+    res->emplace(fid_edge, FeatureData(num_edges_map));
+    return true;
   }
-
-  res->emplace(fid_node, FeatureData(num_nodes_map));
-  res->emplace(fid_edge, FeatureData(num_edges_map));
-  return true;
 }
 
 }
