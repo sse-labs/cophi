@@ -1,7 +1,7 @@
-delphi-cpp
+cophi
 =========
 
-delphi-cpp is a collection of tools allowing for the creation of copora of C/C++ packages with specific desired features. Features can range from API usage, to language features, to just about anything that can be detected with static analysis. We provide three containerized tools for this:
+cophi is a collection of tools allowing for the creation of copora of C/C++ packages with specific desired features. Features can range from API usage, to language features, to just about anything that can be detected with static analysis. We provide three containerized tools for this:
 
 1. A scraper that goes through ConanCenter to get C/C++ packages
 2. A tool for creating a mapping from packages to features of those packages using easily extendable queries
@@ -9,7 +9,7 @@ delphi-cpp is a collection of tools allowing for the creation of copora of C/C++
 
 ## General Usage
 
-delphi-cpp is used through Docker containers. To build the necessary images, clone this repo, `cd` into its top level directory, and then run the following three commands:
+cophi is used through Docker containers. To build the necessary images, clone this repo, `cd` into its top level directory, and then run the following three commands:
 ```
 docker build . -t dcpp_scrape -f ./dockerfiles/dcpp_scrape.Dockerfile
 docker build . -t dcpp_extract -f ./dockerfiles/dcpp_extract.Dockerfile
@@ -169,4 +169,4 @@ To add a new query, it's just a matter of adding two source code files, `src/cor
 ```
 REGISTER_QUERY(YourQueryClassName)
 ```
-This will allow delphi-cpp to know about the Query when you compile it.
+This will allow cophi to know about the Query when you compile it.
